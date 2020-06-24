@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="DataPanel\DataPanel.xml"/>
+	<Include file="MythicPlus\MythicPlus.xml"/>
+	<Include file="Maps\Maps.xml"/>
+	<Script file="Misc\misc.lua"/></Ui>

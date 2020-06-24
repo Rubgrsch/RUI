@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="MythicPlus.lua"/>
+	<Script file="AutoReply.lua"/>
+	<Script file="AutoLogging.lua"/>
+	<Script file="Blacklist.lua"/>
+	<Script file="Progress.lua"/>
+	<Script file="Timer.lua"/>
+</Ui>

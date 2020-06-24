@@ -1,0 +1,13 @@
+## Interface: 80300
+## Title: RUI
+## Version: v0
+## Author: Rubgrsch
+## SavedVariables: ruiDB
+
+libs\libs.xml
+
+init.lua
+Locales\locales.xml
+Core\Core.xml
+config.lua
+Modules\Modules.xml
