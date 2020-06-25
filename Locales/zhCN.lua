@@ -7,7 +7,7 @@ local _, L = unpack(rui)
 -- config - common
 L["Enable"] = "启用"
 L["General"] = "常规"
-L["RequireReload"] = "|n(重载界面后生效)"
+L["RequireReload"] = "(重载界面后生效)"
 -- config - blz
 L["BlzUI"] = "暴雪界面"
 -- config - blz - maps
@@ -15,8 +15,10 @@ L["Maps"] = "地图"
 L["WorldMap"] = "世界地图"
 L["MapCoords"] = "世界地图坐标"
 L["MapCoordsTooltips"] = "在世界地图上显示玩家和鼠标的坐标"
-L["Minimap"] = "优化小地图"
+L["TweakMinimap"] = "优化小地图"
 L["MinimapSize"] = "小地图尺寸"
+-- config - blz - tooltip
+L["Tooltip"] = "优化鼠标提示"
 -- config - blz - others
 L["Others"] = "其它"
 L["HideBossBanner"] = "隐藏首领拾取弹窗"
@@ -51,6 +53,11 @@ L["DataPanelInCombatTooltips"] = "允许在战斗中与信息条互动. 但为�
 L["TooltipInCombat"] = "战斗中鼠标提示"
 L["GoldFormat"] = "金币格式"
 
+-- Tooltip
+L["ID %d"] = "ID %d"
+L["Bag: %d"] = "背包: %d"
+L["Bank: %d"] = "银行: %d"
+
 -- DataPanel
 L["Friends: %d"] = "好友: %d"
 L["Guild: %d"] = "工会: %d"
@@ -67,10 +74,13 @@ L["Durability: %d"] = "耐久度: %d"
 L["Spec: %d"] = "专精: %d"
 L["Loot: %d"] = "拾取: %d"
 L["ThisSession:"] = "本次登录: "
+L["LeftDataPanel"] = "左侧信息条"
+L["RightDataPanel"] = "右侧信息条"
 
 -- Maps
 L["Mouse"] = "鼠标"
 L["Player"] = "玩家"
+L["Minimap"] = "小地图"
 
 -- Instance
 L["StartLogging"] = "开始战斗记录"

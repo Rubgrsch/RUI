@@ -35,6 +35,9 @@ local defaults = {
 		["minimap"] = true,
 		["minimapSize"] = 170,
 	},
+	["tooltip"] = {
+		["enable"] = true,
+	},
 }
 
 local function CopyTable(source,dest)
@@ -82,31 +85,39 @@ options.args.BlzUI = {
 	name = L["BlzUI"],
 	order = 11,
 	args = {
+		tooltip = {
+			type = "toggle",
+			name = L["Tooltip"].."*",
+			desc = L["RequireReload"],
+			order = 1,
+			get = function() return C.db.tooltip.enable end,
+			set = function(_, value) C.db.tooltip.enable = value end,
+		},
 		mapHeader = {
 			type = "header",
 			name = L["Maps"],
-			order = 1,
+			order = 11,
 		},
 		coords = {
 			type = "toggle",
 			name = L["MapCoords"].."*",
-			desc = L["MapCoordsTooltips"]..L["RequireReload"],
-			order = 2,
+			desc = L["MapCoordsTooltips"].."|n"..L["RequireReload"],
+			order = 12,
 			get = function(info) return C.db.maps[info[#info]] end,
 			set = function(info, value) C.db.maps[info[#info]] = value end,
 		},
 		minimap = {
 			type = "toggle",
-			name = L["Minimap"].."*",
+			name = L["TweakMinimap"].."*",
 			desc = L["RequireReload"],
-			order = 3,
+			order = 13,
 			get = function(info) return C.db.maps[info[#info]] end,
 			set = function(info, value) C.db.maps[info[#info]] = value end,
 		},
 		minimapSize = {
 			type = "range",
 			name = L["MinimapSize"],
-			order = 4,
+			order = 14,
 			min = 50, max = 250, step = 1,
 			get = function(info) return C.db.maps[info[#info]] end,
 			set = function(info, value)
@@ -126,7 +137,7 @@ options.args.BlzUI = {
 		hideBossBanner = {
 			type = "toggle",
 			name = L["HideBossBanner"].."*",
-			desc = L["HideBossBannerTooltips"]..L["RequireReload"],
+			desc = L["HideBossBannerTooltips"].."|n"..L["RequireReload"],
 			order = 21,
 			get = function(info) return C.db.general[info[#info]] end,
 			set = function(info, value) C.db.general[info[#info]] = value end,
@@ -142,7 +153,7 @@ options.args.BlzUI = {
 		undress = {
 			type = "toggle",
 			name = L["Undress"].."*",
-			desc = L["UndressTooltips"]..L["RequireReload"],
+			desc = L["UndressTooltips"].."|n"..L["RequireReload"],
 			order = 23,
 			get = function(info) return C.db.general[info[#info]] end,
 			set = function(info, value) C.db.general[info[#info]] = value end,
@@ -189,8 +200,8 @@ options.args.instance = {
 		},
 		progress = {
 			type = "toggle",
-			name = L["ShowMPProgress"],
-			desc = L["ShowMPProgressTooltips"],
+			name = L["ShowMPProgress"].."*",
+			desc = L["ShowMPProgressTooltips"].."|n"..L["RequireReload"],
 			order = 13,
 		},
 		autoReply = {
@@ -202,7 +213,7 @@ options.args.instance = {
 		scores = {
 			type = "toggle",
 			name = L["ShowMPScores"].."*",
-			desc = L["ShowMPScoresTooltips"]..L["RequireReload"],
+			desc = L["ShowMPScoresTooltips"].."|n"..L["RequireReload"],
 			order = 15,
 		},
 	},

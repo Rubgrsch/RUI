@@ -6,10 +6,11 @@ WIP! Use at your own risk!
 
 * DataPanel (90%)
 * MythicPlus (100%)
-
-* Maps (40%)
-
+  
+* Maps (60%)
+* Tooltip (70%)
+  
+* Bags (0%) <-- WIP
 * UF (0%)
 * NP (0%)
-* Bags (0%)
 * ActionBars (0%)

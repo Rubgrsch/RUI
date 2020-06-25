@@ -1,6 +1,8 @@
 local _, rui = ...
 local B, L, C = unpack(rui)
 local MP = B.MP
+local TT = B.TT
+
 -- BfA, converted from MDT
 local progressList = {
 	[141283] = 4,
@@ -306,7 +308,6 @@ local function GetNPCID(guid)
 end
 
 local function OnTooltipSetUnit(tooltip)
-	if not MP.currentRun.MPing or not C.db.instance.mythicPlus.progress then return end
 	local _, unit = tooltip:GetUnit()
 	if not unit then return end
 	if not UnitCanAttack("player", unit) or UnitIsDead(unit) then return end
@@ -322,9 +323,13 @@ local function OnTooltipSetUnit(tooltip)
 		local percent = value / totalQuantity * 100
 		percent = math.floor(percent * 100 + 0.5) / 100
 
-		GameTooltip:AddDoubleLine(name, "+" .. percent .. "% (+" .. value .. ")")
-		GameTooltip:Show()
+		tooltip:AddDoubleLine(name, "+" .. percent .. "% (+" .. value .. ")")
+		tooltip:Show()
 	end
 end
 
-GameTooltip:HookScript("OnTooltipSetUnit", OnTooltipSetUnit)
+B:AddInitScript(function()
+	if MP.currentRun.MPing or C.db.instance.mythicPlus.progress then
+		TT:HookScript("OnTooltipSetUnit", OnTooltipSetUnit)
+	end
+end)
