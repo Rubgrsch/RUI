@@ -248,6 +248,7 @@ options.args.dataPanel = {
 			values = {
 				[1] = format(B.MoneyString(123456789,1)),
 				[2] = format(B.MoneyString(123456789,2)),
+				[3] = format(B.MoneyString(123456789,3)),
 			},
 			set = function(info, value)
 				C.db.dataPanel[info[#info]] = value

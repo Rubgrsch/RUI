@@ -2,15 +2,37 @@
 Personal UI for World of Warcraft (retail).  
 WIP! Use at your own risk!  
 
-## Current Progress
+## Features / Current Progress
 
-* DataPanel (90%)
-* MythicPlus (100%)
+**(Almost) finished:** Usable  
   
-* Maps (60%)
-* Tooltip (70%)
-  
-* Bags (0%) <-- WIP
-* UF (0%)
-* NP (0%)
-* ActionBars (0%)
+- [ ] DataPanel
+  - [x] Basics
+  - [ ] Shadowlands staff
+- [x] MythicPlus
+  - [x] Timer
+  - [x] Tooltip progress (BfA)
+  - [x] Misc
+- [x] Tooltip
+- [ ] Maps
+  - [x] Worldmap
+  - [x] Minimap
+  - [ ] Minimap buttons recylebin
+
+**WIP:** May or may not work  
+
+- [ ] Bags
+  - [x] Bags
+  - [x] Banks
+  - [x] Reagent
+  - [ ] Bag roles
+  - [ ] Bank bags purchase / Reagent unlock
+
+**TODO:** Not implement  
+
+- [ ] Chat
+- [ ] Auras
+- [ ] UF
+- [ ] NP
+- [ ] ActionBars
+- [ ] Skins

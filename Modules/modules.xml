@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Include file="Tooltip\Tooltip.xml"/>
+	<Include file="Bags\Bags.xml"/>
 	<Include file="DataPanel\DataPanel.xml"/>
 	<Include file="Maps\Maps.xml"/>
 	<Include file="MythicPlus\MythicPlus.xml"/>

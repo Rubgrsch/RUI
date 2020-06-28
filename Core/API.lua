@@ -29,6 +29,8 @@ B.MoneyString = function(money, fmt)
 	elseif fmt == 2 then -- icon, short if gold > 1000
 		if money > 1e7 then return "%d|T237618:0|t", g
 		else return "%d|T237618:0|t%d|T237620:0|t%d|T237617:0|t", g, s, b end
+	elseif fmt == 3 then -- icon, full
+		return "%d|T237618:0|t%d|T237620:0|t%d|T237617:0|t", g, s, b
 	end
 end
 
