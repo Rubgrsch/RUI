@@ -54,7 +54,9 @@ local function SortFriendsList(a,b)
 		-- WoW: online -> retail -> realNameFriend -> AFK/DND -> level -> myFaction -> accountName
 		if a.wowProjectID == b.wowProjectID then
 			if a.isBattleTagFriend == b.isBattleTagFriend then
-				if (a.isDND or a.isAFK or a.isGameAFK or a.isGameDND) == (b.isDND or b.isAFK or b.isGameDND or b.isGameAFK) then
+				-- (a.isDND or a.isAFK or a.isGameAFK or a.isGameDND) can be true, false and nil. And false ~= nil !!
+				-- So we should convert nil to false here
+				if not (a.isDND or a.isAFK or a.isGameAFK or a.isGameDND) == not (b.isDND or b.isAFK or b.isGameDND or b.isGameAFK) then
 					if a.characterLevel == b.characterLevel then
 						if a.factionName == b.factionName then
 							return a.accountName < b.accountName
