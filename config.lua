@@ -38,6 +38,15 @@ local defaults = {
 	["tooltip"] = {
 		["enable"] = true,
 	},
+	["bags"] = {
+		["enable"] = true,
+		["autoSellJunk"] = true,
+		["autoRepair"] = 2,
+		["bagSlotSize"] = 30,
+		["bagSlotsPerRow"] = 10,
+		["bankSlotSize"] = 30,
+		["bankSlotsPerRow"] = 12,
+	},
 }
 
 local function CopyTable(source,dest)
@@ -255,6 +264,76 @@ options.args.dataPanel = {
 				local f = B.DP.panelList.Gold
 				f.OnEvent(f)
 			end,
+		},
+	},
+}
+local function BagDisabled() return not C.db.bags.enable end
+local function BagSetSize(info, value)
+	C.db.bags[info[#info]] = value
+	B.BAG:SetupSize()
+end
+options.args.bags = {
+	type = "group",
+	name = L["Bags"],
+	order = 14,
+	get = function(info) return C.db.bags[info[#info]] end,
+	set = function(info, value) C.db.bags[info[#info]] = value end,
+	args = {
+		enable = {
+			type = "toggle",
+			name = L["Enable"].."*",
+			order = 1,
+		},
+		autoSellJunk = {
+			type = "toggle",
+			name = L["AutoSellJunk"],
+			order = 2,
+			disabled = BagDisabled,
+		},
+		autoRepair = {
+			type = "select",
+			name = L["AutoRepair"],
+			order = 3,
+			values = {
+				[0] = L["Disable"],
+				[1] = L["OnlyPlayer"],
+				[2] = L["GuildFirst"],
+			},
+			disabled = BagDisabled,
+		},
+		bagSlotSize = {
+			type = "range",
+			name = L["BagSlotSize"],
+			order = 4,
+			min = 10, max = 50, step = 2,
+			set = BagSetSize,
+			disabled = BagDisabled,
+		},
+		bagSlotsPerRow = {
+			type = "range",
+			name = L["BagSlotsPerRow"],
+			order = 5,
+			min = 1, max = 30, step = 1,
+			softMin = 4, softMax = 20,
+			set = BagSetSize,
+			disabled = BagDisabled,
+		},
+		bankSlotSize = {
+			type = "range",
+			name = L["BankSlotSize"],
+			order = 6,
+			min = 10, max = 50, step = 2,
+			set = BagSetSize,
+			disabled = BagDisabled,
+		},
+		bankSlotsPerRow = {
+			type = "range",
+			name = L["BankSlotsPerRow"],
+			order = 7,
+			min = 1, max = 30, step = 1,
+			softMin = 4, softMax = 20,
+			set = BagSetSize,
+			disabled = BagDisabled,
 		},
 	},
 }

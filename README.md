@@ -22,13 +22,15 @@ WIP! Use at your own risk!
 **WIP:** May or may not work  
 
 - [ ] Bags
-  - [x] Bags
-  - [x] Banks
+  - [x] Bags / Banks
   - [x] Reagent
   - [ ] Bag roles
-  - [ ] Bank bags purchase / Reagent unlock
+  - [x] Bank bags purchase / Reagent unlock
+  - [ ] Search
+  - [x] Auto sell junk / repairs
+  - [x] Config
 
-**TODO:** Not implement  
+**TODO:** Not implement yet  
 
 - [ ] Chat
 - [ ] Auras

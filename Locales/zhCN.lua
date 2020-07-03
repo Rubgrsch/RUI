@@ -6,6 +6,7 @@ local _, L = unpack(rui)
 -- config
 -- config - common
 L["Enable"] = "启用"
+L["Disable"] = "禁用"
 L["General"] = "常规"
 L["RequireReload"] = "(重载界面后生效)"
 -- config - blz
@@ -52,6 +53,16 @@ L["EnableRightDataPanel"] = "启用右侧信息条"
 L["DataPanelInCombatTooltips"] = "允许在战斗中与信息条互动. 但为避免冲突, 某些信息即使在开启后仍然无法在战斗中进行互动."
 L["TooltipInCombat"] = "战斗中鼠标提示"
 L["GoldFormat"] = "金币格式"
+-- config - bags
+L["Bags"] = "背包"
+L["AutoSellJunk"] = "自动出售垃圾"
+L["AutoRepair"] = "自动修理"
+L["OnlyPlayer"] = "仅玩家"
+L["GuildFirst"] = "工会优先"
+L["BagSlotSize"] = "背包格子大小"
+L["BagSlotsPerRow"] = "背包每行格子数"
+L["BankSlotSize"] = "银行格子大小"
+L["BankSlotsPerRow"] = "银行每行格子数"
 
 -- Tooltip
 L["ID %d"] = "ID %d"
