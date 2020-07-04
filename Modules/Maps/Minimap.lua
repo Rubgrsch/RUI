@@ -87,64 +87,55 @@ local function SetupMinimapDataButton()
 	local dataButton = CreateFrame("Button",nil,Minimap)
 	dataButton:SetSize(20,20)
 	dataButton:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -2)
-	local dataButtonList = CreateFrame("Frame", nil, Minimap)
-	dataButtonList:SetPoint("RIGHT", dataButton, "LEFT", 0, 0)
-	dataButtonList:SetSize(0,20)
+	dataButton:SetNormalTexture(1044996)
+	dataButton:GetNormalTexture():SetAlpha(0.6)
+	dataButton:SetHighlightTexture(1044996)
+	local dataButtonList = CreateFrame("Frame", "TESTTEST", dataButton)
+	dataButtonList:SetPoint("RIGHT", dataButton, "LEFT")
 	dataButtonList:Hide()
-	dataButtonList.idx = 0
+	dataButtonList.offset = 0
 	dataButtonList.list = {}
-	dataButtonList.forceShow = false
-	local texture = dataButton:CreateTexture()
-	texture:SetTexture(1044996)
-	texture:SetAllPoints()
-	texture:SetAlpha(0.6)
-	local highlight = dataButton:CreateTexture(nil, "HIGHLIGHT")
-	highlight:SetAllPoints()
-	highlight:SetColorTexture(1, 1, 1, 0.25)
-	local function ButtonOnEnter()
-		texture:SetAlpha(1)
+	local forceShow = false
+	dataButton:SetScript("OnEnter", function(self)
+		self:GetNormalTexture():SetAlpha(1)
 		dataButtonList:Show()
-	end
-	local function ButtonOnLeave()
-		if not dataButtonList.forceShow then
-			texture:SetAlpha(0.6)
+	end)
+	dataButton:SetScript("OnLeave", function(self)
+		if not forceShow then
+			self:GetNormalTexture():SetAlpha(0.6)
 			if dataButtonList:IsShown() then dataButtonList:Hide() end
 		end
-	end
-	local function ButtonOnClick()
-		dataButtonList.forceShow = not dataButtonList.forceShow
-	end
-	local function ListOnEnter(self)
-		self:Show()
-	end
-	local function ListOnLeave(self)
-		if not self.forceShow then
-			self:Hide()
-			texture:SetAlpha(0.6)
-		end
-	end
-	dataButton:SetScript("OnEnter", ButtonOnEnter)
-	dataButton:SetScript("OnLeave", ButtonOnLeave)
-	dataButton:SetScript("OnClick", ButtonOnClick)
-	dataButtonList:SetScript("OnEnter",ListOnEnter)
-	dataButtonList:SetScript("OnLeave", ListOnLeave)
+	end)
+	dataButton:SetScript("OnClick", function()
+		forceShow = not forceShow
+	end)
 
-	local minimapButtonList = {
+	local BLZMinimapButtonList = {
 		"GarrisonLandingPageMinimapButton",
 	}
-	local function HandleMinimapButton(button)
+	local function HandleMinimapButton(button, isLDB)
 		if dataButtonList.list[button] then return end
-		local idx = dataButtonList.idx + 1
+		local idx = #dataButtonList.list
 		button:ClearAllPoints()
-		button:SetSize(20,20)
 		button:SetParent(dataButtonList)
-		button:SetPoint("RIGHT",dataButtonList,"RIGHT",-idx*20+20,0)
-		dataButtonList.idx = idx
-		dataButtonList:SetSize(idx*20,20)
-		dataButtonList.list[button] = button
+		button:SetPoint("RIGHT",dataButtonList,"RIGHT",-dataButtonList.offset,0)
+		dataButtonList.offset = dataButtonList.offset + button:GetSize()
+		dataButtonList.list[idx+1] = button
+		if isLDB then
+			if button:GetScript("OnDragStart") then button:SetScript("OnDragStart", nil) end
+			if button:GetScript("OnDragStop") then button:SetScript("OnDragStop", nil) end
+			if button:GetScript("OnMouseDown") then button:SetScript("OnMouseDown", nil) end
+			if button:GetScript("OnMouseUp") then button:SetScript("OnMouseUp", nil) end
+		end
 	end
 
-	for _, f in ipairs(minimapButtonList) do HandleMinimapButton(_G[f]) end
+	for _, f in ipairs(BLZMinimapButtonList) do HandleMinimapButton(_G[f]) end
+	for _, f in ipairs({Minimap:GetChildren()}) do
+		if f and f:GetName() and f:GetName():find("LibDBIcon10_") then
+			HandleMinimapButton(f, true)
+		end
+	end
+	dataButtonList:SetSize(dataButtonList.offset,40)
 end
 
 B:AddInitScript(function()

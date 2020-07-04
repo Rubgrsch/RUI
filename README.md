@@ -10,14 +10,8 @@ WIP! Use at your own risk!
   - [x] Basics
   - [ ] Shadowlands staff
 - [x] MythicPlus
-  - [x] Timer
-  - [x] Tooltip progress (BfA)
-  - [x] Misc
 - [x] Tooltip
-- [ ] Maps
-  - [x] Worldmap
-  - [x] Minimap
-  - [ ] Minimap buttons recylebin
+- [x] Maps
 
 **WIP:** May or may not work  
 
