@@ -270,7 +270,7 @@ options.args.dataPanel = {
 local function BagDisabled() return not C.db.bags.enable end
 local function BagSetSize(info, value)
 	C.db.bags[info[#info]] = value
-	B.BAG:SetupSize()
+	C:ResizeBags()
 end
 options.args.bags = {
 	type = "group",

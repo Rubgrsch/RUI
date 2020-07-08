@@ -20,7 +20,7 @@ WIP! Use at your own risk!
   - [x] Reagent
   - [ ] Bag roles
   - [x] Bank bags purchase / Reagent unlock
-  - [ ] Search
+  - [x] Search
   - [x] Auto sell junk / repairs
   - [x] Config
 

@@ -5,14 +5,68 @@ local BAG = {}
 B.BAG = BAG
 
 local containerSize = 22
+local searchText = ""
 
 local isNotEquipmentLoc = {[""] = true, ["INVTYPE_BAG"] = true, ["INVTYPE_QUIVER"] = true, ["INVTYPE_TABARD"] = true}
+local itemQualities = {}
+local slots = {}
+
+-- Main Search func, current rules:
+-- [Exact] itemID / itemQuality
+-- [Exact, ~= 1] iLvl / count
+-- [Find] itemName
+local function IsSlotSearchMatched(i,j)
+	local flag = false
+	local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(i, j)
+	if itemLink then
+		local text = searchText
+		local textnum = tonumber(searchText)
+		local itemName, _, _, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID,itemSetID, isCraftingReagent = GetItemInfo(itemLink)
+		local iLvl = GetDetailedItemLevelInfo(itemLink)
+		if itemName then
+			if		itemID == textnum
+				or	(iLvl == textnum and textnum ~= 1)
+				or	(itemCount == textnum and textnum ~= 1)
+				or	itemQualities[quality] == text
+				or	itemName:find(text)
+			then
+				flag = true
+			end
+		end
+	end
+	return flag
+end
+
+-- This only update alpha, used for OnTextChanged
+local function UpdateSearchSlots(bags)
+	for _,i in ipairs(bags.bagIDs) do
+		for j = 1, GetContainerNumSlots(i) do
+			local slot = slots[i][j]
+			if searchText == "" or IsSlotSearchMatched(i, j) then
+				slot:SetAlpha(1)
+			else
+				slot:SetAlpha(0.2)
+			end
+		end
+	end
+end
+
+local function OnTextChanged(self)
+	searchText = self:GetText()
+	if BAG.bagsFrame.editBox:GetText() ~= searchText then BAG.bagsFrame.editBox:SetText(searchText) end
+	if BAG.bankFrame.editBox:GetText() ~= searchText then BAG.bankFrame.editBox:SetText(searchText) end
+	UpdateSearchSlots(BAG.bags)
+	if BAG.bankFrame:IsShown() then
+		UpdateSearchSlots(BAG.bank)
+		UpdateSearchSlots(BAG.reagent)
+	end
+end
 
 -- slot content
 local function UpdateSlotContent(slot, i, j)
 	-- ContainerFrame.lua Line 587
 	-- Set content
-	local texture, count, locked, quality, readable, _, itemLink, isFiltered = GetContainerItemInfo(i,j)
+	local texture, count, locked, quality, readable, _, itemLink = GetContainerItemInfo(i,j)
 	SetItemButtonTexture(slot, texture)
 	SetItemButtonCount(slot, count)
 	SetItemButtonDesaturated(slot, locked)
@@ -88,25 +142,31 @@ local function UpdateSlotContent(slot, i, j)
 			tooltip:Hide()
 		end
 	end
-	slot:SetMatchesSearch(not isFiltered)
-	-- Item Level
-	if slot.itemLevel then
-		if itemLink then
-			local _, _, _, _, _, _, _, _, itemEquipLoc, _, _, itemClassID, itemSubClassID = GetItemInfo(itemLink)
-			local iLvl = GetDetailedItemLevelInfo(itemLink)
-			if ((itemClassID == 3 and itemSubClassID == 11) or not isNotEquipmentLoc[itemEquipLoc]) and (quality and quality > 1) and iLvl then
-				slot.itemLevel:SetText(iLvl)
-				slot.itemLevel:SetTextColor(GetItemQualityColor(quality))
-			else
-				slot.itemLevel:SetText("")
-			end
+	-- End of BLZ code
+	-- Start of my code
+	-- For bag slots (excluding bag icons)
+	if not slot.itemLevel then return end
+	if itemLink then
+		-- Search
+		if searchText == "" or IsSlotSearchMatched(i, j) then
+			slot:SetAlpha(1)
+		else
+			slot:SetAlpha(0.2)
+		end
+		-- Item Level
+		local _, _, _, _, _, _, _, _, itemEquipLoc, _, _, itemClassID, itemSubClassID = GetItemInfo(itemLink)
+		local iLvl = GetDetailedItemLevelInfo(itemLink)
+		if ((itemClassID == 3 and itemSubClassID == 11) or not isNotEquipmentLoc[itemEquipLoc]) and (quality and quality > 1) and iLvl then
+			slot.itemLevel:SetText(iLvl)
+			slot.itemLevel:SetTextColor(GetItemQualityColor(quality))
 		else
 			slot.itemLevel:SetText("")
 		end
+	else
+		-- For bag icons
+		slot.itemLevel:SetText("")
 	end
 end
-
-local slots = {}
 
 local id = 1
 local function CreateSlot(holder, i,j)
@@ -176,7 +236,7 @@ local function SetSlots(bags,forceRefresh)
 	bags:SetSize(bags.slotSize*bags.slotsPerRow+2,bags.slotSize*bags.rows+2)
 	-- Update bagFrame size
 	if bags.enable then
-		bags:GetParent():SetSize(bags.slotSize*bags.slotsPerRow+5,bags.slotSize*bags.rows+52)
+		bags:GetParent():SetSize(bags.slotSize*bags.slotsPerRow+5,bags.slotSize*bags.rows+44)
 	end
 end
 
@@ -205,13 +265,14 @@ local function OnEnter(self)
 	tooltip:Show()
 end
 
-local function OnLeave()
-	GameTooltip:Hide()
-end
+local function OnLeave() GameTooltip:Hide() end
+
+local function ClearFocus(self) self:ClearFocus() end
 
 -- Bags
 local function CreateBagContainer()
 	local f = CreateFrame("Frame", "RBagContainer")
+	f:EnableMouse(true)
 	f:SetFrameStrata("HIGH")
 	f:SetPoint("BOTTOMRIGHT", -10, 20)
 	f:Hide()
@@ -277,11 +338,27 @@ local function CreateBagContainer()
 	sortButton:SetScript("OnEnter", OnEnter)
 	sortButton:SetScript("OnLeave", OnLeave)
 	sortButton:SetScript("OnClick", SortBags)
+	-- Search
+	local editBox = CreateFrame("EditBox", nil, f)
+	editBox:SetPoint("TOPLEFT", backpack, "BOTTOMLEFT", 2, -2)
+	editBox:SetPoint("BOTTOMRIGHT", f, "TOPRIGHT", -2, -38)
+	editBox:SetAutoFocus(false)
+	editBox:SetFont(STANDARD_TEXT_FONT, 14)
+	editBox:SetTextInsets(14,0,0,0)
+	editBox:SetScript("OnEscapePressed", ClearFocus)
+	editBox:SetScript("OnEnterPressed", ClearFocus)
+	editBox:SetScript("OnTextChanged", OnTextChanged)
+	f.editBox = editBox
+	local editboxTexture = editBox:CreateTexture(nil, "OVERLAY")
+	editboxTexture:SetTexture(374210)
+	editboxTexture:SetPoint("TOPLEFT", editBox, "TOPLEFT")
+	editboxTexture:SetSize(14,14)
 end
 
 -- Bank
 local function CreateBankContainer()
 	local f = CreateFrame("Frame", "RBankContainer")
+	f:SetMovable(true)
 	f:SetFrameStrata("HIGH")
 	f:SetPoint("BOTTOMLEFT", 10, 20)
 	f:Hide()
@@ -320,7 +397,6 @@ local function CreateBankContainer()
 	reagent.holders[-3] = holder
 	BAG.reagent = reagent
 	reagent.enable = false
-	UpdateSlots(reagent)
 	-- Bank backpack
 	local bankBackpack = CreateFrame("ItemButton", "RBankBackpack",f, "BankItemButtonBagTemplate")
 	bankBackpack:SetScript("OnClick", function(self)
@@ -428,6 +504,21 @@ local function CreateBankContainer()
 		DepositReagentBank()
 	end)
 	depositReagentButton:Hide()
+	-- Search
+	local editBox = CreateFrame("EditBox", nil, f)
+	editBox:SetPoint("TOPLEFT", bankBackpack, "BOTTOMLEFT", 2, -2)
+	editBox:SetPoint("BOTTOMRIGHT", f, "TOPRIGHT", -2, -38)
+	editBox:SetAutoFocus(false)
+	editBox:SetFont(STANDARD_TEXT_FONT, 14)
+	editBox:SetTextInsets(14,0,0,0)
+	editBox:SetScript("OnEscapePressed", ClearFocus)
+	editBox:SetScript("OnEnterPressed", ClearFocus)
+	editBox:SetScript("OnTextChanged", OnTextChanged)
+	f.editBox = editBox
+	local editboxTexture = editBox:CreateTexture(nil, "OVERLAY")
+	editboxTexture:SetTexture(374210)
+	editboxTexture:SetPoint("TOPLEFT", editBox, "TOPLEFT")
+	editboxTexture:SetSize(14,14)
 end
 
 local function UpdateBankAndBag()
@@ -460,6 +551,7 @@ end
 local function OpenBank()
 	OpenBag()
 	UpdateSlots(BAG.bank)
+	UpdateSlots(BAG.reagent)
 	BAG.bankFrame:Show()
 end
 
@@ -525,47 +617,36 @@ local function OnMerchantClosed()
 end
 
 -- config and init
-local function ResizeSlot(slot,size)
-	slot:SetSize(size, size)
-	slot:SetNormalTexture(nil)
-	slot.IconBorder:SetSize(size,size)
-	slot.IconOverlay:SetSize(size,size)
-	if slot.NewItemTexture then slot.NewItemTexture:SetSize(size,size) end
-	local questTexture = _G[slot:GetName().."IconQuestTexture"]
-	if questTexture then questTexture:SetSize(size,size) end
+local function ResizeSlots(bags)
+	local size = bags.slotSize
+	for _, i in ipairs(bags.bagIDs) do
+		if slots[i] then -- in case we didn't create them
+			for _, slot in ipairs(slots[i]) do
+				slot:SetSize(size, size)
+				slot:SetNormalTexture(nil)
+				slot.IconBorder:SetSize(size,size)
+				slot.IconOverlay:SetSize(size,size)
+				if slot.NewItemTexture then slot.NewItemTexture:SetSize(size,size) end
+				local questTexture = _G[slot:GetName().."IconQuestTexture"]
+				if questTexture then questTexture:SetSize(size,size) end
+			end
+		end
+	end
+	SetSlots(bags, true)
 end
 
-function BAG:SetupSize()
+function C:ResizeBags()
 	if not C.db.bags.enable then return end
-	local bagSlotSize = C.db.bags.bagSlotSize
-	local bagSlotsPerRow = C.db.bags.bagSlotsPerRow
-	local bankSlotSize = C.db.bags.bankSlotSize
-	local bankSlotsPerRow = C.db.bags.bankSlotsPerRow
-	BAG.bags.slotSize = bagSlotSize
-	BAG.bank.slotSize = bankSlotSize
-	BAG.reagent.slotSize = bankSlotSize
-	BAG.bags.slotsPerRow = bagSlotsPerRow
-	BAG.bank.slotsPerRow = bankSlotsPerRow
-	BAG.reagent.slotsPerRow = bankSlotsPerRow
+	BAG.bags.slotSize = C.db.bags.bagSlotSize
+	BAG.bank.slotSize = C.db.bags.bankSlotSize
+	BAG.reagent.slotSize = C.db.bags.bankSlotSize
+	BAG.bags.slotsPerRow = C.db.bags.bagSlotsPerRow
+	BAG.bank.slotsPerRow = C.db.bags.bankSlotsPerRow
+	BAG.reagent.slotsPerRow = C.db.bags.bankSlotsPerRow
 	-- Resize Created Slots
-	for _, i in ipairs(BAG.bags.bagIDs) do
-		for _, slot in ipairs(slots[i]) do
-			ResizeSlot(slot,bagSlotSize)
-		end
-	end
-	for _, i in ipairs(BAG.bank.bagIDs) do
-		for _, slot in ipairs(slots[i]) do
-			ResizeSlot(slot,bankSlotSize)
-		end
-	end
-	for _, i in ipairs(BAG.reagent.bagIDs) do
-		for _, slot in ipairs(slots[i]) do
-			ResizeSlot(slot,bankSlotSize)
-		end
-	end
-	SetSlots(BAG.bags, true)
-	SetSlots(BAG.bank, true)
-	SetSlots(BAG.reagent, true)
+	ResizeSlots(BAG.bags)
+	ResizeSlots(BAG.bank)
+	ResizeSlots(BAG.reagent)
 end
 
 B:AddInitScript(function()
@@ -605,4 +686,6 @@ B:AddInitScript(function()
 		f:UnregisterAllEvents()
 		f.Show = f.Hide
 	end
+	-- Add search info
+	for i in pairs(ITEM_QUALITY_COLORS) do itemQualities[i] = _G["ITEM_QUALITY"..i.."_DESC"] end
 end)
