@@ -57,14 +57,7 @@ local function OnTooltipSetUnit(tooltip)
 			local text = line:GetText()
 			if text and text:find(LEVEL) then
 				local faction = UnitFactionGroup(unit)
-				local factionIcon
-				if faction == "Horde" then
-					factionIcon = "|T374221:0|t"
-				elseif faction == "Allicance" then
-					factionIcon = "|T374217:0|t"
-				else
-					factionIcon = " "
-				end
+				local factionIcon = faction == "Horde" and "|T374221:0|t" or faction == "Alliance" and "|T374217:0|t" or " "
 				local level = UnitLevel(unit)
 				local diffColor = GetCreatureDifficultyColor(level)
 				local race = UnitRace(unit)

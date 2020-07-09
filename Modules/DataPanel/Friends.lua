@@ -111,23 +111,8 @@ local function OnEnter(self)
 	local isModifierKeyDown = IsModifierKeyDown()
 	for _, info in ipairs(friendsList) do
 		if info.wowProjectID then -- WoWOnline
-			local characterName, factionIcon
-			if info.characterName then
-				local classColor
-				if info.className then classColor = "|c"..RAID_CLASS_COLORS[B.UnlocalizedClassNames[info.className]].colorStr else classColor = "|cffffffff" end
-				characterName = classColor..info.characterName
-			else
-				characterName = ""
-			end
-			if info.factionName then
-				if info.factionName == "Horde" then
-					factionIcon = "|T374221:0|t"
-				elseif info.factionName == "Allicance" then
-					factionIcon = "|T374217:0|t"
-				else
-					factionIcon = " "
-				end
-			end
+			local characterName = info.characterName and (info.className and "|c"..RAID_CLASS_COLORS[B.UnlocalizedClassNames[info.className]].colorStr or "|cffffffff")..info.characterName or ""
+			local factionIcon = info.factionName == "Horde" and "|T374221:0|t" or info.factionName == "Alliance" and "|T374217:0|t" or " "
 			if isModifierKeyDown then
 				tooltip:AddDoubleLine((info.characterLevel or "0")..factionIcon..characterName..(info.realmName and "-"..info.realmName or "").."|r", ((info.isAFK or info.isGameAFK) and L["[AFK]"] or "")..((info.isDND or info.isGameDND) and L["[DND]"] or "")..info.accountName,1,0.82,0,1,1,1)
 			else
