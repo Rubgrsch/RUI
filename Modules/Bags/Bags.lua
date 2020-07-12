@@ -75,6 +75,8 @@ local function GetBagFlag(id)
 	end
 end
 
+local itemLocation = ItemLocation:CreateEmpty()
+
 -- slot content
 local function UpdateSlotContent(slot, i, j)
 	-- FrameXML\ContainerFrame.lua Line 587 -- wow-ui-source
@@ -172,7 +174,13 @@ local function UpdateSlotContent(slot, i, j)
 			slot.itemLevel:SetText("")
 		end
 		-- BoE star
-		slot.BoE:SetText(bindType == 2 and "*" or "")
+		if bindType == 2 then
+			itemLocation:SetBagAndSlot(i, j)
+			local isBound = C_Item.IsBound(itemLocation)
+			if not isBound then slot.BoE:SetText("*") end
+		else
+			slot.BoE:SetText("")
+		end
 		slot.BoE:SetTextColor(GetItemQualityColor(quality))
 	else
 		-- For bag icons
