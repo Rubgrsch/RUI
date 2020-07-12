@@ -2,12 +2,12 @@
 ## Title: RUI
 ## Version: v0
 ## Author: Rubgrsch
-## SavedVariables: ruiDB
+## SavedVariables: ruiDB, ruiRoleDB
 
 libs\libs.xml
 
 init.lua
 Locales\locales.xml
 Core\Core.xml
-config.lua
+Config\Config.xml
 Modules\Modules.xml
