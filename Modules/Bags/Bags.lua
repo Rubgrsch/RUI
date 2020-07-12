@@ -676,7 +676,7 @@ local function CreateBankContainer()
 	depositReagentButton = CreateFrame("Button", nil, f)
 	depositReagentButton:SetSize(16, 16)
 	depositReagentButton:SetNormalTexture(450905)
-	depositReagentButton.tooltipText = L["Import Reagent"]
+	depositReagentButton.tooltipText = L["Deposit Reagent"]
 	depositReagentButton:SetPoint("LEFT",reagentButton,"RIGHT", 2, 0)
 	depositReagentButton:SetScript("OnEnter", OnEnter)
 	depositReagentButton:SetScript("OnLeave", OnLeave)

@@ -69,9 +69,16 @@ L["ID %d"] = "ID %d"
 L["Bag: %d"] = "背包: %d"
 L["Bank: %d"] = "银行: %d"
 
+-- Bags
+L["Sort Bags"] = "背包排序"
+L["Purchase Bags"] = "购买背包"
+L["Sort Bank"] = "银行排序"
+L["Reagent"] = "材料银行"
+L["Deposit Reagent"] = "导入材料"
+
 -- DataPanel
 L["Friends: %d"] = "好友: %d"
-L["Guild: %d"] = "工会: %d"
+L["Guild: %d"] = "公会: %d"
 L["FPS: %d"] = "帧率: %d"
 L["Latency: %d"] = "延迟: %d"
 L["LatencyHome:"] = "本地延迟:"
