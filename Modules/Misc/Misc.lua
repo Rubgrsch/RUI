@@ -2,7 +2,11 @@ local _, rui = ...
 local B, L, C = unpack(rui)
 
 -- Add DELETE when deleting items
-hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(s) s.editBox:SetText(DELETE_ITEM_CONFIRM_STRING) end)
+hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
+	self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING)
+	self.editBox:SetAutoFocus(false)
+	self.editBox:ClearFocus()
+end)
 
 -- Fix LFG globalstring error
 if GetLocale() == "zhCN" and strmatch((GetBuildInfo()),"^%d+") ~= "9" then
