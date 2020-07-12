@@ -49,7 +49,7 @@ end
 -- B:AddInitScript(func)
 local frame = CreateFrame("Frame")
 frame:SetScript("OnEvent", function(self,event,...)
-	for _, func in ipairs(self[event]) do func(self,event,...) end
+	for _,func in ipairs(self[event]) do func(self,event,...) end
 end)
 
 function B:AddEventScript(event, func)
@@ -58,7 +58,17 @@ function B:AddEventScript(event, func)
 		frame:RegisterEvent(event)
 	end
 	local t = frame[event]
+	for _, v in ipairs(t) do if v == func then return end end
 	t[#t+1] = func
+end
+
+function B:RemoveEventScript(event, func)
+	local t = frame[event]
+	for i, v in ipairs(t) do if v == func then tremove(t,i) end end
+	if not next(frame[event]) then
+		frame[event] = nil
+		frame:UnregisterEvent(event)
+	end
 end
 
 -- Init

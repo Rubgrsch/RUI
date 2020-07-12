@@ -10,6 +10,11 @@ local searchText = ""
 local isNotEquipmentLoc = {[""] = true, ["INVTYPE_BAG"] = true, ["INVTYPE_QUIVER"] = true, ["INVTYPE_TABARD"] = true}
 local itemQualities = {}
 local slots = {}
+local BagFilterIcon = {
+	[LE_BAG_FILTER_FLAG_EQUIPMENT] = 132745,
+	[LE_BAG_FILTER_FLAG_CONSUMABLES] = 134873,
+	[LE_BAG_FILTER_FLAG_TRADE_GOODS] = 132906,
+}
 
 -- Main Search func, current rules:
 -- [Exact] itemID / itemQuality
@@ -17,11 +22,11 @@ local slots = {}
 -- [Find] itemName
 local function IsSlotSearchMatched(i,j)
 	local flag = false
-	local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(i, j)
+	local _, itemCount, _, quality, _, _, itemLink, _, _, itemID = GetContainerItemInfo(i, j)
 	if itemLink then
 		local text = searchText
 		local textnum = tonumber(searchText)
-		local itemName, _, _, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID,itemSetID, isCraftingReagent = GetItemInfo(itemLink)
+		local itemName = GetItemInfo(itemLink)
 		local iLvl = GetDetailedItemLevelInfo(itemLink)
 		if itemName then
 			if		itemID == textnum
@@ -62,9 +67,17 @@ local function OnTextChanged(self)
 	end
 end
 
+local function GetBagFlag(id)
+	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
+		if ( i ~= LE_BAG_FILTER_FLAG_JUNK ) then
+			if GetBagSlotFlag(id, i) then return i end
+		end
+	end
+end
+
 -- slot content
 local function UpdateSlotContent(slot, i, j)
-	-- ContainerFrame.lua Line 587
+	-- FrameXML\ContainerFrame.lua Line 587 -- wow-ui-source
 	-- Set content
 	local texture, count, locked, quality, readable, _, itemLink = GetContainerItemInfo(i,j)
 	SetItemButtonTexture(slot, texture)
@@ -131,10 +144,6 @@ local function UpdateSlotContent(slot, i, j)
 	slot.readable = readable
 	-- Tooltip
 	local tooltip = GameTooltip
-	if i < 0 then -- Bank slots
-		slot.GetInventorySlot = i == -3 and ReagentButtonInventorySlot or ButtonInventorySlot
-		slot.UpdateTooltip = BankFrameItemButton_OnEnter
-	end
 	if slot == tooltip:GetOwner() then
 		if texture then
 			slot:UpdateTooltip()
@@ -153,8 +162,8 @@ local function UpdateSlotContent(slot, i, j)
 		else
 			slot:SetAlpha(0.2)
 		end
+		local _, _, _, _, _, _, _, _, itemEquipLoc, _, _, itemClassID, itemSubClassID, bindType = GetItemInfo(itemLink)
 		-- Item Level
-		local _, _, _, _, _, _, _, _, itemEquipLoc, _, _, itemClassID, itemSubClassID = GetItemInfo(itemLink)
 		local iLvl = GetDetailedItemLevelInfo(itemLink)
 		if ((itemClassID == 3 and itemSubClassID == 11) or not isNotEquipmentLoc[itemEquipLoc]) and (quality and quality > 1) and iLvl then
 			slot.itemLevel:SetText(iLvl)
@@ -162,16 +171,28 @@ local function UpdateSlotContent(slot, i, j)
 		else
 			slot.itemLevel:SetText("")
 		end
+		-- BoE star
+		slot.BoE:SetText(bindType == 2 and "*" or "")
+		slot.BoE:SetTextColor(GetItemQualityColor(quality))
 	else
 		-- For bag icons
 		slot.itemLevel:SetText("")
+		slot.BoE:SetText("")
+	end
+	if slot.filterIcon then
+		if GetBagFlag(i) then
+			filterIcon:SetTexture(BagFilterIcon[i])
+			filterIcon:Show()
+		else
+			filterIcon:Hide()
+		end
 	end
 end
 
-local id = 1
+local slotNum = 1
 local function CreateSlot(holder, i,j)
-	local slot = CreateFrame("ItemButton", "RSlot"..id,holder, i == -1 and "BankItemButtonGenericTemplate" or "ContainerFrameItemButtonTemplate")
-	id = id + 1
+	local slot = CreateFrame("ItemButton", "RSlot"..slotNum,holder, (i == -1 or i == -3) and "BankItemButtonGenericTemplate" or "ContainerFrameItemButtonTemplate")
+	slotNum = slotNum + 1
 	local slotSize = holder:GetParent().slotSize
 	slot:SetSize(slotSize, slotSize)
 	slot:SetNormalTexture(nil)
@@ -181,9 +202,18 @@ local function CreateSlot(holder, i,j)
 	local questTexture = _G[slot:GetName().."IconQuestTexture"]
 	if questTexture then questTexture:SetSize(slotSize,slotSize) end
 	slot.Count:SetPoint("BOTTOMRIGHT",0,2)
+	-- iLvl
 	slot.itemLevel = slot:CreateFontString(nil, "OVERLAY", nil, 1)
 	slot.itemLevel:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 	slot.itemLevel:SetPoint("BOTTOMRIGHT", 0, 2)
+	-- BoE star
+	slot.BoE = slot:CreateFontString(nil, "OVERLAY", nil, 1)
+	slot.BoE:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
+	slot.BoE:SetPoint("TOPRIGHT", 0, 0)
+	if i < 0 then -- Bank slots
+		slot.GetInventorySlot = i == -3 and ReagentButtonInventorySlot or ButtonInventorySlot
+		slot.UpdateTooltip = BankFrameItemButton_OnEnter
+	end
 	slot:SetID(j)
 	slots[i][j] = slot
 	return slot
@@ -269,6 +299,94 @@ local function OnLeave() GameTooltip:Hide() end
 
 local function ClearFocus(self) self:ClearFocus() end
 
+-- FrameXML\ContainerFrame.lua Line 1669 -- wow-ui-source
+local function BagFlagDropdown()
+	local dropdown = BAG.bagFlagDropdown
+	local id = dropdown.id
+	local frame = dropdown.frame
+	if not id or not frame then return end
+
+	local info = UIDropDownMenu_CreateInfo()
+	if not IsInventoryItemProfessionBag("player", ContainerIDToInventoryID(id)) then
+		info.text = BAG_FILTER_ASSIGN_TO
+		info.isTitle = 1
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info)
+
+		info.isTitle = nil
+		info.notCheckable = nil
+		info.tooltipWhileDisabled = 1
+		info.tooltipOnButton = 1
+
+		for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
+			if ( i ~= LE_BAG_FILTER_FLAG_JUNK ) then
+				info.text = BAG_FILTER_LABELS[i]
+				info.func = function(_, _, _, value)
+					value = not value
+					if (id > NUM_BAG_SLOTS) then
+						SetBankBagSlotFlag(id - NUM_BAG_SLOTS, i, value)
+					else
+						SetBagSlotFlag(id, i, value)
+					end
+					if (value) then
+						frame.localFlag = i
+						frame.filterIcon:SetTexture(BagFilterIcon[i])
+						frame.filterIcon:Show()
+					else
+						frame.filterIcon:Hide()
+						frame.localFlag = -1
+					end
+				end
+				if (frame.localFlag) then
+					info.checked = frame.localFlag == i
+				else
+					if (id > NUM_BAG_SLOTS) then
+						info.checked = GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i)
+					else
+						info.checked = GetBagSlotFlag(id, i)
+					end
+				end
+				info.disabled = nil
+				info.tooltipTitle = nil
+				UIDropDownMenu_AddButton(info)
+			end
+		end
+	end
+
+	info.text = BAG_FILTER_CLEANUP
+	info.isTitle = 1
+	info.notCheckable = 1
+	UIDropDownMenu_AddButton(info)
+
+	info.isTitle = nil
+	info.notCheckable = nil
+	info.isNotRadio = true
+	info.disabled = nil
+
+	info.text = BAG_FILTER_IGNORE
+	info.func = function(_, _, _, value)
+		if (id == -1) then
+			SetBankAutosortDisabled(not value)
+		elseif (id == 0) then
+			SetBackpackAutosortDisabled(not value)
+		elseif (id > NUM_BAG_SLOTS) then
+			SetBankBagSlotFlag(id - NUM_BAG_SLOTS, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, not value)
+		else
+			SetBagSlotFlag(id, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, not value)
+		end
+	end
+	if (id == -1) then
+		info.checked = GetBankAutosortDisabled()
+	elseif (id == 0) then
+		info.checked = GetBackpackAutosortDisabled()
+	elseif (id > NUM_BAG_SLOTS) then
+		info.checked = GetBankBagSlotFlag(id - NUM_BAG_SLOTS, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP)
+	else
+		info.checked = GetBagSlotFlag(id, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP)
+	end
+	UIDropDownMenu_AddButton(info)
+end
+
 -- Bags
 local function CreateBagContainer()
 	local f = CreateFrame("Frame", "RBagContainer")
@@ -321,6 +439,25 @@ local function CreateBagContainer()
 		icon:SetPoint("TOPLEFT", f, "TOPLEFT", containerSize*i, 0)
 		icon:Show()
 		icon:SetID(i-4)
+		local filterIcon = icon:CreateTexture(nil, "OVERLAY")
+		filterIcon:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT")
+		filterIcon:SetPoint("TOPLEFT", icon, "CENTER")
+		icon.filterIcon = filterIcon
+		local flag = GetBagFlag(i)
+		if flag then
+			filterIcon:SetTexture(BagFilterIcon[flag])
+			filterIcon:Show()
+		else
+			filterIcon:Hide()
+		end
+		icon:SetScript("OnClick", function(self, btn)
+			if btn == "RightButton" then
+				local dropdown = BAG.bagFlagDropdown
+				dropdown.id = i
+				dropdown.frame = self
+				ToggleDropDownMenu(1, nil, dropdown, self, 0, 0)
+			end
+		end)
 		bags.bagIcons[i] = {icon, 0, i-4}
 		UpdateSlotContent(icon, 0, i-4)
 	end
@@ -337,7 +474,17 @@ local function CreateBagContainer()
 	sortButton.tooltipText = L["Sort Bags"]
 	sortButton:SetScript("OnEnter", OnEnter)
 	sortButton:SetScript("OnLeave", OnLeave)
-	sortButton:SetScript("OnClick", SortBags)
+	local function postUpdate()
+		sortButton:Enable()
+		BAG:ToggleAllBagUpdate() -- Delay to skip events spam
+	end
+	sortButton:SetScript("OnClick", function()
+		PlaySound(852)
+		sortButton:Disable()
+		BAG:ToggleAllBagUpdate(false)
+		SortBags()
+		C_Timer.After(0.5, postUpdate) -- Delay to skip events spam
+	end)
 	-- Search
 	local editBox = CreateFrame("EditBox", nil, f)
 	editBox:SetPoint("TOPLEFT", backpack, "BOTTOMLEFT", 2, -2)
@@ -426,6 +573,25 @@ local function CreateBankContainer()
 		icon:SetPoint("TOPLEFT", f, "TOPLEFT", containerSize*i, 0)
 		icon:Show()
 		icon.tooltipText = BANK_BAG
+		local filterIcon = icon:CreateTexture(nil, "OVERLAY")
+		filterIcon:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT")
+		filterIcon:SetPoint("TOPLEFT", icon, "CENTER")
+		icon.filterIcon = filterIcon
+		local flag = GetBagFlag(i+4)
+		if flag then
+			filterIcon:SetTexture(BagFilterIcon[flag])
+			filterIcon:Show()
+		else
+			filterIcon:Hide()
+		end
+		icon:SetScript("OnClick", function(self, btn)
+			if btn == "RightButton" then
+				local dropdown = BAG.bagFlagDropdown
+				dropdown.id = i+4
+				dropdown.frame = self
+				ToggleDropDownMenu(1, nil, dropdown, self, 0, 0)
+			end
+		end)
 		UpdateSlotContent(icon, -4, i)
 		BAG.bank.bagIcons[i] = {icon, -4, i}
 	end
@@ -454,13 +620,20 @@ local function CreateBankContainer()
 	sortButton.tooltipText = L["Sort Bank"]
 	sortButton:SetScript("OnEnter", OnEnter)
 	sortButton:SetScript("OnLeave", OnLeave)
-	sortButton:SetScript("OnClick", function()
+	local function postUpdate()
+		sortButton:Enable()
+		BAG:ToggleAllBagUpdate() -- Delay to skip events spam
+	end
+	sortButton:SetScript("OnClick", function(self)
 		PlaySound(852)
+		self:Disable()
+		BAG:ToggleAllBagUpdate(false)
 		if reagent:IsShown() then
 			SortReagentBankBags()
 		else
 			SortBankBags()
 		end
+		C_Timer.After(0.5, postUpdate)
 	end)
 	-- Reagent
 	reagentButton = CreateFrame("Button", nil, f)
@@ -564,6 +737,25 @@ local function SetMoneyText()
 	BAG.goldText:SetFormattedText(B.MoneyString(GetMoney(), 3))
 end
 
+function BAG:ToggleAllBagUpdate(status)
+	if status == false then
+		B:RemoveEventScript("BAG_UPDATE", UpdateBankAndBag)
+		B:RemoveEventScript("BAG_UPDATE_COOLDOWN", UpdateBankAndBag)
+		B:RemoveEventScript("QUEST_ACCEPTED", UpdateBankAndBag)
+		B:RemoveEventScript("QUEST_REMOVED", UpdateBankAndBag)
+		B:RemoveEventScript("ITEM_LOCK_CHANGED", UpdateBankAndBag)
+		B:RemoveEventScript("PLAYERBANKSLOTS_CHANGED", UpdateBankAndBag)
+	else
+		B:AddEventScript("BAG_UPDATE", UpdateBankAndBag)
+		B:AddEventScript("BAG_UPDATE_COOLDOWN", UpdateBankAndBag)
+		B:AddEventScript("QUEST_ACCEPTED", UpdateBankAndBag)
+		B:AddEventScript("QUEST_REMOVED", UpdateBankAndBag)
+		B:AddEventScript("ITEM_LOCK_CHANGED", UpdateBankAndBag)
+		B:AddEventScript("PLAYERBANKSLOTS_CHANGED", UpdateBankAndBag)
+		UpdateBankAndBag()
+	end
+end
+
 -- Auto sell junk / Auto Repair
 local junkList, idx = {}, 1
 local sellJunkTimer
@@ -651,6 +843,10 @@ end
 
 B:AddInitScript(function()
 	if not C.db.bags.enable then return end
+	-- Bag flag dropdown
+	local dropdown = CreateFrame("Frame", "RBagFlagDropdown", UIParent, "UIDropDownMenuTemplate")
+	BAG.bagFlagDropdown = dropdown
+	UIDropDownMenu_Initialize(dropdown, BagFlagDropdown, "MENU")
 	-- Frames
 	CreateBagContainer()
 	CreateBankContainer()
@@ -658,12 +854,7 @@ B:AddInitScript(function()
 	-- Onupdate timer
 	sellJunkTimer = B:AddTimer(0.2, SellJunk, false)
 	-- Events
-	B:AddEventScript("BAG_UPDATE", UpdateBankAndBag)
-	B:AddEventScript("BAG_UPDATE_COOLDOWN", UpdateBankAndBag)
-	B:AddEventScript("QUEST_ACCEPTED", UpdateBankAndBag)
-	B:AddEventScript("QUEST_REMOVED", UpdateBankAndBag)
-	B:AddEventScript("ITEM_LOCK_CHANGED", UpdateBankAndBag)
-	B:AddEventScript("PLAYERBANKSLOTS_CHANGED", UpdateBankAndBag)
+	BAG:ToggleAllBagUpdate()
 	B:AddEventScript("BANKFRAME_OPENED", OpenBank)
 	B:AddEventScript("BANKFRAME_CLOSED", CloseBank)
 	B:AddEventScript("MERCHANT_SHOW", OnMerchantShow)

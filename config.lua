@@ -41,6 +41,8 @@ local defaults = {
 	["bags"] = {
 		["enable"] = true,
 		["autoSellJunk"] = true,
+		["reverseLoot"] = function() return GetInsertItemsLeftToRight() end, -- controlled by CVar
+		["reverseCleanup"] = function() return GetSortBagsRightToLeft() end, -- controlled by CVar
 		["autoRepair"] = 2,
 		["bagSlotSize"] = 30,
 		["bagSlotsPerRow"] = 10,
@@ -53,6 +55,7 @@ local function CopyTable(source,dest)
 	for k,v in pairs(source) do
 		if dest[k] == nil then dest[k] = v end
 		if type(v) == "table" then CopyTable(v,dest[k]) end
+		if type(v) == "function" then dest[k] = v() end
 	end
 end
 
@@ -301,10 +304,30 @@ options.args.bags = {
 			},
 			disabled = BagDisabled,
 		},
+		reverseLoot = { -- CVar option lootLeftmostBag
+			type = "toggle",
+			name = REVERSE_NEW_LOOT_TEXT,
+			desc = OPTION_TOOLTIP_REVERSE_NEW_LOOT,
+			order = 4,
+			set = function(info, checked)
+				C.db.bags[info[#info]] = checked
+				SetInsertItemsLeftToRight(checked)
+			end,
+		},
+		reverseCleanup = { -- CVar option reverseCleanupBags
+			type = "toggle",
+			name = REVERSE_CLEAN_UP_BAGS_TEXT,
+			desc = OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS,
+			order = 5,
+			set = function(info, checked)
+				C.db.bags[info[#info]] = checked
+				SetSortBagsRightToLeft(checked)
+			end,
+		},
 		bagSlotSize = {
 			type = "range",
 			name = L["BagSlotSize"],
-			order = 4,
+			order = 10,
 			min = 10, max = 50, step = 2,
 			set = BagSetSize,
 			disabled = BagDisabled,
@@ -312,7 +335,7 @@ options.args.bags = {
 		bagSlotsPerRow = {
 			type = "range",
 			name = L["BagSlotsPerRow"],
-			order = 5,
+			order = 11,
 			min = 1, max = 30, step = 1,
 			softMin = 4, softMax = 20,
 			set = BagSetSize,
@@ -321,7 +344,7 @@ options.args.bags = {
 		bankSlotSize = {
 			type = "range",
 			name = L["BankSlotSize"],
-			order = 6,
+			order = 12,
 			min = 10, max = 50, step = 2,
 			set = BagSetSize,
 			disabled = BagDisabled,
@@ -329,7 +352,7 @@ options.args.bags = {
 		bankSlotsPerRow = {
 			type = "range",
 			name = L["BankSlotsPerRow"],
-			order = 7,
+			order = 13,
 			min = 1, max = 30, step = 1,
 			softMin = 4, softMax = 20,
 			set = BagSetSize,

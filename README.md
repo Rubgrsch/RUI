@@ -12,17 +12,10 @@ WIP! Use at your own risk!
 - [x] MythicPlus
 - [x] Tooltip
 - [x] Maps
+- [x] Bags
 
 **WIP:** May or may not work  
 
-- [ ] Bags
-  - [x] Bags / Banks
-  - [x] Reagent
-  - [ ] Bag roles
-  - [x] Bank bags purchase / Reagent unlock
-  - [x] Search
-  - [x] Auto sell junk / repairs
-  - [x] Config
 
 **TODO:** Not implement yet  
 
