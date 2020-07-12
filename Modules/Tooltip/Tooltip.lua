@@ -21,14 +21,13 @@ end
 local shouldRemoveLines = {
 	[FACTION_HORDE] = true,
 	[FACTION_ALLIANCE] = true,
-	[PVP] = true,
 }
 
 local classifications = {
-	worldboss = BOSS,
-	rareelite = ITEM_QUALITY3_DESC,
-	elite = ELITE,
-	rare = ITEM_QUALITY3_DESC,
+	worldboss = BOSS.." ",
+	rareelite = ITEM_QUALITY3_DESC.." ",
+	elite = ELITE.." ",
+	rare = ITEM_QUALITY3_DESC.." ",
 }
 
 local function OnTooltipSetUnit(tooltip)
@@ -80,22 +79,19 @@ local function OnTooltipSetUnit(tooltip)
 			local line = _G["GameTooltipTextLeft"..i]
 			local text = line:GetText()
 			if text and text:find(LEVEL) then
-				local level, type, diffColor
+				local level, classification, diffColor
 				-- battle pet level and type
 				if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
 					level = UnitBattlePetLevel(unit)
-					type = _G["BATTLE_PET_NAME_"..UnitBattlePetType(unit)]
+					classification = _G["BATTLE_PET_NAME_"..UnitBattlePetType(unit)]
 					diffColor = GetRelativeDifficultyColor(C_PetJournal.GetPetTeamAverageLevel() or 1, level)
 				else
 					level = UnitLevel(unit)
-					type = classifications[UnitClassification(unit)]
+					classification = classifications[UnitClassification(unit)]
 					diffColor = GetCreatureDifficultyColor(level)
 				end
-				local pvp = UnitIsPVP(unit)
-				line:SetFormattedText("|cff%02x%02x%02x%s|r %s %s", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??", type or "", pvp and PVP or "")
-				-- Remove PvP line
-			elseif shouldRemoveLines[text] then
-				line:SetText("")
+				local creatureType = UnitCreatureType(unit) or ""
+				line:SetFormattedText("|cff%02x%02x%02x%s|r %s%s", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??", classification or "", creatureType)
 			end
 		end
 		if unitType == "Creature" and id then
