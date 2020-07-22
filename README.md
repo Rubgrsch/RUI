@@ -16,6 +16,13 @@ WIP! Use at your own risk!
 
 **WIP:** May or may not work  
 
+- [ ] ActionBars
+  - [x] ActionBars
+  - [x] PetBars
+  - [ ] StanceBars
+  - [ ] Leave vehicle
+  - [ ] Mainmenu
+  - [ ] Options
 
 **TODO:** Not implement yet  
 
@@ -23,5 +30,4 @@ WIP! Use at your own risk!
 - [ ] Auras
 - [ ] UF
 - [ ] NP
-- [ ] ActionBars
 - [ ] Skins

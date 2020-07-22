@@ -23,6 +23,7 @@ local defaults = {
 		Minimap = {"TOPRIGHT",0,0},
 		DataPanelLeft = {"BOTTOMLEFT",0,0},
 		DataPanelRight = {"BOTTOMRIGHT",0,0},
+		ExtraActionBarButton = {"BOTTOM",0,96},
 	},
 	["dataPanel"] = {
 		["enableLeft"] = true,
@@ -52,6 +53,25 @@ local defaults = {
 }
 
 local defaultRoleDB = {
+	["mover"] = {
+		ActionBar1 = {"BOTTOM",-100,0},
+		ActionBar2 = {"BOTTOM",-100,32},
+		ActionBar3 = {"BOTTOM",188,0},
+		ActionBar4 = {"RIGHT",0,0},
+		ActionBar5 = {"RIGHT",-32,0},
+		PetActionBar = {"BOTTOM",0,64},
+	},
+	["actionBars"] = {
+		["enable"] = true,
+		["bar1"] = true,
+		["bar2"] = true,
+		["bar3"] = true,
+		["bar4"] = true,
+		["bar5"] = true,
+	},
+}
+
+local roleDB = {
 	["DAMAGER"] = {},
 	["TANK"] = {},
 	["HEALER"] = {},
@@ -65,14 +85,16 @@ local function CopyTable(source,dest)
 	end
 end
 
+local lastRole
 B:AddInitScript(function()
 	if type(ruiDB) ~= "table" or next(ruiDB) == nil then ruiDB = defaults end
 	C.db = ruiDB
 	CopyTable(defaults,C.db)
-	if type(ruiRoleDB) ~= "table" or next(ruiRoleDB) == nil then ruiRoleDB = defaultRoleDB end
+	if type(ruiRoleDB) ~= "table" or next(ruiRoleDB) == nil then ruiRoleDB = roleDB end
 	local role = GetSpecializationRole(GetSpecialization())
+	lastRole = role
 	C.roleDB = ruiRoleDB[role]
-	CopyTable(defaultRoleDB[role],C.roleDB)
+	CopyTable(defaultRoleDB,C.roleDB)
 	-- remove old keys
 	for k in pairs(C.db) do if defaults[k] == nil then C.db[k] = nil end end
 	for k in pairs(C.roleDB) do if defaultRoleDB[k] == nil then C.roleDB[k] = nil end end
@@ -80,12 +102,21 @@ B:AddInitScript(function()
 	for frame,mover in pairs(C.mover) do
 		if frame and mover then
 			mover:ClearAllPoints()
-			mover:SetPoint(unpack(C.db.mover[mover.moverName]))
+			mover:SetPoint(unpack(C[mover.isRole and "roleDB" or "db"].mover[mover.moverName]))
 		end
 	end
 end)
 
 B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
 	local role = GetSpecializationRole(GetSpecialization())
+	if lastRole == role then return end
+	lastRole = role
 	C.roleDB = ruiRoleDB[role]
+	-- Set role mover points
+	for frame,mover in pairs(C.mover) do
+		if frame and mover and mover.isRole then
+			mover:ClearAllPoints()
+			mover:SetPoint(unpack(C.roleDB.mover[mover.moverName]))
+		end
+	end
 end)

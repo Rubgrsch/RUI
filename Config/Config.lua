@@ -288,5 +288,19 @@ options.args.bags = {
 		},
 	},
 }
+options.args.actionBars = {
+	type = "group",
+	name = L["ActionBars"],
+	order = 14,
+	get = function(info) return C.roleDB.actionBars[info[#info]] end,
+	set = function(info, value) C.roleDB.actionBars[info[#info]] = value end,
+	args = {
+		enable = {
+			type = "toggle",
+			name = L["Enable"].."*",
+			order = 1,
+		},
+	},
+}
 LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RUI", options)
 LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RUI")
