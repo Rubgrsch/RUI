@@ -40,7 +40,7 @@ data1.OnEvent = function(self)
 	local _, _, _, icon = GetSpecializationInfo(GetSpecialization())
 	if icon then self.text:SetFormattedText(L["Spec: %d"], icon) end
 end
-data1.events = {"ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_ENTERING_WORLD"}
+data1.events = {"PLAYER_SPECIALIZATION_CHANGED", "PLAYER_ENTERING_WORLD"}
 
 local data2 = DP:CreateData("Loot")
 data2.OnMouseUp = function(self)
@@ -49,12 +49,12 @@ data2.OnMouseUp = function(self)
 	end
 end
 data2.OnEvent = function(self)
-	local _, name, _, icon = GetSpecializationInfoByID(GetLootSpecialization())
-	if icon then
-		self.text:SetFormattedText(L["Loot: %d"], icon)
-		lootMenuList[2].text = format(LOOT_SPECIALIZATION_DEFAULT, name)
-	end
+	local lootSpecID = GetLootSpecialization()
+	local specID, name = GetSpecializationInfo(GetSpecialization())
+	local _, _, _, icon = GetSpecializationInfoByID(lootSpecID == 0 and specID or lootSpecID)
+	self.text:SetFormattedText(L["Loot: %d"], icon)
+	lootMenuList[2].text = format(LOOT_SPECIALIZATION_DEFAULT, name)
 end
-data2.events = {"PLAYER_LOOT_SPEC_UPDATED", "PLAYER_ENTERING_WORLD"}
+data2.events = {"PLAYER_SPECIALIZATION_CHANGED", "PLAYER_LOOT_SPEC_UPDATED", "PLAYER_ENTERING_WORLD"}
 
 B:AddInitScript(AddSpecToMenu)
