@@ -11,3 +11,6 @@ L["Spec: %d"] = L["Spec: %d"]:gsub("%%d", "|T%%d:0|t")
 L["Loot: %d"] = L["Loot: %d"]:gsub("%%d", "|T%%d:0|t")
 L["[DND]"] = "[|cffff0000"..L["DND"].."|r]"
 L["[AFK]"] = "[|cffff0000"..L["AFK"].."|r]"
+
+-- ActionBar
+for i=1, 5 do L["ActionBar"..i] = format(L["ActionBar%d"],i) end

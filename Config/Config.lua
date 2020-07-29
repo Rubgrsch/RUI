@@ -64,8 +64,7 @@ options.args.BlzUI = {
 				C.db.maps[info[#info]] = value
 				local frame = _G.Minimap
 				frame:SetSize(value, value)
-				local mover = C.mover[frame]
-				mover:SetSize(value, value)
+				B:ResizeMover(frame)
 			end,
 			disabled = function() return not C.mover[_G.Minimap] end,
 		},
@@ -288,6 +287,16 @@ options.args.bags = {
 		},
 	},
 }
+local function ActionBarsDisabled() return not C.roleDB.actionBars.enable end
+local function ActoinBarsSet(info, value)
+	C.roleDB.actionBars[info[#info]] = value
+	local idx = tonumber(info[#info]:match("%d+"))
+	if idx then
+		C:SetupActionBarButtons(idx)
+	else
+		for i=1, 5 do C:SetupActionBarButtons(i) end
+	end
+end
 options.args.actionBars = {
 	type = "group",
 	name = L["ActionBars"],
@@ -299,6 +308,236 @@ options.args.actionBars = {
 			type = "toggle",
 			name = L["Enable"].."*",
 			order = 1,
+		},
+		menuBar = {
+			type = "toggle",
+			name = L["MenuBar"],
+			order = 2,
+			set = function(info, value)
+				C.roleDB.actionBars[info[#info]] = value
+				C:SetupMenuBar(value)
+			end,
+			disabled = ActionBarsDisabled,
+		},
+		acionBar1 = {
+			type = "group",
+			name = L["ActionBar1"],
+			order = 11,
+			set = ActoinBarsSet,
+			args = {
+				bar1SlotsNum = {
+					type = "range",
+					name = L["ActionBarSlotsNum"],
+					desc = L["ActionBarSlotsNumTooltip"],
+					order = 1,
+					min = 0, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				bar1SlotsPerRow = {
+					type = "range",
+					name = L["ActionBarSlotsPerRow"],
+					desc = L["ActionBarSlotsPerRowTooltip"],
+					order = 2,
+					min = 1, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				actionBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					desc = L["ActionBarSlotSizeTooltip"],
+					order = 3,
+					min = 16, max = 60, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
+		},
+		acionBar2 = {
+			type = "group",
+			name = L["ActionBar2"],
+			order = 12,
+			set = ActoinBarsSet,
+			args = {
+				bar2SlotsNum = {
+					type = "range",
+					name = L["ActionBarSlotsNum"],
+					desc = L["ActionBarSlotsNumTooltip"],
+					order = 1,
+					min = 0, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				bar2SlotsPerRow = {
+					type = "range",
+					name = L["ActionBarSlotsPerRow"],
+					desc = L["ActionBarSlotsPerRowTooltip"],
+					order = 2,
+					min = 1, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				actionBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					desc = L["ActionBarSlotSizeTooltip"],
+					order = 3,
+					min = 16, max = 60, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
+		},
+		acionBar3 = {
+			type = "group",
+			name = L["ActionBar3"],
+			order = 13,
+			set = ActoinBarsSet,
+			args = {
+				bar3SlotsNum = {
+					type = "range",
+					name = L["ActionBarSlotsNum"],
+					desc = L["ActionBarSlotsNumTooltip"],
+					order = 1,
+					min = 0, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				bar3SlotsPerRow = {
+					type = "range",
+					name = L["ActionBarSlotsPerRow"],
+					desc = L["ActionBarSlotsPerRowTooltip"],
+					order = 2,
+					min = 1, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				actionBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					desc = L["ActionBarSlotSizeTooltip"],
+					order = 3,
+					min = 16, max = 60, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
+		},
+		acionBar4 = {
+			type = "group",
+			name = L["ActionBar4"],
+			order = 14,
+			set = ActoinBarsSet,
+			args = {
+				bar4SlotsNum = {
+					type = "range",
+					name = L["ActionBarSlotsNum"],
+					desc = L["ActionBarSlotsNumTooltip"],
+					order = 1,
+					min = 0, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				bar4SlotsPerRow = {
+					type = "range",
+					name = L["ActionBarSlotsPerRow"],
+					desc = L["ActionBarSlotsPerRowTooltip"],
+					order = 2,
+					min = 1, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				actionBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					desc = L["ActionBarSlotSizeTooltip"],
+					order = 3,
+					min = 16, max = 60, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
+		},
+		acionBar5 = {
+			type = "group",
+			name = L["ActionBar5"],
+			order = 15,
+			set = ActoinBarsSet,
+			args = {
+				bar5SlotsNum = {
+					type = "range",
+					name = L["ActionBarSlotsNum"],
+					desc = L["ActionBarSlotsNumTooltip"],
+					order = 1,
+					min = 0, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				bar5SlotsPerRow = {
+					type = "range",
+					name = L["ActionBarSlotsPerRow"],
+					desc = L["ActionBarSlotsPerRowTooltip"],
+					order = 2,
+					min = 1, max = NUM_ACTIONBAR_BUTTONS, step = 1,
+				},
+				actionBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					desc = L["ActionBarSlotSizeTooltip"],
+					order = 3,
+					min = 16, max = 60, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
+		},
+		petBar = {
+			type = "group",
+			name = L["PetActionBar"],
+			order = 16,
+			set = function(info, value)
+				C.roleDB.actionBars[info[#info]] = value
+				C:SetupOtherActionBarBttons()
+			end,
+			args = {
+				perBarSlotsPerRow = {
+					type = "range",
+					name = L["ActionBarSlotsPerRow"],
+					desc = L["ActionBarSlotsPerRowTooltip"],
+					order = 1,
+					min = 1, max = NUM_PET_ACTION_SLOTS, step = 1,
+				},
+				otherBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					desc = L["PetStanceBarSlotSizeTooltip"],
+					order = 2,
+					min = 16, max = 60, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
+		},
+		stanceBar = {
+			type = "group",
+			name = L["StanceBar"],
+			order = 17,
+			set = function(info, value)
+				C.roleDB.actionBars[info[#info]] = value
+				C:SetupOtherActionBarBttons()
+			end,
+			args = {
+				stanceBarSlotsPerRow = {
+					type = "range",
+					name = L["ActionBarSlotsPerRow"],
+					desc = L["ActionBarSlotsPerRowTooltip"],
+					order = 1,
+					min = 1, max = NUM_STANCE_SLOTS, step = 1,
+				},
+				otherBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					desc = L["PetStanceBarSlotSizeTooltip"],
+					order = 2,
+					min = 16, max = 60, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
+		},
+		menuBarConfig = {
+			type = "group",
+			name = L["MenuBar"],
+			order = 18,
+			args = {
+				menuBarSlotSize = {
+					type = "range",
+					name = L["ActionBarSlotSize"],
+					order = 1,
+					set = function(info, value)
+						C.roleDB.actionBars[info[#info]] = value
+						C:SetupMenuBar()
+					end,
+					min = 8, max = 48, step = 1,
+				},
+			},
+			disabled = ActionBarsDisabled,
 		},
 	},
 }

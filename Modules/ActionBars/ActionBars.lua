@@ -43,34 +43,29 @@ local barsData = {
 	},
 }
 
-local buttonSize = 32
-
-local function ResetNormalTexture(self)
-	local texture = self:GetNormalTexture()
-	if texture and texture ~= self._lastNormalTexture_ then
-		self:SetNormalTexture(nil)
-		self._lastNormalTexture_ = texture
+local function ResetNormalTexture(self, texture)
+	if texture and texture ~= self._normalTexture_ then
+		self:SetNormalTexture(self._normalTexture_)
 	end
 end
 
-local function ResetTexture(self)
-	local texture = self:GetTexture()
-	if texture and texture ~= self._lastTexture_ then
-		self:SetTexture(nil)
-		self._lastTexture_ = texture
+local function ResetTexture(self, texture)
+	if texture and texture ~= self._texture_ then
+		self:SetTexture("")
 	end
 end
 
 local function HandleActionButton(button)
 	local buttonName = button:GetName()
 	-- Texture
-	button:SetNormalTexture(nil)
+	button:SetNormalTexture("")
+	button._normalTexture_ = ""
 	hooksecurefunc(button, "SetNormalTexture", ResetNormalTexture)
 	-- flyout border, like summon pet
-	_G[buttonName.."FlyoutBorder"]:SetTexture(nil)
-	_G[buttonName.."FlyoutBorderShadow"]:SetTexture(nil)
+	_G[buttonName.."FlyoutBorder"]:SetTexture("")
+	_G[buttonName.."FlyoutBorderShadow"]:SetTexture("")
 	-- green border for usable item
-	_G[buttonName.."Border"]:SetTexture(nil)
+	_G[buttonName.."Border"]:SetTexture("")
 	-- hotkey
 	local hotkey = _G[buttonName.."HotKey"]
 	hotkey:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
@@ -94,17 +89,30 @@ local function HandleActionButton(button)
 	cooldown:SetPoint("CENTER", 0, 0)
 	cooldown:SetPoint("TOPLEFT", 0, 0)
 	cooldown:SetPoint("BOTTOMRIGHT", 0, 0)
+	-- Shine
+	local shine = _G[buttonName.."Shine"]
+	shine:ClearAllPoints()
+	shine:SetPoint("CENTER", 0, 0)
+	shine:SetPoint("TOPLEFT", 0, 0)
+	shine:SetPoint("BOTTOMRIGHT", 0, 0)
+	-- AutoCastable
+	local autoCastable = _G[buttonName.."AutoCastable"]
+	if autoCastable then
+		autoCastable:SetTexCoord(0.23, 0.75, 0.23, 0.75) -- better ways?
+		autoCastable:ClearAllPoints()
+		autoCastable:SetPoint("CENTER", 0, 0)
+		autoCastable:SetPoint("TOPLEFT", 0, 0)
+		autoCastable:SetPoint("BOTTOMRIGHT", 0, 0)
+	end
 end
 
-local function CreateActionBar(idx, btnPerRow)
+local function CreateActionBar(idx)
 	local frameName = "RUIActionBar"..idx
 	local frame = CreateFrame("Frame", frameName, UIParent, "SecureHandlerStateTemplate")
-	frame:SetSize(buttonSize*btnPerRow, buttonSize*ceil(NUM_ACTIONBAR_BUTTONS/btnPerRow))
-	B:SetupMover(frame, "ActionBar"..idx,L["ActionBar"..idx],true)
+	B:SetupMover(frame, "ActionBar"..idx,format(L["ActionBar%d"],idx),true)
 	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0, 0, 0, 0.5)
 	texture:SetAllPoints(true)
-	frame.btnPerRow = btnPerRow or NUM_ACTIONBAR_BUTTONS
 	frame:SetAttribute("_onstate-page", [[
 		self:SetAttribute("actionpage", newstate)
 	]])
@@ -112,9 +120,6 @@ local function CreateActionBar(idx, btnPerRow)
 		local name = barsData[idx].name..i
 		local button = _G[name]
 		button:SetParent(frame)
-		button:ClearAllPoints()
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", buttonSize*((i-1)%btnPerRow), -buttonSize*floor((i-1)/btnPerRow))
-		button:SetSize(buttonSize,buttonSize)
 		HandleActionButton(button)
 		frame:SetAttribute("_onstate-page", [[
 			self:SetAttribute("actionpage", newstate)
@@ -122,34 +127,79 @@ local function CreateActionBar(idx, btnPerRow)
 		frame[i] = button
 	end
 	RegisterStateDriver(frame, "page", barsData[idx].page)
-	RegisterStateDriver(frame, "visibility", barsData[idx].visibility)
 	bars[idx] = frame
 end
 
-local function CreatePetBar(btnPerRow)
+local function CreatePetBar()
 	local frameName = "RUIPetActionBar"
 	local frame = CreateFrame("Frame", frameName, UIParent, "SecureHandlerStateTemplate")
-	frame:SetSize(buttonSize*btnPerRow, buttonSize*ceil(NUM_PET_ACTION_SLOTS/btnPerRow))
+	frame.buttonSize = buttonSize
 	B:SetupMover(frame, "PetActionBar",L["PetActionBar"],true)
 	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0, 0, 0, 0.5)
 	texture:SetAllPoints(true)
-	frame.btnPerRow = btnPerRow or NUM_PET_ACTION_SLOTS
 	for i = 1, NUM_PET_ACTION_SLOTS do
 		local name = "PetActionButton"..i
 		local button = _G[name]
 		button:SetParent(frame)
 		button:ClearAllPoints()
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", buttonSize*((i-1)%btnPerRow), -buttonSize*floor((i-1)/btnPerRow))
-		button:SetSize(buttonSize,buttonSize)
 		HandleActionButton(button)
 		frame[i] = button
 	end
-	RegisterStateDriver(frame, "visibility", "[pet] show; hide")
+	frame.visibility = "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists][shapeshift] hide; [pet] show; hide"
+	RegisterStateDriver(frame, "visibility", frame.visibility)
+end
+
+local function CreateVehicleLeave()
+	local frameName = "RUILeaveVehicle"
+	local frame = CreateFrame("Frame", frameName, UIParent, "SecureHandlerStateTemplate")
+	frame:SetSize(32, 32)
+	B:SetupMover(frame, "LeaveVehicleButton",L["LeaveVehicleButton"],true)
+	local button = CreateFrame("CheckButton", "RUILeaveVehicleButton", frame, "ActionButtonTemplate, SecureHandlerClickTemplate")
+	button:SetAllPoints()
+	button:RegisterForClicks("AnyUp")
+	button.icon:SetTexture(237700)
+	HandleActionButton(button)
+	button:SetScript("OnClick", function(self)
+		if UnitOnTaxi("player") then TaxiRequestEarlyLanding() else VehicleExit() end
+		self:SetChecked(false)
+	end)
+	button:SetScript("OnEnter", MainMenuBarVehicleLeaveButton_OnEnter)
+	button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	RegisterStateDriver(frame, "exit", "[canexitvehicle]1;[mounted]2;3")
+	frame:SetAttribute("_onstate-exit", [[ if CanExitVehicle() then self:Show() else self:Hide() end ]])
+	if not CanExitVehicle() then frame:Hide() end
+end
+
+local function CreateStanceBar()
+	local frameName = "RUIStanceBar"
+	local frame = CreateFrame("Frame", frameName, UIParent, "SecureHandlerStateTemplate")
+	B:SetupMover(frame, "StanceBar",L["StanceBar"],true)
+	local num = GetNumShapeshiftForms()
+	for i = 1, NUM_STANCE_SLOTS do
+		local name = "StanceButton"..i
+		local button = _G[name]
+		button:SetParent(frame)
+		button:ClearAllPoints()
+		HandleActionButton(button)
+		if i <= num then button:Show() else button:Hide() end
+		frame[i] = button
+	end
+	frame.visibility = "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists][shapeshift] hide; show"
+	RegisterStateDriver(frame, "visibility", frame.visibility)
+	-- Disable unused stance buttons
+	B:AddEventScript("UPDATE_SHAPESHIFT_COOLDOWN", function()
+		local num = GetNumShapeshiftForms()
+		for i = 1, NUM_STANCE_SLOTS do if i <= num then frame[i]:Show() else frame[i]:Hide() end end
+	end)
 end
 
 local function DisableBLZ()
 	MainMenuBarArtFrame:Hide()
+	MainMenuBar:SetMovable(true)
+	MainMenuBar:SetUserPlaced(true)
+	MainMenuBar.ignoreFramePositionManager = true
+	MainMenuBar:SetAttribute("ignoreFramePositionManager", true)
 	MainMenuBar:Hide()
 	MainMenuBar:UnregisterAllEvents()
 	MainMenuBar.Show = MainMenuBar.Hide
@@ -160,47 +210,115 @@ local function DisableBLZ()
 	--PetActionBarFrame:UnregisterAllEvents()
 	--PetActionBarFrame.Show = OverrideActionBar.Hide
 
-	--MicroButtonAndBagsBar:SetSize(300,20)
-	--B:SetupMover(MicroButtonAndBagsBar, "MicroButtonBar",L["MicroButtonBar"])
 	RegisterStateDriver(MultiBarLeft, "visibility", "hide")
 	RegisterStateDriver(MultiBarRight, "visibility", "hide")
 
 	ExtraActionBarFrame:SetParent(UIParent)
 	B:SetupMover(ExtraActionButton1, "ExtraActionBarButton",L["ExtraActionBarButton"])
 	local style = ExtraActionButton1.style
-	style:SetTexture(nil)
+	style:SetTexture("")
+	style._texture_ = ""
 	hooksecurefunc(style, "SetTexture", ResetTexture)
 end
 
 local function SetOverrideKeybind()
-	local frame = bars[1]
-	local binding = barsData[1].binding
-	ClearOverrideBindings(frame)
-	for i = 1, #frame do
-		for j = 1, select("#", GetBindingKey(binding..i)) do
-			local key = select(j, GetBindingKey(binding..i))
-			if key and key ~= "" then
-				SetOverrideBindingClick(frame, false, key, barsData[1].name..i)
+	for idx, frame in ipairs(bars) do
+		local binding = barsData[idx].binding
+		ClearOverrideBindings(frame)
+		for i = 1, #frame do
+			for j = 1, select("#", GetBindingKey(binding..i)) do
+				local key = select(j, GetBindingKey(binding..i))
+				if key and key ~= "" then
+					SetOverrideBindingClick(frame, false, key, barsData[idx].name..i)
+				end
 			end
 		end
 	end
 end
 
 local function ClearOverrideKeybind()
-	ClearOverrideBindings(bars[1])
+	for _, frame in ipairs(bars) do
+		ClearOverrideBindings(frame)
+	end
+end
+
+-- config
+function C:SetupActionBarButtons(idx)
+	local frame = bars[idx]
+	local btnNum, btnPerRow, buttonSize = C.roleDB.actionBars["bar"..idx.."SlotsNum"], C.roleDB.actionBars["bar"..idx.."SlotsPerRow"], C.roleDB.actionBars.actionBarSlotSize
+	if btnNum == 0 then
+		RegisterStateDriver(frame, "visibility", "hide")
+	else
+		frame:SetSize(buttonSize*min(btnPerRow,btnNum), buttonSize*ceil(btnNum/btnPerRow))
+		B:ResizeMover(frame)
+		for i=1, #frame do
+			local button = frame[i]
+			button:ClearAllPoints()
+			button:SetPoint("TOPLEFT", frame, "TOPLEFT", buttonSize*((i-1)%btnPerRow), -buttonSize*floor((i-1)/btnPerRow))
+			button:SetSize(buttonSize, buttonSize)
+			if i <= btnNum then button:Show() else button:Hide() end
+		end
+		RegisterStateDriver(frame, "visibility", barsData[idx].visibility or frame.visibility)
+	end
+end
+
+function C:SetupOtherActionBarBttons()
+	local buttonSize = C.roleDB.actionBars.otherBarSlotSize
+	-- PetBar
+	local frame, btnNum, btnPerRow = RUIPetActionBar, NUM_PET_ACTION_SLOTS, C.roleDB.actionBars.perBarSlotsPerRow
+	frame:SetSize(buttonSize*min(btnPerRow,btnNum), buttonSize*ceil(btnNum/btnPerRow))
+	B:ResizeMover(frame)
+	for i=1, #frame do
+		local button = frame[i]
+		button:ClearAllPoints()
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", buttonSize*((i-1)%btnPerRow), -buttonSize*floor((i-1)/btnPerRow))
+		button:SetSize(buttonSize, buttonSize)
+		if i <= btnNum then button:Show() else button:Hide() end
+	end
+	-- StanceBar
+	frame, btnNum, btnPerRow = RUIStanceBar, NUM_STANCE_SLOTS, C.roleDB.actionBars.stanceBarSlotsPerRow
+	frame:SetSize(buttonSize*min(btnPerRow,btnNum), buttonSize*ceil(btnNum/btnPerRow))
+	B:ResizeMover(frame)
+	for i=1, #frame do
+		local button = frame[i]
+		button:ClearAllPoints()
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", buttonSize*((i-1)%btnPerRow), -buttonSize*floor((i-1)/btnPerRow))
+		button:SetSize(buttonSize, buttonSize)
+		if i <= btnNum then button:Show() else button:Hide() end
+	end
 end
 
 B:AddInitScript(function()
 	if not C.roleDB.actionBars.enable then return end
-	CreateActionBar(1,12)
-	CreateActionBar(2,12)
-	CreateActionBar(3,6)
-	CreateActionBar(4,1)
-	CreateActionBar(5,1)
-	CreatePetBar(10)
+	for i=1, 5 do
+		CreateActionBar(i)
+		C:SetupActionBarButtons(i)
+	end
+	CreatePetBar()
+	CreateVehicleLeave()
+	CreateStanceBar()
+	C:SetupOtherActionBarBttons()
 
 	DisableBLZ()
 
+	-- Fix elements
+	-- vehicle
+	local function UpdateActionButtonAction(_, event, arg1)
+		if event == "ACTIONBAR_UPDATE_STATE" or ((event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") and arg1 == "player") then
+			local frame = bars[1]
+			for i=1, #frame do
+				ActionButton_UpdateAction(frame[i])
+				ActionButton_Update(frame[i])
+			end
+		end
+	end
+	-- do we need all these??
+	B:AddEventScript("UPDATE_VEHICLE_ACTIONBAR", UpdateActionButtonAction)
+	B:AddEventScript("UPDATE_OVERRIDE_ACTIONBAR", UpdateActionButtonAction)
+	B:AddEventScript("ACTIONBAR_UPDATE_STATE", UpdateActionButtonAction)
+	B:AddEventScript("ACTIONBAR_SLOT_CHANGED", UpdateActionButtonAction)
+	B:AddEventScript("UNIT_ENTERED_VEHICLE", UpdateActionButtonAction)
+	B:AddEventScript("UNIT_EXITED_VEHICLE", UpdateActionButtonAction)
 	-- overide keybind
 	B:AddEventScript("UPDATE_BINDINGS", SetOverrideKeybind)
 	B:AddEventScript("PET_BATTLE_CLOSE", SetOverrideKeybind)

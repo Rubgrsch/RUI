@@ -19,11 +19,11 @@ local defaults = {
 		["undress"] = true,
 	},
 	["mover"] = {
-		MythicPlusTimerFrame = {"CENTER",-575,175},
-		Minimap = {"TOPRIGHT",0,0},
-		DataPanelLeft = {"BOTTOMLEFT",0,0},
-		DataPanelRight = {"BOTTOMRIGHT",0,0},
-		ExtraActionBarButton = {"BOTTOM",0,96},
+		MythicPlusTimerFrame = {"CENTER","CENTER",-575,175},
+		Minimap = {"TOPRIGHT","TOPRIGHT",0,0},
+		DataPanelLeft = {"BOTTOMLEFT","BOTTOMLEFT",0,0},
+		DataPanelRight = {"BOTTOMRIGHT","BOTTOMRIGHT",0,0},
+		ExtraActionBarButton = {"BOTTOM","BOTTOM",0,96},
 	},
 	["dataPanel"] = {
 		["enableLeft"] = true,
@@ -54,20 +54,34 @@ local defaults = {
 
 local defaultRoleDB = {
 	["mover"] = {
-		ActionBar1 = {"BOTTOM",-100,0},
-		ActionBar2 = {"BOTTOM",-100,32},
-		ActionBar3 = {"BOTTOM",188,0},
-		ActionBar4 = {"RIGHT",0,0},
-		ActionBar5 = {"RIGHT",-32,0},
-		PetActionBar = {"BOTTOM",0,64},
+		ActionBar1 = {"BOTTOM","BOTTOM",-100,0},
+		ActionBar2 = {"BOTTOM","BOTTOM",-100,32},
+		ActionBar3 = {"BOTTOM","BOTTOM",188,0},
+		ActionBar4 = {"RIGHT","RIGHT",0,0},
+		ActionBar5 = {"RIGHT","RIGHT",-32,0},
+		PetActionBar = {"BOTTOM","BOTTOM",0,64},
+		LeaveVehicleButton = {"BOTTOM","BOTTOM",-264,64},
+		StanceBar = {"BOTTOM","BOTTOM",-108,64},
+		MenuBar = {"TOPLEFT","TOPLEFT",0,0}
 	},
 	["actionBars"] = {
 		["enable"] = true,
-		["bar1"] = true,
-		["bar2"] = true,
-		["bar3"] = true,
-		["bar4"] = true,
-		["bar5"] = true,
+		["menuBar"] = false,
+		["actionBarSlotSize"] = 32,
+		["otherBarSlotSize"] = 28,
+		["menuBarSlotSize"] = 24,
+		["bar1SlotsNum"] = 12,
+		["bar1SlotsPerRow"] = 12,
+		["bar2SlotsNum"] = 12,
+		["bar2SlotsPerRow"] = 12,
+		["bar3SlotsNum"] = 12,
+		["bar3SlotsPerRow"] = 6,
+		["bar4SlotsNum"] = 12,
+		["bar4SlotsPerRow"] = 1,
+		["bar5SlotsNum"] = 12,
+		["bar5SlotsPerRow"] = 1,
+		["perBarSlotsPerRow"] = 10,
+		["stanceBarSlotsPerRow"] = 10,
 	},
 }
 
@@ -94,7 +108,7 @@ B:AddInitScript(function()
 	local role = GetSpecializationRole(GetSpecialization())
 	lastRole = role
 	C.roleDB = ruiRoleDB[role]
-	CopyTable(defaultRoleDB,C.roleDB)
+	for role in pairs(roleDB) do CopyTable(defaultRoleDB,ruiRoleDB[role]) end
 	-- remove old keys
 	for k in pairs(C.db) do if defaults[k] == nil then C.db[k] = nil end end
 	for k in pairs(C.roleDB) do if defaultRoleDB[k] == nil then C.roleDB[k] = nil end end
@@ -102,7 +116,8 @@ B:AddInitScript(function()
 	for frame,mover in pairs(C.mover) do
 		if frame and mover then
 			mover:ClearAllPoints()
-			mover:SetPoint(unpack(C[mover.isRole and "roleDB" or "db"].mover[mover.moverName]))
+			local point, secondaryPoint, x, y = unpack(C[mover.isRole and "roleDB" or "db"].mover[mover.moverName])
+			mover:SetPoint(point, UIParent, secondaryPoint, x, y)
 		end
 	end
 end)
@@ -116,7 +131,8 @@ B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
 	for frame,mover in pairs(C.mover) do
 		if frame and mover and mover.isRole then
 			mover:ClearAllPoints()
-			mover:SetPoint(unpack(C.roleDB.mover[mover.moverName]))
+			local point, secondaryPoint, x, y = unpack(C.roleDB.mover[mover.moverName])
+			mover:SetPoint(point, UIParent, secondaryPoint, x, y)
 		end
 	end
 end)

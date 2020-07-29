@@ -63,11 +63,28 @@ L["BagSlotSize"] = "背包格子大小"
 L["BagSlotsPerRow"] = "背包每行格子数"
 L["BankSlotSize"] = "银行格子大小"
 L["BankSlotsPerRow"] = "银行每行格子数"
+-- config - actionbars
+L["ActionBars"] = "动作条"
+L["ActionBar%d"] = "动作条%d"
+L["ActionBarSlotSize"] = "动作条按钮大小"
+L["ActionBarSlotSizeTooltip"] = "设置该动作条按钮大小, 该选项会对所有主要动作条生效!"
+L["ActionBarSlotsNum"] = "按钮总数"
+L["ActionBarSlotsNumTooltip"] = "设置该动作条的按钮数,设为0以禁用"
+L["ActionBarSlotsPerRow"] = "每行按钮数"
+L["ActionBarSlotsPerRowTooltip"] = "设置该动作条每一行的按钮数"
+L["PetStanceBarSlotSizeTooltip"] = "设置该动作条按钮大小, 该选项会对宠物动作条和姿态条生效!"
 
 -- Tooltip
 L["ID %d"] = "ID %d"
 L["Bag: %d"] = "背包: %d"
 L["Bank: %d"] = "银行: %d"
+
+-- ActionBar
+L["PetActionBar"] = "宠物动作条"
+L["LeaveVehicleButton"] = "离开载具按钮"
+L["StanceBar"] = "姿态条"
+L["ExtraActionBarButton"] = "额外动作条按钮"
+L["MenuBar"] = "菜单栏"
 
 -- Bags
 L["Sort Bags"] = "背包排序"

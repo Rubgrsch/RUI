@@ -48,7 +48,7 @@ local function RegisterData(frame)
 end
 
 local panelOrder = {
-	left = {"Durability", "Specialization", "Loot", "Gold"},
+	left = {"Durability", "Specialization", "Loot", "Gold", "Shadowlands"},
 	right = {"Latency", "FPS", "Guild", "Friends", "Time"},
 }
 

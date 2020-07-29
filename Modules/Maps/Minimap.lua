@@ -12,15 +12,7 @@ local function SetupMinimap()
 		end
 	end)
 	Minimap:SetScript("OnMouseUp", function(self, btn)
-		if btn == "MiddleButton" then
-			if not InCombatLockdown() then
-				-- TODO: Change this after implement datapanel
-				if not IsAddOnLoaded('Blizzard_EncounterJournal') then
-					EncounterJournal_LoadUI()
-				end
-				ToggleFrame(EncounterJournal)
-			end
-		elseif btn == "RightButton" then
+		if btn == "RightButton" then
 			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self)
 		else
 			Minimap_OnClick(self)

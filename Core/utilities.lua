@@ -11,7 +11,8 @@ local function MoverLock(_,button)
 	if button == "RightButton" then
 		for _,m in pairs(C.mover) do
 			m:Hide()
-			C[m.isRole and "roleDB" or "db"].mover[m.moverName]={"BOTTOMLEFT", m:GetLeft(), m:GetBottom()}
+			local point, _, secondaryPoint, x, y = m:GetPoint()
+			C[m.isRole and "roleDB" or "db"].mover[m.moverName]={point, secondaryPoint, x, y}
 		end
 	end
 end
@@ -29,6 +30,7 @@ function B:SetupMover(frame,moverName,localizedName,isRole)
 	mover:SetFrameStrata("HIGH")
 	mover.moverName = moverName
 	mover.isRole = isRole
+	mover.frame = frame
 	local texture = mover:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0.8, 0.8, 0.8, 0.5)
 	texture:SetAllPoints(true)
@@ -41,8 +43,13 @@ function B:SetupMover(frame,moverName,localizedName,isRole)
 	C.mover[frame] = mover
 
 	if C.db then
-		mover:SetPoint(unpack(C[isRole and "roleDB" or "db"].mover[mover.moverName]))
+		local point, secondaryPoint, x, y = unpack(C[isRole and "roleDB" or "db"].mover[moverName])
+		mover:SetPoint(point, UIParent, secondaryPoint, x, y)
 	end
+end
+
+function B:ResizeMover(frame)
+	C.mover[frame]:SetSize(frame:GetWidth(),frame:GetHeight())
 end
 
 -- Event Script

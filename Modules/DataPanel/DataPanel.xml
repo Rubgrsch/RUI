@@ -7,4 +7,5 @@
 	<Script file="Latency.lua"/>
 	<Script file="Durability.lua"/>
 	<Script file="Specialization.lua"/>
-	<Script file="Gold.lua"/></Ui>
+	<Script file="Gold.lua"/>
+	<Script file="Shadowlands.lua"/></Ui>

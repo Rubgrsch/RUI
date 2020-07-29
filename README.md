@@ -19,10 +19,11 @@ WIP! Use at your own risk!
 - [ ] ActionBars
   - [x] ActionBars
   - [x] PetBars
-  - [ ] StanceBars
-  - [ ] Leave vehicle
-  - [ ] Mainmenu
-  - [ ] Options
+  - [x] StanceBars
+  - [x] Leave vehicle
+  - [x] Mainmenu
+  - [x] Options
+  - [ ] Fader
 
 **TODO:** Not implement yet  
 
