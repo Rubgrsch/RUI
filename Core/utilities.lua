@@ -17,7 +17,7 @@ local function MoverLock(_,button)
 	end
 end
 
-function B:SetupMover(frame,moverName,localizedName,isRole)
+function B:SetupMover(frame,moverName,localizedName,isRole,enable)
 	local mover = CreateFrame("Frame", nil, UIParent)
 	mover:Hide()
 	mover:SetSize(frame:GetWidth(),frame:GetHeight())
@@ -31,6 +31,7 @@ function B:SetupMover(frame,moverName,localizedName,isRole)
 	mover.moverName = moverName
 	mover.isRole = isRole
 	mover.frame = frame
+	if enable then mover.enable = enable end
 	local texture = mover:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0.8, 0.8, 0.8, 0.5)
 	texture:SetAllPoints(true)

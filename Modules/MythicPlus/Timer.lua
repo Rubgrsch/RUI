@@ -7,7 +7,7 @@ local defaultFont = STANDARD_TEXT_FONT
 
 local MPTimerFrame = CreateFrame("Frame", "MythicPlusTimerFrame", UIParent)
 MPTimerFrame:SetSize(300,300)
-B:SetupMover(MPTimerFrame,"MythicPlusTimerFrame",L["MythicPlusTimer"])
+B:SetupMover(MPTimerFrame,"MythicPlusTimerFrame",L["MythicPlusTimer"], nil,function() return C.db.instance.mythicPlus.timer end)
 MPTimerFrame:Hide()
 local levelText = MPTimerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 levelText:SetPoint("TOPLEFT",MPTimerFrame,"TOPLEFT")

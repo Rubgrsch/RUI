@@ -109,7 +109,7 @@ end
 local function CreateActionBar(idx)
 	local frameName = "RUIActionBar"..idx
 	local frame = CreateFrame("Frame", frameName, UIParent, "SecureHandlerStateTemplate")
-	B:SetupMover(frame, "ActionBar"..idx,format(L["ActionBar%d"],idx),true)
+	B:SetupMover(frame, "ActionBar"..idx,format(L["ActionBar%d"],idx),true, function() return C.roleDB.actionBars["bar"..idx.."SlotsNum"] > 0 end)
 	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0, 0, 0, 0.5)
 	texture:SetAllPoints(true)
@@ -174,7 +174,7 @@ end
 local function CreateStanceBar()
 	local frameName = "RUIStanceBar"
 	local frame = CreateFrame("Frame", frameName, UIParent, "SecureHandlerStateTemplate")
-	B:SetupMover(frame, "StanceBar",L["StanceBar"],true)
+	B:SetupMover(frame, "StanceBar",L["StanceBar"],true,function() return GetNumShapeshiftForms() > 0 end)
 	local num = GetNumShapeshiftForms()
 	for i = 1, NUM_STANCE_SLOTS do
 		local name = "StanceButton"..i
@@ -186,7 +186,7 @@ local function CreateStanceBar()
 		frame[i] = button
 	end
 	frame.visibility = "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists][shapeshift] hide; show"
-	RegisterStateDriver(frame, "visibility", frame.visibility)
+	RegisterStateDriver(frame, "visibility", num > 0 and frame.visibility or "hide")
 	-- Disable unused stance buttons
 	B:AddEventScript("UPDATE_SHAPESHIFT_COOLDOWN", function()
 		local num = GetNumShapeshiftForms()

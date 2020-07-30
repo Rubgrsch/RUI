@@ -67,7 +67,7 @@ local function CreateMenuBar()
 	-- End
 	frame.num = idx-1
 	frame:SetSize(width*(idx-1),height)
-	B:SetupMover(frame, "MenuBar",L["MenuBar"],true)
+	B:SetupMover(frame, "MenuBar",L["MenuBar"],true,function() return C.roleDB.actionBars.menuBar end)
 end
 
 function C:SetupMenuBar()

@@ -14,7 +14,10 @@ local options = {
 			func = function()
 				InterfaceOptionsFrame:Hide()
 				HideUIPanel(GameMenuFrame)
-				for _,mover in pairs(C.mover) do mover:Show() end
+				for _,mover in pairs(C.mover) do
+					local enable = mover.enable
+					if not (enable and not enable()) then mover:Show() end
+				end
 				print(L["moverMsg"])
 			end,
 		},
