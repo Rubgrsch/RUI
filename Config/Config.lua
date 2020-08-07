@@ -170,11 +170,13 @@ options.args.dataPanel = {
 		enableLeft = {
 			type = "toggle",
 			name = L["EnableLeftDataPanel"].."*",
+			desc = L["RequireReload"],
 			order = 1,
 		},
 		enableRight = {
 			type = "toggle",
 			name = L["EnableRightDataPanel"].."*",
+			desc = L["RequireReload"],
 			order = 2,
 		},
 		tooltipInCombat = {
@@ -310,6 +312,7 @@ options.args.actionBars = {
 		enable = {
 			type = "toggle",
 			name = L["Enable"].."*",
+			desc = L["RequireReload"],
 			order = 1,
 		},
 		menuBar = {
@@ -545,4 +548,21 @@ options.args.actionBars = {
 	},
 }
 LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RUI", options)
-LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RUI")
+LibStub("AceConfigDialog-3.0"):SetDefaultSize("RUI", 800, 600)
+
+B:AddInitScript(function()
+	local button = CreateFrame("Button", "GameMenuFrameRUI", GameMenuFrame, "GameMenuButtonTemplate")
+	button:SetText(L["RUI"])
+	button:SetPoint("TOP", GameMenuButtonAddons, "BOTTOM", 0, -1)
+	GameMenuFrame:HookScript("OnShow", function(self)
+		GameMenuButtonLogout:ClearAllPoints()
+		GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -11)
+		self:SetHeight(self:GetHeight() + button:GetHeight() + 2)
+	end)
+
+	button:SetScript("OnClick", function()
+		LibStub("AceConfigDialog-3.0"):Open("RUI")
+		HideUIPanel(GameMenuFrame)
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+	end)	
+end)

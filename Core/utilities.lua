@@ -4,6 +4,8 @@ local B, L, C = unpack(rui)
 local next = next
 
 -- Movers
+local RUIParent = CreateFrame("Frame", nil, UIParent)
+RUIParent:SetAllPoints()
 -- B:SetupMover(frame,moverName,localizedName)
 -- moverName is for DB saving, localizedName is displayed name in mover mode
 C.mover = {}
@@ -17,8 +19,8 @@ local function MoverLock(_,button)
 	end
 end
 
-function B:SetupMover(frame,moverName,localizedName,isRole,enable)
-	local mover = CreateFrame("Frame", nil, UIParent)
+function B:SetupMover(frame,moverName,localizedName,isRole,enable,anchor)
+	local mover = CreateFrame("Frame", "RUIMover"..moverName, RUIParent)
 	mover:Hide()
 	mover:SetSize(frame:GetWidth(),frame:GetHeight())
 	mover:RegisterForDrag("LeftButton")
@@ -40,12 +42,13 @@ function B:SetupMover(frame,moverName,localizedName,isRole,enable)
 	text:SetText(localizedName)
 
 	frame:ClearAllPoints()
-	frame:SetPoint("CENTER", mover)
+	anchor = anchor or "CENTER"
+	frame:SetPoint(anchor, mover, anchor)
 	C.mover[frame] = mover
 
 	if C.db then
 		local point, secondaryPoint, x, y = unpack(C[isRole and "roleDB" or "db"].mover[moverName])
-		mover:SetPoint(point, UIParent, secondaryPoint, x, y)
+		mover:SetPoint(point, RUIParent, secondaryPoint, x, y)
 	end
 end
 

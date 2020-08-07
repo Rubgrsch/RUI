@@ -1,3 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="API.lua"/>
-	<Script file="Utilities.lua"/></Ui>
+	<Script file="Utilities.lua"/>
+	<Script file="Cooldown.lua"/>
+	<Script file="oUF.lua"/></Ui>

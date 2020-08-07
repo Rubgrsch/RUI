@@ -3,6 +3,16 @@ local _, L = unpack(rui)
 
 --if GetLocale() ~= "zhCN" then return end
 
+L["NumUnitFormat"] = function(value)
+	if value > 1e8 then
+		return format("%.1f亿",value/1e8)
+	elseif value > 1e4 then
+		return format("%.1f万",value/1e4)
+	else
+		return format("%.0f",value)
+	end
+end
+
 -- config
 -- config - common
 L["Enable"] = "启用"

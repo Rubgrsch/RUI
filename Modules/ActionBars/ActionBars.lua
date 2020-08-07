@@ -89,6 +89,7 @@ local function HandleActionButton(button)
 	cooldown:SetPoint("CENTER", 0, 0)
 	cooldown:SetPoint("TOPLEFT", 0, 0)
 	cooldown:SetPoint("BOTTOMRIGHT", 0, 0)
+	B:SetupCooldown(cooldown,14)
 	-- Shine
 	local shine = _G[buttonName.."Shine"]
 	shine:ClearAllPoints()

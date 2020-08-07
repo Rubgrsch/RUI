@@ -3,6 +3,7 @@
 ## Version: v0
 ## Author: Rubgrsch
 ## SavedVariables: ruiDB, ruiRoleDB
+## X-oUF: RUI
 
 libs\libs.xml
 

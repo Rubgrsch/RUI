@@ -24,6 +24,8 @@ local defaults = {
 		DataPanelLeft = {"BOTTOMLEFT","BOTTOMLEFT",0,0},
 		DataPanelRight = {"BOTTOMRIGHT","BOTTOMRIGHT",0,0},
 		ExtraActionBarButton = {"BOTTOM","BOTTOM",0,96},
+		ObjectiveTrackerFrame = {"TOPRIGHT","TOPRIGHT",-50,-200},
+		VehicleSeatIndicator = {"TOPLEFT","TOPLEFT",20,-400}
 	},
 	["dataPanel"] = {
 		["enableLeft"] = true,
@@ -50,10 +52,19 @@ local defaults = {
 		["bankSlotSize"] = 30,
 		["bankSlotsPerRow"] = 12,
 	},
+	["auras"] = {
+		["blackList"] = {},
+		["whiteList"] = {},
+		["raidBuffs"] = {},
+		["raidDebuffs"] = {},
+		["playerBuffs"] = {},
+		["pvpDebuffs"] = {},
+	},
 }
 
 local defaultRoleDB = {
 	["mover"] = {
+		-- ActionBar
 		ActionBar1 = {"BOTTOM","BOTTOM",-100,0},
 		ActionBar2 = {"BOTTOM","BOTTOM",-100,32},
 		ActionBar3 = {"BOTTOM","BOTTOM",188,0},
@@ -62,7 +73,12 @@ local defaultRoleDB = {
 		PetActionBar = {"BOTTOM","BOTTOM",0,64},
 		LeaveVehicleButton = {"BOTTOM","BOTTOM",-264,64},
 		StanceBar = {"BOTTOM","BOTTOM",-108,64},
-		MenuBar = {"TOPLEFT","TOPLEFT",0,0}
+		MenuBar = {"TOPLEFT","TOPLEFT",0,0},
+		-- UF
+		PlayerFrame = {"TOPLEFT","TOPLEFT",50,-20},
+		PlayerCastBar = {"TOPLEFT","TOPLEFT",50,-50},
+		TargetFrame = {"TOPLEFT","TOPLEFT",280,-20},
+		TargetCastBar = {"TOPLEFT","TOPLEFT",280,-50},
 	},
 	["actionBars"] = {
 		["enable"] = true,
@@ -91,6 +107,15 @@ local roleDB = {
 	["HEALER"] = {},
 }
 
+local auras = {
+	["blackList"] = {},
+	["whiteList"] = {},
+	["raidBuffs"] = {},
+	["raidDebuffs"] = {},
+	["playerBuffs"] = {},
+	["pvpDebuffs"] = {},
+}
+
 local function CopyTable(source,dest)
 	for k,v in pairs(source) do
 		if dest[k] == nil then dest[k] = v end
@@ -112,6 +137,12 @@ B:AddInitScript(function()
 	-- remove old keys
 	for k in pairs(C.db) do if defaults[k] == nil then C.db[k] = nil end end
 	for k in pairs(C.roleDB) do if defaultRoleDB[k] == nil then C.roleDB[k] = nil end end
+	-- copy auras to config
+	C.auras = {}
+	for k,v in pairs(auras) do
+		for kk,vv in pairs(C.db.auras[k]) do if v[kk] == nil then v[kk] = vv end end
+		C.auras[k] = v
+	end
 	-- Set frame points
 	for frame,mover in pairs(C.mover) do
 		if frame and mover then

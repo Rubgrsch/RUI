@@ -2,7 +2,7 @@ local _, rui = ...
 local B, L, C = unpack(rui)
 
 -- https://wow.gamepedia.com/InstanceMapID
--- Use '/dump select(8, GetInstanceInfo())' to get new instance id
+-- Use "/dump select(8, GetInstanceInfo())" to get new instance id
 local partyMapIDs = {
 	[1594] = true,
 	[1754] = true,
@@ -28,7 +28,7 @@ local raidMapIDs = {
 local function GetCurrentMapForLogging()
 	local _, zoneType, difficulty, _, _, _, _, mapID = GetInstanceInfo()
 	mapID = mapID and tonumber(mapID)
-	if zoneType == 'raid' and raidMapIDs[mapID] and (difficulty ~= 7 and difficulty ~= 17) then
+	if zoneType == "raid" and raidMapIDs[mapID] and (difficulty ~= 7 and difficulty ~= 17) then
 		return true
 	elseif (difficulty == 8 or difficulty == 23) and partyMapIDs[mapID] then
 		return true
