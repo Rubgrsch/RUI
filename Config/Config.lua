@@ -547,6 +547,340 @@ options.args.actionBars = {
 		},
 	},
 }
+local function UFDisabled() return not C.roleDB.unitFrames.enable end
+options.args.unitFrames = {
+	type = "group",
+	name = L["UnitFrames"],
+	order = 14,
+	get = function(info) return C.roleDB.unitFrames[info[#info]] end,
+	set = function(info, value) C.roleDB.unitFrames[info[#info]] = value end,
+	args = {
+		enable = {
+			type = "toggle",
+			name = L["Enable"].."*",
+			desc = L["RequireReload"],
+			order = 1,
+		},
+		player = {
+			type = "group",
+			name = L["Player"],
+			order = 11,
+			get = function(info) return C.roleDB.unitFrames.player[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.player[info[#info]] = value
+				C:UFUpdate("player")
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				castbarWidth = {
+					type = "range",
+					name = L["CastbarWidth"],
+					order = 5,
+					min = 20, max = 1000, step = 5,
+				},
+				castbarHeight = {
+					type = "range",
+					name = L["CastbarHeight"],
+					order = 6,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 7,
+					min = 1, max = 12, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
+		target = {
+			type = "group",
+			name = L["Target"],
+			order = 12,
+			get = function(info) return C.roleDB.unitFrames.target[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.target[info[#info]] = value
+				C:UFUpdate("target")
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				castbarWidth = {
+					type = "range",
+					name = L["CastbarWidth"],
+					order = 5,
+					min = 20, max = 1000, step = 5,
+				},
+				castbarHeight = {
+					type = "range",
+					name = L["CastbarHeight"],
+					order = 6,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 7,
+					min = 1, max = 12, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
+		targettarget = {
+			type = "group",
+			name = L["TargetTarget"],
+			order = 13,
+			get = function(info) return C.roleDB.unitFrames.targettarget[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.targettarget[info[#info]] = value
+				C:UFUpdate("targettarget")
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 5,
+					min = 1, max = 12, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
+		pet = {
+			type = "group",
+			name = L["Pet"],
+			order = 14,
+			get = function(info) return C.roleDB.unitFrames.pet[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.pet[info[#info]] = value
+				C:UFUpdate("pet")
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				castbarHeight = {
+					type = "range",
+					name = L["CastbarHeight"],
+					order = 6,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 7,
+					min = 1, max = 12, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
+		boss = {
+			type = "group",
+			name = L["Boss"],
+			order = 15,
+			get = function(info) return C.roleDB.unitFrames.boss[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.boss[info[#info]] = value
+				for i=1, MAX_BOSS_FRAMES do
+					C:UFUpdate("boss"..i)
+				end
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				castbarHeight = {
+					type = "range",
+					name = L["CastbarHeight"],
+					order = 6,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 7,
+					min = 1, max = 12, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
+		party = {
+			type = "group",
+			name = L["Party"],
+			order = 16,
+			get = function(info) return C.roleDB.unitFrames.party[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.party[info[#info]] = value
+				C:UFGroupUpdate("party")
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				castbarHeight = {
+					type = "range",
+					name = L["CastbarHeight"],
+					order = 6,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 7,
+					min = 1, max = 12, step = 1,
+				},
+				healthText = {
+					type = "toggle",
+					name = L["HealthText"],
+					order = 11,
+				},
+				powerText = {
+					type = "toggle",
+					name = L["PowerText"],
+					order = 12,
+				},
+				buffIndicatorsSize = {
+					type = "range",
+					name = L["BuffIndicatorsSize"],
+					order = 13,
+					min = 1, max = 20, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
+	},
+}
 LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RUI", options)
 LibStub("AceConfigDialog-3.0"):SetDefaultSize("RUI", 800, 600)
 
@@ -564,5 +898,5 @@ B:AddInitScript(function()
 		LibStub("AceConfigDialog-3.0"):Open("RUI")
 		HideUIPanel(GameMenuFrame)
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
-	end)	
+	end)
 end)

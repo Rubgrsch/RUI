@@ -55,6 +55,7 @@ local function CreateCooldown(self, fontSize)
 end
 
 local function SetCooldown(self, start, duration)
+	self:SetHideCountdownNumbers(true) -- Need review
 	if start and duration then
 		local timer = self.ruicd
 		timer.endTime = start + duration
@@ -70,8 +71,7 @@ end
 
 function B:SetupCooldown(cooldown, fontSize)
 	if not cooldown.ruicd then
-		CreateCooldown(cooldown, fontSize)
+		CreateCooldown(cooldown, fontSize or 14)
 		hooksecurefunc(cooldown, "SetCooldown", SetCooldown)
-		cooldown:SetHideCountdownNumbers(true)
 	end
 end

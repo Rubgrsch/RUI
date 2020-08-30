@@ -58,6 +58,7 @@ local defaults = {
 		["raidBuffs"] = {},
 		["raidDebuffs"] = {},
 		["playerBuffs"] = {},
+		["defenseBuffs"] = {},
 		["pvpDebuffs"] = {},
 	},
 }
@@ -79,6 +80,10 @@ local defaultRoleDB = {
 		PlayerCastBar = {"TOPLEFT","TOPLEFT",50,-50},
 		TargetFrame = {"TOPLEFT","TOPLEFT",280,-20},
 		TargetCastBar = {"TOPLEFT","TOPLEFT",280,-50},
+		TargetTargetFrame = {"TOPLEFT","TOPLEFT",500,-20},
+		PetFrame = {"TOPLEFT","TOPLEFT",50,-60},
+		BossFrame = {"TOPRIGHT","TOPRIGHT",-50,-200},
+		PartyFrame = {"TOPLEFT","TOPLEFT",50,-300},
 	},
 	["actionBars"] = {
 		["enable"] = true,
@@ -99,6 +104,61 @@ local defaultRoleDB = {
 		["perBarSlotsPerRow"] = 10,
 		["stanceBarSlotsPerRow"] = 10,
 	},
+	["unitFrames"] = {
+		["enable"] = true,
+		["player"] = {
+			["enable"] = true,
+			["width"] = 200,
+			["height"] = 30,
+			["powerHeight"] = 4,
+			["castbarWidth"] = 200,
+			["castbarHeight"] = 12,
+			["aurasPerRow"] = 8,
+		},
+		["target"] = {
+			["enable"] = true,
+			["width"] = 200,
+			["height"] = 30,
+			["powerHeight"] = 4,
+			["castbarWidth"] = 200,
+			["castbarHeight"] = 12,
+			["aurasPerRow"] = 8,
+		},
+		["targettarget"] = {
+			["enable"] = true,
+			["width"] = 100,
+			["height"] = 30,
+			["powerHeight"] = 4,
+			["aurasPerRow"] = 6,
+		},
+		["pet"] = {
+			["enable"] = true,
+			["width"] = 100,
+			["height"] = 30,
+			["powerHeight"] = 3,
+			["castbarHeight"] = 12,
+			["aurasPerRow"] = 6,
+		},
+		["boss"] = {
+			["enable"] = true,
+			["width"] = 200,
+			["height"] = 30,
+			["powerHeight"] = 4,
+			["castbarHeight"] = 12,
+			["aurasPerRow"] = 8,
+		},
+		["party"] = {
+			["enable"] = true,
+			["width"] = 200,
+			["height"] = 30,
+			["powerHeight"] = 4,
+			["castbarHeight"] = 12,
+			["aurasPerRow"] = 8,
+			["healthText"] = true,
+			["powerText"] = true,
+			["buffIndicatorsSize"] = 10,
+		},
+	},
 }
 
 local roleDB = {
@@ -107,13 +167,21 @@ local roleDB = {
 	["HEALER"] = {},
 }
 
+-- Default auras data
 local auras = {
 	["blackList"] = {},
 	["whiteList"] = {},
 	["raidBuffs"] = {},
 	["raidDebuffs"] = {},
 	["playerBuffs"] = {},
+	["defenseBuffs"] = {},
 	["pvpDebuffs"] = {},
+}
+
+-- Default buff indicator (corners of party/raid)
+-- [specID] = {[buffids] = CornerID}
+local buffIndicators = {
+	--[263] = {[269279] = 1}, -- test: enhancement
 }
 
 local function CopyTable(source,dest)
@@ -125,39 +193,16 @@ local function CopyTable(source,dest)
 end
 
 local lastRole
-B:AddInitScript(function()
-	if type(ruiDB) ~= "table" or next(ruiDB) == nil then ruiDB = defaults end
-	C.db = ruiDB
-	CopyTable(defaults,C.db)
-	if type(ruiRoleDB) ~= "table" or next(ruiRoleDB) == nil then ruiRoleDB = roleDB end
-	local role = GetSpecializationRole(GetSpecialization())
-	lastRole = role
-	C.roleDB = ruiRoleDB[role]
-	for role in pairs(roleDB) do CopyTable(defaultRoleDB,ruiRoleDB[role]) end
-	-- remove old keys
-	for k in pairs(C.db) do if defaults[k] == nil then C.db[k] = nil end end
-	for k in pairs(C.roleDB) do if defaultRoleDB[k] == nil then C.roleDB[k] = nil end end
-	-- copy auras to config
-	C.auras = {}
-	for k,v in pairs(auras) do
-		for kk,vv in pairs(C.db.auras[k]) do if v[kk] == nil then v[kk] = vv end end
-		C.auras[k] = v
-	end
-	-- Set frame points
-	for frame,mover in pairs(C.mover) do
-		if frame and mover then
-			mover:ClearAllPoints()
-			local point, secondaryPoint, x, y = unpack(C[mover.isRole and "roleDB" or "db"].mover[mover.moverName])
-			mover:SetPoint(point, UIParent, secondaryPoint, x, y)
-		end
-	end
-end)
 
-B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
+local function OnPlayerSpecChanged()
 	local role = GetSpecializationRole(GetSpecialization())
+	local specID = GetSpecializationInfo(GetSpecialization())
 	if lastRole == role then return end
 	lastRole = role
 	C.roleDB = ruiRoleDB[role]
+	B.role = role
+	-- Buff indicators
+	C.buffIndicators = buffIndicators[specID] or {}
 	-- Set role mover points
 	for frame,mover in pairs(C.mover) do
 		if frame and mover and mover.isRole then
@@ -165,5 +210,26 @@ B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
 			local point, secondaryPoint, x, y = unpack(C.roleDB.mover[mover.moverName])
 			mover:SetPoint(point, UIParent, secondaryPoint, x, y)
 		end
+	end
+end
+
+B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", OnPlayerSpecChanged)
+
+B:AddInitScript(function()
+	if type(ruiDB) ~= "table" or next(ruiDB) == nil then ruiDB = defaults end
+	C.db = ruiDB
+	CopyTable(defaults,C.db)
+	if type(ruiRoleDB) ~= "table" or next(ruiRoleDB) == nil then ruiRoleDB = roleDB end
+	local role = GetSpecializationRole(GetSpecialization())
+	for role in pairs(roleDB) do CopyTable(defaultRoleDB,ruiRoleDB[role]) end
+	OnPlayerSpecChanged()
+	-- remove old keys
+	for k in pairs(C.db) do if defaults[k] == nil then C.db[k] = nil end end
+	for k in pairs(C.roleDB) do if defaultRoleDB[k] == nil then C.roleDB[k] = nil end end
+	-- copy auras to config
+	C.auras = {}
+	for k,v in pairs(auras) do
+		for kk,vv in pairs(C.db.auras[k]) do v[kk] = vv end
+		C.auras[k] = v
 	end
 end)

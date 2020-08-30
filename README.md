@@ -21,12 +21,12 @@ WIP! Use at your own risk!
 - [ ] UF
   - [x] Player
   - [x] Target
-  - [ ] TargetTarget
-  - [ ] Party
+  - [x] TargetTarget
+  - [x] Party
   - [ ] Raid
-  - [ ] Boss
+  - [x] Boss
   - [ ] Arena
-  - [ ] Config
+  - [x] Config
   - [ ] Buff/Debuff list
 
 **TODO:** Not implement yet  

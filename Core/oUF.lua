@@ -46,9 +46,24 @@ oUF.Tags.Methods["colorlvl"] = function(unit)
 end
 oUF.Tags.Events["colorlvl"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
+oUF.Tags.Methods["colorlvl:smart"] = function(unit)
+	local level, diffColor, eq
+	if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
+		level = UnitBattlePetLevel(unit)
+		diffColor = GetRelativeDifficultyColor(C_PetJournal.GetPetTeamAverageLevel() or 1, level)
+	else
+		level = UnitLevel(unit)
+		diffColor = GetCreatureDifficultyColor(level)
+		eq = level == UnitLevel("player")
+	end
+	if not eq then return format("|cff%02x%02x%02x%s|r", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??") end
+end
+oUF.Tags.Events["colorlvl:smart"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+
 oUF.Tags.Methods["colorname"] = function(unit)
 	if UnitIsPlayer(unit) then
-		local localeClass, class = UnitClass(unit)
+		local _, class = UnitClass(unit)
+		if not class then return name end
 		local classColor = RAID_CLASS_COLORS[class].colorStr
 		local name = UnitName(unit)
 		return format("|c%s%s",classColor,name)
@@ -70,3 +85,27 @@ oUF.Tags.Methods["status"] = function(unit)
 	end
 end
 oUF.Tags.Events["status"] = "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED"
+
+-- Show current player threat status. Not for given unit.
+oUF.Tags.Methods["threatPerc:Player"] = function()
+	local output
+	local status = UnitThreatSituation("player")
+	if status == 1 then
+		output =  "+"
+	elseif status == 2 then
+		output = "-"
+	elseif status == 3 then
+		output = "*"
+	end
+	if UnitExists("target") then
+		local isTanking, status, scaledPercentage, rawPercentage, threatValue = UnitDetailedThreatSituation("player", "target")
+		if scaledPercentage and scaledPercentage > 0 then
+			return format("%.0f%%",scaledPercentage)
+		else
+			return output
+		end
+	else
+		return output
+	end
+end
+oUF.Tags.Events["threatPerc:Player"] = "UNIT_THREAT_SITUATION_UPDATE PLAYER_TARGET_CHANGED"

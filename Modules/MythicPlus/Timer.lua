@@ -78,8 +78,6 @@ end
 
 -- Hide ObjectiveTrackerFrame in M+
 -- Stolen and modified from Bigwigs
-local Hider = CreateFrame("Frame")
-Hider:Hide()
 local restoreObjectiveTracker = nil
 
 local function HideTrackerFrame()
@@ -90,7 +88,7 @@ local function HideTrackerFrame()
 	if not ObjectiveTrackerFrame:IsProtected() then
 		restoreObjectiveTracker = ObjectiveTrackerFrame:GetParent()
 		if restoreObjectiveTracker then
-			ObjectiveTrackerFrame:SetParent(Hider)
+			ObjectiveTrackerFrame:SetParent(B.hider)
 		end
 	end
 end

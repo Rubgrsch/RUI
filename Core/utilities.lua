@@ -42,8 +42,7 @@ function B:SetupMover(frame,moverName,localizedName,isRole,enable,anchor)
 	text:SetText(localizedName)
 
 	frame:ClearAllPoints()
-	anchor = anchor or "CENTER"
-	frame:SetPoint(anchor, mover, anchor)
+	frame:SetPoint("TOPLEFT", mover, "TOPLEFT")
 	C.mover[frame] = mover
 
 	if C.db then

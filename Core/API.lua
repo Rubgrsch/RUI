@@ -35,3 +35,5 @@ B.MoneyString = function(money, fmt)
 end
 
 B.easyMenu = CreateFrame("Frame", "RUIEasyMenu", UIParent, "UIDropDownMenuTemplate")
+B.hider = CreateFrame("Frame")
+B.hider:Hide()

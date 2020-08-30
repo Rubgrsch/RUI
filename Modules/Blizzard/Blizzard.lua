@@ -5,7 +5,7 @@ B:AddInitScript(function()
 	ObjectiveTrackerFrame:SetMovable(true)
 	ObjectiveTrackerFrame:SetUserPlaced(true)
 	ObjectiveTrackerFrame:SetHeight(300)
-	B:SetupMover(ObjectiveTrackerFrame, "ObjectiveTrackerFrame",L["ObjectiveTracker"],nil,nil,"TOP")
+	B:SetupMover(ObjectiveTrackerFrame, "ObjectiveTrackerFrame",L["ObjectiveTracker"])
 
 	B:SetupMover(VehicleSeatIndicator, "VehicleSeatIndicator",L["VehicleSeat"])
 	hooksecurefunc(VehicleSeatIndicator, "SetPoint", function(self, _, parent)
