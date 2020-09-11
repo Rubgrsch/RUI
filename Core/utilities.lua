@@ -51,8 +51,8 @@ function B:SetupMover(frame,moverName,localizedName,isRole,enable,anchor)
 	end
 end
 
-function B:ResizeMover(frame)
-	C.mover[frame]:SetSize(frame:GetWidth(),frame:GetHeight())
+function B:ResizeMover(frame,x,y)
+	C.mover[frame]:SetSize(x or frame:GetWidth(), y or frame:GetHeight())
 end
 
 -- Event Script

@@ -879,6 +879,78 @@ options.args.unitFrames = {
 			},
 			disabled = UFDisabled,
 		},
+		raid = {
+			type = "group",
+			name = L["Raid"],
+			order = 16,
+			get = function(info) return C.roleDB.unitFrames.raid[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.raid[info[#info]] = value
+				C:UFGroupUpdate("raid")
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				castbarHeight = {
+					type = "range",
+					name = L["CastbarHeight"],
+					order = 6,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 7,
+					min = 1, max = 12, step = 1,
+				},
+				auraSize = {
+					type = "range",
+					name = L["auraSize"].."*",
+					desc = L["RequireReload"],
+					order = 8,
+					min = 4, max = 32, step = 1,
+				},
+				healthText = {
+					type = "toggle",
+					name = L["HealthText"],
+					order = 11,
+				},
+				powerText = {
+					type = "toggle",
+					name = L["PowerText"],
+					order = 12,
+				},
+				buffIndicatorsSize = {
+					type = "range",
+					name = L["BuffIndicatorsSize"],
+					order = 13,
+					min = 1, max = 20, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
 	},
 }
 LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RUI", options)

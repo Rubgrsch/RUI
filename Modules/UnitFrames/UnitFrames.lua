@@ -221,11 +221,20 @@ end
 function C:UFUpdate(unit, frame)
 	local self = frame or C.UF[unit]
 	local unitType = unit:match("%D+")
-	self:SetSize(C.roleDB.unitFrames[unitType].width,C.roleDB.unitFrames[unitType].height)
-	if C.mover[self] then B:ResizeMover(self) end
+	local db = C.roleDB.unitFrames[unitType]
+	self:SetSize(db.width,db.height)
+	if C.mover[self] then
+		local x, y
+		if unitType == "boss" then
+			x, y = db.width, (db.height + db.castbarHeight + floor(db.width / db.aurasPerRow) * 2) * MAX_BOSS_FRAMES
+		else
+			x, y = db.width, db.height
+		end
+		B:ResizeMover(self,x,y)
+	end
 	if C.UF.ResetPoint[unitType] then C.UF.ResetPoint[unitType](self,unit) end
-	if C.roleDB.unitFrames[unitType].powerHeight >= C.roleDB.unitFrames[unitType].height then C.roleDB.unitFrames[unitType].powerHeight = C.roleDB.unitFrames[unitType].height - 1 end
-	local healthWidth, healthHeight = C.roleDB.unitFrames[unitType].width,C.roleDB.unitFrames[unitType].height - C.roleDB.unitFrames[unitType].powerHeight
+	if db.powerHeight >= db.height then db.powerHeight = db.height - 1 end
+	local healthWidth, healthHeight = db.width,db.height - db.powerHeight
 	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = self.Health, self.healthValue, self.HealthPrediction.myBar, self.HealthPrediction.otherBar, self.HealthPrediction.absorbBar, self.HealthPrediction.healAbsorbBar, self.HealthPrediction.overAbsorb
 	health:SetHeight(healthHeight)
 	healthPredict:SetSize(healthWidth, healthHeight)
@@ -235,17 +244,22 @@ function C:UFUpdate(unit, frame)
 	overAbsorb:SetSize(10,healthHeight)
 
 	local power = self.Power
-	power:SetHeight(C.roleDB.unitFrames[unitType].powerHeight)
+	power:SetHeight(db.powerHeight)
 
-	local buffs, debuffs, aurasPerRow, rows, auraVert = self.Buffs, self.Debuffs, C.roleDB.unitFrames[unitType].aurasPerRow, self.auraRows or 2, self.auraVert
+	local buffs, debuffs, aurasPerRow, rows, auraVert = self.Buffs, self.Debuffs, db.aurasPerRow, self.auraRows or 2, self.auraVert
 	if buffs then
+		if self.style == "raid" then
+			buffs.size = db.auraSize
+			debuffs.size = db.auraSize
+		else
+			buffs.size = auraVert and db.height/2 or floor(healthWidth / aurasPerRow)
+			debuffs.size = auraVert and db.height/2 or floor(healthWidth / aurasPerRow)
+		end
 		buffs.num = aurasPerRow * rows
 		buffs.iconsPerRow = aurasPerRow
-		buffs.size = auraVert and C.roleDB.unitFrames[unitType].height/2 or floor(healthWidth / aurasPerRow)
 		buffs:SetSize(buffs.size * aurasPerRow, buffs.size * rows)
 		debuffs.num = aurasPerRow * rows
 		debuffs.iconsPerRow = aurasPerRow
-		debuffs.size = auraVert and C.roleDB.unitFrames[unitType].height/2 or floor(healthWidth / aurasPerRow)
 		debuffs:SetSize(buffs.size * aurasPerRow, buffs.size * rows)
 		-- HACK: Force reset auras points after db loading/ config change.
 		-- Sometimes widget size is not prepared and setpoint offset is -nan, which makes auras not showing if they exist at reloading but newly get auras are fine.
@@ -256,7 +270,7 @@ function C:UFUpdate(unit, frame)
 
 	local castbar = self.Castbar
 	if castbar then
-		local castbar, castbarWidth, castbarHeight = self.Castbar, C.roleDB.unitFrames[unitType].castbarWidth or healthWidth, C.roleDB.unitFrames[unitType].castbarHeight
+		local castbar, castbarWidth, castbarHeight = self.Castbar, db.castbarWidth or healthWidth, db.castbarHeight
 		local f, spark, time, icon, shieled, text = castbar.f, castbar.Spark, castbar.Time, castbar.Icon, castbar.Shieled, castbar.Text
 		f:SetSize(castbarWidth,castbarHeight)
 		if C.mover[f] then B:ResizeMover(f) end
@@ -278,13 +292,24 @@ function C:UFUpdate(unit, frame)
 
 	local buffIndicators = self.BuffIndicators
 	if buffIndicators then
-		for i=1, 4 do buffIndicators[i]:SetSize(C.roleDB.unitFrames[unitType].buffIndicatorsSize, C.roleDB.unitFrames[unitType].buffIndicatorsSize) end
+		for i=1, 4 do buffIndicators[i]:SetSize(db.buffIndicatorsSize, db.buffIndicatorsSize) end
 	end
 end
 
 function C:UFGroupUpdate(unit)
 	for _, f in pairs(oUF.objects) do
-		if f.style == unit then C:UFUpdate("party", f) end
+		if f.style == unit then C:UFUpdate(unit, f) end
+	end
+	local db = C.roleDB.unitFrames[unit]
+	local x, y
+	if unit == "party" then
+		x, y = db.width, (db.castbarHeight + db.height) * 5
+	elseif unit == "raid" then
+		x, y = db.width * 8, db.height * 5
+	end
+	B:ResizeMover(C.UF[unit],x,y)
+	if unit == "raid" then
+		for i=1, 8 do C.UF:UpdateRaidHeaders(i) end
 	end
 end
 
@@ -732,6 +757,98 @@ local function CreatePartyStyle(self)
 	self:RegisterForClicks("AnyUp")
 end
 
+local function CreateRaidStyle(self)
+	self.style = "raid"
+	self:SetSize(C.roleDB.unitFrames.raid.width,C.roleDB.unitFrames.raid.height)
+	local upperFrame = CreateFrame("Frame",nil,self)
+	self.upperFrame = upperFrame
+
+	-- health, healthText, healthPredict
+	local healthWidth, healthHeight = C.roleDB.unitFrames.raid.width, C.roleDB.unitFrames.raid.height - C.roleDB.unitFrames.raid.powerHeight
+	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self)
+	healthText:SetPoint("CENTER",health,"CENTER", 0,0)
+
+	local power, powerText = CreatePower(self)
+	powerText:SetPoint("CENTER",self.Health,"CENTER", 0, -10)
+
+	-- name
+	local name = upperFrame:CreateFontString()
+	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+	name:SetPoint("CENTER",health,"CENTER", 0, 10)
+	self:Tag(name, "[colorlvl:smart] [colorname]")
+	self.nameText = name
+
+	-- icons
+	local mark = upperFrame:CreateTexture(nil, "OVERLAY")
+	mark:SetPoint("CENTER",self,"TOP")
+	mark:SetSize(12,12)
+	self.RaidTargetIndicator = mark
+	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
+	leader:SetPoint("LEFT",self,"LEFT",0,0)
+	leader:SetSize(12, 12)
+	self.LeaderIndicator = leader
+	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
+	assistant:SetPoint("LEFT",self,"LEFT",0,0)
+	assistant:SetSize(12, 12)
+	self.AssistantIndicator = assistant
+	local phase = upperFrame:CreateTexture(nil, "OVERLAY")
+	phase:SetPoint("CENTER",self, "CENTER")
+	phase:SetSize(22, 22)
+	self.PhaseIndicator = phase
+	local combat = upperFrame:CreateTexture(nil, "OVERLAY")
+	combat:SetPoint("CENTER", self, "CENTER")
+	combat:SetSize(22, 22)
+	self.CombatIndicator = combat
+	local role = upperFrame:CreateTexture(nil, "OVERLAY")
+	role:SetPoint("LEFT", self, "LEFT", 12, 0)
+	role:SetSize(12, 12)
+	self.GroupRoleIndicator = role
+
+	-- auras
+	local buffs, debuffs = CreateAuras(self)
+	self.auraRows = 1
+	buffs.PostUpdate = nil
+	buffs["growth-x"] = "LEFT"
+	buffs:SetPoint("LEFT", health, "CENTER", -40, 0)
+	debuffs:SetPoint("RIGHT", health, "CENTER", 40, 0)
+	-- Raid Buffs Rules
+	-- 1. block blacklist
+	-- 2. pass raidBuffs
+	-- 3. block others
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, duration, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+		if C.auras.blackList[spellId] then return false end
+		if C.auras.whiteList[spellId] then return true end
+		if C.auras.raidBuffs[spellId] then return true end
+		return false
+	end
+	-- Raid Debuffs Rules
+	-- 1. block blacklist
+	-- 2. pass whitelist
+	-- 3. pass raiddebuffs
+	-- 4. pass pvpdebuffs
+	-- 5. block others
+	debuffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, isBossDebuff, castByPlayer) -- self, unit, button, UnitAura()
+		if C.auras.blackList[spellId] then return false end
+		if C.auras.whiteList[spellId] then return true end
+		if C.auras.raidDebuffs[spellId] then return true end
+		if C.auras.pvpDebuffs[spellId] then return true end
+		return false
+	end
+	buffs.disableMouse = true
+	debuffs.disableMouse = true
+
+	-- Range alpha
+	self.Range = {
+        insideAlpha = 1,
+        outsideAlpha = 1/2,
+	}
+
+	-- Buff indicators
+	CreateBuffIndicators(self)
+
+	self:RegisterForClicks("AnyUp")
+end
+
 -- Config
 C.UF.ResetPoint = {}
 function C.UF.ResetPoint.boss(self, unit)
@@ -767,6 +884,42 @@ function C.UF.ResetPoint.party(self, unit)
 		self.PowerValue:Show()
 	else
 		self.PowerValue:Hide()
+	end
+end
+
+function C.UF.ResetPoint.raid(self, unit)
+	local idx = 0
+	local health = self.Health
+	if C.roleDB.unitFrames.raid.healthText then idx = idx + 1 end
+	if C.roleDB.unitFrames.raid.powerText then idx = idx + 1 end
+	idx = idx / 2
+
+	self.nameText:ClearAllPoints()
+	self.nameText:SetPoint("CENTER",health,"CENTER", 0, idx*13)
+	if C.roleDB.unitFrames.raid.healthText then
+		self.healthValue:ClearAllPoints()
+		idx = idx - 1
+		self.healthValue:SetPoint("CENTER",health,"CENTER", 0, idx*13)
+		self.healthValue:Show()
+	else
+		self.healthValue:Hide()
+	end
+	if C.roleDB.unitFrames.raid.powerText then
+		self.PowerValue:ClearAllPoints()
+		idx = idx - 1
+		self.PowerValue:SetPoint("CENTER",health,"CENTER", 0, idx*13)
+		self.PowerValue:Show()
+	else
+		self.PowerValue:Hide()
+	end
+end
+
+function C.UF:UpdateRaidHeaders(idx)
+	local self = C.UF["raid"..idx]
+	local xOffset = C.roleDB.unitFrames.raid.width
+	if idx ~= 1 then
+		self:ClearAllPoints()
+		self:SetPoint("TOPLEFT",C.UF["raid1"],"TOPLEFT",xOffset*(idx-1),0)
 	end
 end
 
@@ -834,6 +987,32 @@ B:AddInitScript(function()
 	B:SetupMover(partyFrame, "PartyFrame",L["PartyFrame"],true)
 	C.UF["party"] = partyFrame
 
+	-- Raid
+	oUF:RegisterStyle("raid", CreateRaidStyle)
+	oUF:SetActiveStyle("raid")
+	for i=1, 8 do
+		-- https://wow.gamepedia.com/SecureGroupHeaderTemplate
+		local raidFrame = oUF:SpawnHeader("oUF_Raid"..i, nil, "solo,raid",
+			"showPlayer", true,
+			"showSolo", false,
+			"showParty", true,
+			"showRaid", true,
+			"groupFilter", tostring(i),
+			"groupBy", "ASSIGNEDROLE",
+			"groupingOrder", "1,2,3,4,5,6,7,8",
+			"point", "BOTTOM", -- BOTTOM for vert, LEFT for horz
+			"columnAnchorPoint", "LEFT",
+			"unitsPerColumn", 5,
+			"oUF-initialConfigFunction", format([[self:SetWidth(%d); self:SetHeight(%d)]], C.roleDB.unitFrames.raid.width, C.roleDB.unitFrames.raid.height)
+		)
+		if i == 1 then
+			B:SetupMover(raidFrame, "RaidFrame",L["RaidFrame"],true)
+			C.UF["raid"] = raidFrame
+		end
+		C.UF["raid"..i] = raidFrame
+		raidFrame.GroupNum = i
+	end
+
 	C:UFUpdate("player")
 	C:UFUpdate("target")
 	C:UFUpdate("targettarget")
@@ -842,6 +1021,14 @@ B:AddInitScript(function()
 		C:UFUpdate("boss"..i)
 	end
 	C:UFGroupUpdate("party")
+	C:UFGroupUpdate("raid")
+	oUF:RegisterInitCallback(function(self)
+		local style = self.style
+		if style == "raid" or style == "party" then
+			C:UFUpdate(style, self)
+			C.UF.ResetPoint[style](self, self.unit)
+		end
+	end)
 
 	-- hide blz raid
 	if CompactRaidFrameManager_SetSetting then
