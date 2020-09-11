@@ -180,23 +180,6 @@ local roleDB = {
 	["HEALER"] = {},
 }
 
--- Default auras data
-local auras = {
-	["blackList"] = {},
-	["whiteList"] = {},
-	["raidBuffs"] = {},
-	["raidDebuffs"] = {},
-	["playerBuffs"] = {},
-	["defenseBuffs"] = {},
-	["pvpDebuffs"] = {},
-}
-
--- Default buff indicator (corners of party/raid)
--- [specID] = {[buffids] = CornerID}
-local buffIndicators = {
-	--[263] = {[269279] = 1}, -- test: enhancement
-}
-
 local function CopyTable(source,dest)
 	for k,v in pairs(source) do
 		if dest[k] == nil then dest[k] = v end
@@ -214,8 +197,6 @@ local function OnPlayerSpecChanged()
 	lastRole = role
 	C.roleDB = ruiRoleDB[role]
 	B.role = role
-	-- Buff indicators
-	C.buffIndicators = buffIndicators[specID] or {}
 	-- Set role mover points
 	for frame,mover in pairs(C.mover) do
 		if frame and mover and mover.isRole then
@@ -239,10 +220,4 @@ B:AddInitScript(function()
 	-- remove old keys
 	for k in pairs(C.db) do if defaults[k] == nil then C.db[k] = nil end end
 	for k in pairs(C.roleDB) do if defaultRoleDB[k] == nil then C.roleDB[k] = nil end end
-	-- copy auras to config
-	C.auras = {}
-	for k,v in pairs(auras) do
-		for kk,vv in pairs(C.db.auras[k]) do v[kk] = vv end
-		C.auras[k] = v
-	end
 end)
