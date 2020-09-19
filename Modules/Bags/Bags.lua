@@ -189,10 +189,10 @@ local function UpdateSlotContent(slot, i, j)
 	end
 	if slot.filterIcon then
 		if GetBagFlag(i) then
-			filterIcon:SetTexture(BagFilterIcon[i])
-			filterIcon:Show()
+			slot.filterIcon:SetTexture(BagFilterIcon[i])
+			slot.filterIcon:Show()
 		else
-			filterIcon:Hide()
+			slot.filterIcon:Hide()
 		end
 	end
 end

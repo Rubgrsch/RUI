@@ -23,7 +23,7 @@ WIP! Use at your own risk!
   - [x] Target
   - [x] TargetTarget
   - [x] Party
-  - [ ] Raid
+  - [x] Raid
   - [x] Boss
   - [ ] Arena
   - [x] Config

@@ -52,6 +52,7 @@ local auras = {
 }
 
 B:AddInitScript(function()
+	local specID = GetSpecializationInfo(GetSpecialization())
 	-- Buff indicators
 	C.buffIndicators = buffIndicators[specID] or {}
 	-- copy auras to config

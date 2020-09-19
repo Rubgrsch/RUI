@@ -81,10 +81,10 @@ local function CreatePower(self, hasText)
 		self.PowerValue = powerText
 	end
 
-	return power, powerText
+	return powerText
 end
 
-local function PostCreateIcon(element, icon)
+local function PostCreateIcon(_, icon)
 	local cooldown = _G[icon:GetName().."Cooldown"]
 	B:SetupCooldown(cooldown,13)
 	cooldown:SetReverse(true)
@@ -122,11 +122,11 @@ end
 local function CastTimeText(self,duration)
 	return self.Time:SetFormattedText("%.2f/%.2f", duration, self.max)
 end
-local function CastColor(self, unit)
+local function CastColor(self)
 	if self.notInterruptible then self:SetStatusBarColor(0.6,0.3,0.3) else self:SetStatusBarColor(0.3,0.3,0.3) end
 end
 
-local function CreateCastbar(self,castbarHeight)
+local function CreateCastbar(self)
 	local f = CreateFrame("Frame")
 	local castbar = CreateFrame("StatusBar", nil, self)
 	castbar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
@@ -160,10 +160,10 @@ local function CreateCastbar(self,castbarHeight)
 	castbar.PostChannelStart = CastColor
 	self.Castbar = castbar
 	castbar.f = f
-	return f, castbar, spark, time, icon, shieled, text
+	return f
 end
 
-local function UpdateThreat(self, event, unit)
+local function UpdateThreat(self, _, unit)
 	local role = UnitGroupRolesAssigned(unit)
 	local status = UnitThreatSituation(unit)
 	if role ~= "TANK" and status and status > 0 then
@@ -235,7 +235,7 @@ function C:UFUpdate(unit, frame)
 	if C.UF.ResetPoint[unitType] then C.UF.ResetPoint[unitType](self,unit) end
 	if db.powerHeight >= db.height then db.powerHeight = db.height - 1 end
 	local healthWidth, healthHeight = db.width,db.height - db.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = self.Health, self.healthValue, self.HealthPrediction.myBar, self.HealthPrediction.otherBar, self.HealthPrediction.absorbBar, self.HealthPrediction.healAbsorbBar, self.HealthPrediction.overAbsorb
+	local health, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = self.Health, self.HealthPrediction.myBar, self.HealthPrediction.otherBar, self.HealthPrediction.absorbBar, self.HealthPrediction.healAbsorbBar, self.HealthPrediction.overAbsorb
 	health:SetHeight(healthHeight)
 	healthPredict:SetSize(healthWidth, healthHeight)
 	otherHealthPredict:SetSize(healthWidth, healthHeight)
@@ -270,7 +270,7 @@ function C:UFUpdate(unit, frame)
 
 	local castbar = self.Castbar
 	if castbar then
-		local castbar, castbarWidth, castbarHeight = self.Castbar, db.castbarWidth or healthWidth, db.castbarHeight
+		local castbarWidth, castbarHeight = db.castbarWidth or healthWidth, db.castbarHeight
 		local f, spark, time, icon, shieled, text = castbar.f, castbar.Spark, castbar.Time, castbar.Icon, castbar.Shieled, castbar.Text
 		f:SetSize(castbarWidth,castbarHeight)
 		if C.mover[f] then B:ResizeMover(f) end
@@ -303,7 +303,7 @@ function C:UFGroupUpdate(unit)
 	local db = C.roleDB.unitFrames[unit]
 	local x, y
 	if unit == "party" then
-		x, y = db.width, (db.castbarHeight + db.height) * 5
+		x, y = db.width, (db.castbarHeight + db.height) * 5 + 2
 	elseif unit == "raid" then
 		x, y = db.width * 8, db.height * 5
 	end
@@ -320,12 +320,11 @@ local function CreatePlayerStyle(self)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
-	-- health, healthText, healthPredict
-	local healthWidth, healthHeight = C.roleDB.unitFrames.player.width, C.roleDB.unitFrames.player.height - C.roleDB.unitFrames.player.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self)
+	-- health, healthText
+	local health, healthText = CreateHealth(self)
 	healthText:SetPoint("BOTTOMLEFT",health,"BOTTOMLEFT", 1, 2)
 
-	local power, powerText = CreatePower(self)
+	local powerText = CreatePower(self)
 	powerText:SetPoint("BOTTOMRIGHT",self.Health,"BOTTOMRIGHT", -1, 2)
 
 	-- icons
@@ -370,14 +369,14 @@ local function CreatePlayerStyle(self)
 	-- Player Debuffs Rules
 	-- 1. block blacklist
 	-- 2. pass others
-	debuffs.CustomFilter = function(_, _, _, _, _, _, _, duration, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		return true
 	end
 
 	-- Castbar
 	local castbarWidth, castbarHeight = C.roleDB.unitFrames.player.castbarWidth, C.roleDB.unitFrames.player.castbarHeight
-	local f, castbar, spark, time, icon, shieled, text = CreateCastbar(self,castbarHeight)
+	local f = CreateCastbar(self)
 	f:SetSize(castbarWidth,castbarHeight)
 	B:SetupMover(f, "PlayerCastBar",L["PlayerCastbar"],true)
 
@@ -395,12 +394,11 @@ local function CreateTargetStyle(self)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
-	-- health, healthText, healthPredict
-	local healthWidth, healthHeight = C.roleDB.unitFrames.target.width, C.roleDB.unitFrames.target.height - C.roleDB.unitFrames.target.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self)
+	-- health, healthText
+	local health, healthText = CreateHealth(self)
 	healthText:SetPoint("BOTTOMLEFT",health,"BOTTOMLEFT", 1, 2)
 
-	local power, powerText = CreatePower(self)
+	local powerText = CreatePower(self)
 	powerText:SetPoint("BOTTOMRIGHT",self.Health,"BOTTOMRIGHT", -1, 2)
 
 	-- name
@@ -439,7 +437,7 @@ local function CreateTargetStyle(self)
 	-- Target Buffs Rules
 	-- 1. block blacklist
 	-- 2. pass others
-	buffs.CustomFilter = function(_, _, _, _, _, _, _, duration, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		return true
 	end
@@ -451,7 +449,7 @@ local function CreateTargetStyle(self)
 	-- 5. pass pvpdebuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
-	debuffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
@@ -463,7 +461,7 @@ local function CreateTargetStyle(self)
 
 	-- Castbar
 	local castbarWidth, castbarHeight = C.roleDB.unitFrames.target.castbarWidth, C.roleDB.unitFrames.target.castbarHeight
-	local f, castbar, spark, time, icon, shieled, text = CreateCastbar(self,castbarHeight)
+	local f = CreateCastbar(self)
 	f:SetSize(castbarWidth,castbarHeight)
 	B:SetupMover(f, "TargetCastBar",L["TargetCastBar"],true)
 end
@@ -474,11 +472,10 @@ local function CreateTargetTargetStyle(self)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
-	-- health, healthText, healthPredict
-	local healthWidth, healthHeight = C.roleDB.unitFrames.targettarget.width, C.roleDB.unitFrames.targettarget.height - C.roleDB.unitFrames.targettarget.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self, false)
+	-- health
+	local health = CreateHealth(self, false)
 
-	local power = CreatePower(self, false)
+	CreatePower(self, false)
 
 	-- name
 	local name = upperFrame:CreateFontString()
@@ -509,7 +506,7 @@ local function CreateTargetTargetStyle(self)
 	-- 1. block blacklist
 	-- 2. pass whitelist
 	-- 3. block others
-	buffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		return false
@@ -522,7 +519,7 @@ local function CreateTargetTargetStyle(self)
 	-- 5. pass pvpdebuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
-	debuffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
@@ -539,12 +536,12 @@ local function CreatePetStyle(self)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
-	-- health, healthText, healthPredict
-	local healthWidth, healthHeight = C.roleDB.unitFrames.pet.width, C.roleDB.unitFrames.pet.height - C.roleDB.unitFrames.pet.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self)
+	-- health, healthText
+	local healthWidth = C.roleDB.unitFrames.pet.width
+	local health, healthText = CreateHealth(self)
 	healthText:SetPoint("BOTTOMLEFT",health,"BOTTOMLEFT", 1, 2)
 
-	local power, powerText = CreatePower(self)
+	local powerText = CreatePower(self)
 	powerText:SetPoint("BOTTOMRIGHT",self.Health,"BOTTOMRIGHT", -1, 2)
 
 	-- name
@@ -567,7 +564,7 @@ local function CreatePetStyle(self)
 	-- Pet Buffs Rules
 	-- 1. block blacklist
 	-- 2. pass others
-	buffs.CustomFilter = function(_, _, _, _, _, _, _, duration, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		return true
 	end
@@ -579,7 +576,7 @@ local function CreatePetStyle(self)
 	-- 5. pass pvpdebuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
-	debuffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
@@ -591,7 +588,7 @@ local function CreatePetStyle(self)
 
 	-- Castbar
 	local castbarHeight = C.roleDB.unitFrames.pet.castbarHeight
-	local f, castbar, spark, time, icon, shieled, text = CreateCastbar(self,castbarHeight)
+	local f = CreateCastbar(self)
 	f:SetSize(healthWidth,castbarHeight)
 	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
 end
@@ -602,12 +599,12 @@ local function CreateBossStyle(self)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
-	-- health, healthText, healthPredict
-	local healthWidth, healthHeight = C.roleDB.unitFrames.boss.width, C.roleDB.unitFrames.boss.height - C.roleDB.unitFrames.boss.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self)
+	-- health, healthText
+	local healthWidth = C.roleDB.unitFrames.boss.width
+	local health, healthText = CreateHealth(self)
 	healthText:SetPoint("BOTTOMLEFT",health,"BOTTOMLEFT", 1, 2)
 
-	local power, powerText = CreatePower(self)
+	local powerText = CreatePower(self)
 	powerText:SetPoint("BOTTOMRIGHT",self.Health,"BOTTOMRIGHT", -1, 2)
 
 	-- name
@@ -631,7 +628,7 @@ local function CreateBossStyle(self)
 	-- Boss Buffs Rules
 	-- 1. block blacklist
 	-- 2. pass others
-	buffs.CustomFilter = function(_, _, _, _, _, _, _, duration, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		return true
 	end
@@ -643,7 +640,7 @@ local function CreateBossStyle(self)
 	-- 5. pass pvpdebuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
-	debuffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
@@ -655,7 +652,7 @@ local function CreateBossStyle(self)
 
 	-- Castbar
 	local castbarHeight = C.roleDB.unitFrames.boss.castbarHeight
-	local f, castbar, spark, time, icon, shieled, text = CreateCastbar(self,castbarHeight)
+	local f = CreateCastbar(self)
 	f:SetSize(healthWidth,castbarHeight)
 	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
 end
@@ -666,12 +663,12 @@ local function CreatePartyStyle(self)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
-	-- health, healthText, healthPredict
-	local healthWidth, healthHeight = C.roleDB.unitFrames.party.width, C.roleDB.unitFrames.party.height - C.roleDB.unitFrames.party.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self)
+	-- health, healthText
+	local healthWidth = C.roleDB.unitFrames.party.width
+	local health, healthText = CreateHealth(self)
 	healthText:SetPoint("CENTER",health,"CENTER", 0,0)
 
-	local power, powerText = CreatePower(self)
+	local powerText = CreatePower(self)
 	powerText:SetPoint("CENTER",self.Health,"CENTER", 0, -10)
 
 	-- name
@@ -718,7 +715,7 @@ local function CreatePartyStyle(self)
 	-- 1. block blacklist
 	-- 2. pass defensebuffs
 	-- 3. block others
-	buffs.CustomFilter = function(_, _, _, _, _, _, _, duration, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.defenseBuffs[spellId] then return true end
 		return false
@@ -729,7 +726,7 @@ local function CreatePartyStyle(self)
 	-- 3. pass raiddebuffs
 	-- 4. pass pvpdebuffs
 	-- 5. block others
-	debuffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, isBossDebuff, castByPlayer) -- self, unit, button, UnitAura()
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
@@ -741,7 +738,7 @@ local function CreatePartyStyle(self)
 
 	-- Castbar
 	local castbarHeight = C.roleDB.unitFrames.party.castbarHeight
-	local f, castbar, spark, time, icon, shieled, text = CreateCastbar(self,castbarHeight)
+	local f = CreateCastbar(self)
 	f:SetSize(healthWidth,castbarHeight)
 	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
 
@@ -763,12 +760,11 @@ local function CreateRaidStyle(self)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
-	-- health, healthText, healthPredict
-	local healthWidth, healthHeight = C.roleDB.unitFrames.raid.width, C.roleDB.unitFrames.raid.height - C.roleDB.unitFrames.raid.powerHeight
-	local health, healthText, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = CreateHealth(self)
+	-- health, healthText
+	local health, healthText = CreateHealth(self)
 	healthText:SetPoint("CENTER",health,"CENTER", 0,0)
 
-	local power, powerText = CreatePower(self)
+	local powerText = CreatePower(self)
 	powerText:SetPoint("CENTER",self.Health,"CENTER", 0, -10)
 
 	-- name
@@ -809,13 +805,13 @@ local function CreateRaidStyle(self)
 	self.auraRows = 1
 	buffs.PostUpdate = nil
 	buffs["growth-x"] = "LEFT"
-	buffs:SetPoint("LEFT", health, "CENTER", -40, 0)
-	debuffs:SetPoint("RIGHT", health, "CENTER", 40, 0)
+	debuffs:SetPoint("LEFT", health, "CENTER", 0, 0)
+	buffs:SetPoint("RIGHT", debuffs, "RIGHT", 0, 0)
 	-- Raid Buffs Rules
 	-- 1. block blacklist
 	-- 2. pass raidBuffs
 	-- 3. block others
-	buffs.CustomFilter = function(_, _, _, _, _, _, _, duration, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidBuffs[spellId] then return true end
@@ -827,7 +823,7 @@ local function CreateRaidStyle(self)
 	-- 3. pass raiddebuffs
 	-- 4. pass pvpdebuffs
 	-- 5. block others
-	debuffs.CustomFilter = function(_, unit, _, _, _, _, _, duration, _, source, _, _, spellId, _, isBossDebuff, castByPlayer) -- self, unit, button, UnitAura()
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
@@ -860,7 +856,7 @@ function C.UF.ResetPoint.boss(self, unit)
 	end
 end
 
-function C.UF.ResetPoint.party(self, unit)
+function C.UF.ResetPoint.party(self)
 	local idx = 0
 	local health = self.Health
 	if C.roleDB.unitFrames.party.healthText then idx = idx + 1 end
@@ -887,7 +883,7 @@ function C.UF.ResetPoint.party(self, unit)
 	end
 end
 
-function C.UF.ResetPoint.raid(self, unit)
+function C.UF.ResetPoint.raid(self)
 	local idx = 0
 	local health = self.Health
 	if C.roleDB.unitFrames.raid.healthText then idx = idx + 1 end
@@ -947,7 +943,7 @@ B:AddInitScript(function()
 	B:SetupMover(targettargetFrame, "TargetTargetFrame",L["TargetTargetFrame"],true)
 	targettargetFrame:RegisterForClicks("AnyUp")
 	C.UF.targettarget = targettargetFrame
-	
+
 	-- Pet
 	oUF:RegisterStyle("pet", CreatePetStyle)
 	oUF:SetActiveStyle("pet")
@@ -1027,6 +1023,23 @@ B:AddInitScript(function()
 		if style == "raid" or style == "party" then
 			C:UFUpdate(style, self)
 			C.UF.ResetPoint[style](self, self.unit)
+		end
+	end)
+
+	local f = CreateFrame("Frame")
+	f:SetSize(256,64)
+	B:SetupMover(f, "PlayerPowerBarAlt",L["PlayerPowerBarAlt"])
+	hooksecurefunc(PlayerPowerBarAlt, "SetPoint", function(self, _, parent)
+		if parent ~= f then
+			self:ClearAllPoints()
+			self:SetPoint("TOPLEFT", f)
+		end
+	end)
+	hooksecurefunc("UnitPowerBarAlt_SetUp", function(self)
+		local statusFrame = self.statusFrame
+		if statusFrame.enabled then
+			statusFrame:Show()
+			statusFrame.Hide = statusFrame.Show
 		end
 	end)
 

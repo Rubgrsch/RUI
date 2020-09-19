@@ -17,7 +17,7 @@ local function TimeText(seconds)
 	end
 end
 
-function EndCD(self)
+local function EndCD(self)
 	self:Hide()
 	self.elapsed = 0
 	self.endTime = nil
@@ -65,7 +65,7 @@ local function SetCooldown(self, start, duration)
 		timer:Show()
 		OnUpdate(timer,100)
 	else
-		EndCD(timer)
+		EndCD(self.ruicd)
 	end
 end
 

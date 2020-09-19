@@ -3,10 +3,10 @@ local B, L, C = unpack(rui)
 
 local oUF = rui.oUF
 
-local function Update(self, event, unit)
+local function Update(self, _, unit)
 	if unit ~= self.unit then return end
 	for i=1, 40 do
-		local name, icon, count, debuffType, duration, expiration, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitBuff(unit, i)
+		local name, _, count, _, duration, expiration, _, _, _, spellId = UnitBuff(unit, i)
 		if name then
 			local p = C.buffIndicators[spellId]
 			if p then

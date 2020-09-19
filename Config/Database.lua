@@ -26,6 +26,7 @@ local defaults = {
 		ExtraActionBarButton = {"BOTTOM","BOTTOM",0,96},
 		ObjectiveTrackerFrame = {"TOPRIGHT","TOPRIGHT",-50,-200},
 		VehicleSeatIndicator = {"TOPLEFT","TOPLEFT",20,-400},
+		PlayerPowerBarAlt = {"TOP","TOP",0,-100},
 		--BuffFrame = {"TOPRIGHT","TOPRIGHT",-190,-5},
 	},
 	["dataPanel"] = {
@@ -192,7 +193,6 @@ local lastRole
 
 local function OnPlayerSpecChanged()
 	local role = GetSpecializationRole(GetSpecialization())
-	local specID = GetSpecializationInfo(GetSpecialization())
 	if lastRole == role then return end
 	lastRole = role
 	C.roleDB = ruiRoleDB[role]
@@ -214,7 +214,6 @@ B:AddInitScript(function()
 	C.db = ruiDB
 	CopyTable(defaults,C.db)
 	if type(ruiRoleDB) ~= "table" or next(ruiRoleDB) == nil then ruiRoleDB = roleDB end
-	local role = GetSpecializationRole(GetSpecialization())
 	for role in pairs(roleDB) do CopyTable(defaultRoleDB,ruiRoleDB[role]) end
 	OnPlayerSpecChanged()
 	-- remove old keys

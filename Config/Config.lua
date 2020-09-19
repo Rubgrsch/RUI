@@ -898,25 +898,19 @@ options.args.unitFrames = {
 					type = "range",
 					name = L["HealthWidth"],
 					order = 2,
-					min = 20, max = 1000, step = 5,
+					min = 20, max = 200, step = 5,
 				},
 				height = {
 					type = "range",
 					name = L["HealthHeight"],
 					order = 3,
-					min = 5, max = 500, step = 1,
+					min = 5, max = 200, step = 1,
 				},
 				powerHeight = {
 					type = "range",
 					name = L["PowerHeight"],
 					order = 4,
-					min = 1, max = 500, step = 1,
-				},
-				castbarHeight = {
-					type = "range",
-					name = L["CastbarHeight"],
-					order = 6,
-					min = 1, max = 500, step = 1,
+					min = 1, max = 200, step = 1,
 				},
 				aurasPerRow = {
 					type = "range",

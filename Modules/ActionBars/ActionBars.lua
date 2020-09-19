@@ -134,7 +134,6 @@ end
 local function CreatePetBar()
 	local frameName = "RUIPetActionBar"
 	local frame = CreateFrame("Frame", frameName, UIParent, "SecureHandlerStateTemplate")
-	frame.buttonSize = buttonSize
 	B:SetupMover(frame, "PetActionBar",L["PetActionBar"],true)
 	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0, 0, 0, 0.5)
@@ -216,6 +215,7 @@ local function DisableBLZ()
 
 	ExtraActionBarFrame:SetParent(UIParent)
 	B:SetupMover(ExtraActionButton1, "ExtraActionBarButton",L["ExtraActionBarButton"])
+	-- TODO Cooldown
 	local style = ExtraActionButton1.style
 	style:SetTexture("")
 	style._texture_ = ""
@@ -266,7 +266,7 @@ end
 function C:SetupOtherActionBarBttons()
 	local buttonSize = C.roleDB.actionBars.otherBarSlotSize
 	-- PetBar
-	local frame, btnNum, btnPerRow = RUIPetActionBar, NUM_PET_ACTION_SLOTS, C.roleDB.actionBars.perBarSlotsPerRow
+	local frame, btnNum, btnPerRow = _G.RUIPetActionBar, NUM_PET_ACTION_SLOTS, C.roleDB.actionBars.perBarSlotsPerRow
 	frame:SetSize(buttonSize*min(btnPerRow,btnNum), buttonSize*ceil(btnNum/btnPerRow))
 	B:ResizeMover(frame)
 	for i=1, #frame do
@@ -277,7 +277,7 @@ function C:SetupOtherActionBarBttons()
 		if i <= btnNum then button:Show() else button:Hide() end
 	end
 	-- StanceBar
-	frame, btnNum, btnPerRow = RUIStanceBar, NUM_STANCE_SLOTS, C.roleDB.actionBars.stanceBarSlotsPerRow
+	frame, btnNum, btnPerRow = _G.RUIStanceBar, NUM_STANCE_SLOTS, C.roleDB.actionBars.stanceBarSlotsPerRow
 	frame:SetSize(buttonSize*min(btnPerRow,btnNum), buttonSize*ceil(btnNum/btnPerRow))
 	B:ResizeMover(frame)
 	for i=1, #frame do

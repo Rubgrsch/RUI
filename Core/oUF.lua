@@ -1,4 +1,4 @@
-local addonName, rui = ...
+local _, rui = ...
 local B, L, C = unpack(rui)
 
 local oUF = rui.oUF
@@ -98,7 +98,7 @@ oUF.Tags.Methods["threatPerc:Player"] = function()
 		output = "*"
 	end
 	if UnitExists("target") then
-		local isTanking, status, scaledPercentage, rawPercentage, threatValue = UnitDetailedThreatSituation("player", "target")
+		local _, _, scaledPercentage = UnitDetailedThreatSituation("player", "target")
 		if scaledPercentage and scaledPercentage > 0 then
 			return format("%.0f%%",scaledPercentage)
 		else
