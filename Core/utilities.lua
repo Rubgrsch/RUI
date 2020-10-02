@@ -19,7 +19,7 @@ local function MoverLock(_,button)
 	end
 end
 
-function B:SetupMover(frame,moverName,localizedName,isRole,enable,anchor)
+function B:SetupMover(frame,moverName,localizedName,isRole,enable)
 	local mover = CreateFrame("Frame", "RUIMover"..moverName, RUIParent)
 	mover:Hide()
 	mover:SetSize(frame:GetWidth(),frame:GetHeight())

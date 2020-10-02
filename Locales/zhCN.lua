@@ -83,6 +83,25 @@ L["ActionBarSlotsNumTooltip"] = "设置该动作条的按钮数,设为0以禁用
 L["ActionBarSlotsPerRow"] = "每行按钮数"
 L["ActionBarSlotsPerRowTooltip"] = "设置该动作条每一行的按钮数"
 L["PetStanceBarSlotSizeTooltip"] = "设置该动作条按钮大小, 该选项会对宠物动作条和姿态条生效!"
+-- config - UF
+L["UnitFrames"] = "团队框架"
+L["HealthWidth"] = "生命条宽度"
+L["HealthHeight"] = "生命条高度"
+L["PowerHeight"] = "能量条高度"
+L["CastbarWidth"] = "施法条宽度"
+L["CastbarHeight"] = "施法条高度"
+L["AurasPerRow"] = "每行光环数目"
+L["Player"] = "玩家"
+L["Target"] = "目标"
+L["TargetTarget"] = "目标的目标"
+L["Pet"] = "宠物"
+L["Boss"] = "首领"
+L["Party"] = "小队"
+L["Raid"] = "团队"
+L["HealthText"] = "生命值"
+L["PowerText"] = "能量值"
+L["BuffIndicatorsSize"] = "增益指示器大小"
+L["AuraSize"] = "光环大小"
 
 -- Tooltip
 L["ID %d"] = "ID %d"
@@ -124,7 +143,6 @@ L["RightDataPanel"] = "右侧信息条"
 
 -- Maps
 L["Mouse"] = "鼠标"
-L["Player"] = "玩家"
 L["Minimap"] = "小地图"
 
 -- Instance
@@ -147,3 +165,15 @@ L["MPB:Anounce_Tooltips"] = " MPB评价为 %s|r"
 L["Reset"] = "重置"
 L["Confirm"] = "确认"
 L["Close"] = "关闭"
+
+-- UF
+L["PlayerCastbar"] = "玩家施法条"
+L["TargetCastBar"] = "目标施法条"
+L["PlayerFrame"] = "玩家框架"
+L["TargetFrame"] = "目标框架"
+L["TargetTargetFrame"] = "目标的目标框架"
+L["PetFrame"] = "宠物框架"
+L["BossFrame"] = "首领框架"
+L["PartyFrame"] = "小队框架"
+L["RaidFrame"] = "团队框架"
+L["PlayerPowerBarAlt"] = "特殊能量条"

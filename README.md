@@ -15,23 +15,17 @@ WIP! Use at your own risk!
 - [x] Bags
 - [x] ActionBars
  - [ ] Fader - Waitlist
+- [x] UF
+  - [ ] Arena
+  - [ ] Buff/Debuff list - Wait for 9.0
+- [x] NP
+  - [ ] Config
 
 **WIP:** May or may not work  
 
-- [ ] UF
-  - [x] Player
-  - [x] Target
-  - [x] TargetTarget
-  - [x] Party
-  - [x] Raid
-  - [x] Boss
-  - [ ] Arena
-  - [x] Config
-  - [ ] Buff/Debuff list
+- [ ] Chat
 
 **TODO:** Not implement yet  
 
-- [ ] Chat
 - [ ] Auras
-- [ ] NP
 - [ ] Skins

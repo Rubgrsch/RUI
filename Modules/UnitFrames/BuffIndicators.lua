@@ -37,7 +37,7 @@ local function Enable(self)
 	if flag then self:RegisterEvent("UNIT_AURA", Update) end
 end
 
-local function Disable()
+local function Disable(self)
 	self:UnregisterEvent("UNIT_AURA")
 end
 

@@ -88,6 +88,10 @@ local function PostCreateIcon(_, icon)
 	local cooldown = _G[icon:GetName().."Cooldown"]
 	B:SetupCooldown(cooldown,13)
 	cooldown:SetReverse(true)
+	local count = icon.count
+	count:ClearAllPoints()
+	count:SetPoint("BOTTOMRIGHT", 0, 0)
+	count:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
 	local stealable = icon.stealable
 	stealable:ClearAllPoints()
 	stealable:SetPoint("TOPLEFT", -2, 2)
@@ -780,11 +784,11 @@ local function CreateRaidStyle(self)
 	mark:SetSize(12,12)
 	self.RaidTargetIndicator = mark
 	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
-	leader:SetPoint("LEFT",self,"LEFT",0,0)
+	leader:SetPoint("LEFT",self,"LEFT",12,0)
 	leader:SetSize(12, 12)
 	self.LeaderIndicator = leader
 	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
-	assistant:SetPoint("LEFT",self,"LEFT",0,0)
+	assistant:SetPoint("LEFT",self,"LEFT",12,0)
 	assistant:SetSize(12, 12)
 	self.AssistantIndicator = assistant
 	local phase = upperFrame:CreateTexture(nil, "OVERLAY")
@@ -796,7 +800,7 @@ local function CreateRaidStyle(self)
 	combat:SetSize(22, 22)
 	self.CombatIndicator = combat
 	local role = upperFrame:CreateTexture(nil, "OVERLAY")
-	role:SetPoint("LEFT", self, "LEFT", 12, 0)
+	role:SetPoint("LEFT", self, "LEFT", 0, 0)
 	role:SetSize(12, 12)
 	self.GroupRoleIndicator = role
 

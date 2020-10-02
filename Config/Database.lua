@@ -28,6 +28,7 @@ local defaults = {
 		VehicleSeatIndicator = {"TOPLEFT","TOPLEFT",20,-400},
 		PlayerPowerBarAlt = {"TOP","TOP",0,-100},
 		--BuffFrame = {"TOPRIGHT","TOPRIGHT",-190,-5},
+		TargetDeathTimer = {"TOP","TOP",0,0},
 	},
 	["dataPanel"] = {
 		["enableLeft"] = true,
@@ -62,6 +63,13 @@ local defaults = {
 		["playerBuffs"] = {},
 		["defenseBuffs"] = {},
 		["pvpDebuffs"] = {},
+	},
+	["nameplates"] = {
+		["deathTimer"] = {
+			["targetDeathTimer"] = true,
+			["nameplateDeathTimer"] = true,
+			["timeFormat"] = 1,
+		},
 	},
 }
 
@@ -173,6 +181,8 @@ local defaultRoleDB = {
 			["buffIndicatorsSize"] = 10,
 		},
 	},
+	["nameplates"] = {
+	},
 }
 
 local roleDB = {
@@ -213,6 +223,14 @@ B:AddInitScript(function()
 	if type(ruiDB) ~= "table" or next(ruiDB) == nil then ruiDB = defaults end
 	C.db = ruiDB
 	CopyTable(defaults,C.db)
+	-- Set non-role mover points
+	for frame,mover in pairs(C.mover) do
+		if frame and mover and not mover.isRole then
+			mover:ClearAllPoints()
+			local point, secondaryPoint, x, y = unpack(C.db.mover[mover.moverName])
+			mover:SetPoint(point, UIParent, secondaryPoint, x, y)
+		end
+	end
 	if type(ruiRoleDB) ~= "table" or next(ruiRoleDB) == nil then ruiRoleDB = roleDB end
 	for role in pairs(roleDB) do CopyTable(defaultRoleDB,ruiRoleDB[role]) end
 	OnPlayerSpecChanged()

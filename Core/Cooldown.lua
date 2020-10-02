@@ -56,8 +56,8 @@ end
 
 local function SetCooldown(self, start, duration)
 	self:SetHideCountdownNumbers(true) -- Need review
+	local timer = self.ruicd
 	if start and duration then
-		local timer = self.ruicd
 		timer.endTime = start + duration
 		timer.duration = duration
 		local elapsed = timer.endTime - GetTime()
@@ -65,7 +65,7 @@ local function SetCooldown(self, start, duration)
 		timer:Show()
 		OnUpdate(timer,100)
 	else
-		EndCD(self.ruicd)
+		EndCD(timer)
 	end
 end
 

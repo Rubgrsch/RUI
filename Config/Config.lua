@@ -882,7 +882,7 @@ options.args.unitFrames = {
 		raid = {
 			type = "group",
 			name = L["Raid"],
-			order = 16,
+			order = 17,
 			get = function(info) return C.roleDB.unitFrames.raid[info[#info]] end,
 			set = function(info, value)
 				C.roleDB.unitFrames.raid[info[#info]] = value
@@ -921,7 +921,7 @@ options.args.unitFrames = {
 				},
 				auraSize = {
 					type = "range",
-					name = L["auraSize"].."*",
+					name = L["AuraSize"].."*",
 					desc = L["RequireReload"],
 					order = 8,
 					min = 4, max = 32, step = 1,
@@ -947,6 +947,62 @@ options.args.unitFrames = {
 		},
 	},
 }
+options.args.nameplates = {
+	type = "group",
+	name = L["Nameplates"],
+	order = 13,
+	get = function(info) return C.db.nameplates[info[#info]] end,
+	set = function(info, value) C.db.nameplates[info[#info]] = value end,
+	args = {
+		enable = {
+			type = "toggle",
+			name = L["Enable"].."*",
+			desc = L["RequireReload"],
+			order = 1,
+		},
+		deathTimerHeader = {
+			type = "header",
+			name = L["DeathTimer"],
+			order = 20,
+		},
+		targetDeathTimer = {
+			type = "toggle",
+			name = L["Target"],
+			order = 21,
+			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
+			set = function(info, value)
+				C.db.nameplates.deathTimer[info[#info]] = value
+				C:SetupTargetDeathTimer()
+			end,
+		},
+		timeFormat = {
+			type = "select",
+			name = L["TimeFormat"],
+			order = 22,
+			values = {
+				[1] = "67.3",
+				[2] = "67",
+				[3] = "01:07",
+			},
+			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
+			set = function(info, value)
+				C.db.nameplates.deathTimer[info[#info]] = value
+				C:SetupTargetDeathTimer()
+			end,
+		},
+		nameplateDeathTimer = {
+			type = "toggle",
+			name = L["Nameplate"],
+			order = 23,
+			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
+			set = function(info, value)
+				C.db.nameplates.deathTimer[info[#info]] = value
+				C:ToggleNPDeathTimer(value)
+			end,
+		},
+	},
+}
+
 LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RUI", options)
 LibStub("AceConfigDialog-3.0"):SetDefaultSize("RUI", 800, 600)
 

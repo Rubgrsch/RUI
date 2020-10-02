@@ -19,6 +19,12 @@ oUF.Tags.Methods["hpperc"] = function(unit)
 end
 oUF.Tags.Events["hpperc"] = "UNIT_HEALTH UNIT_MAXHEALTH"
 
+oUF.Tags.Methods["hp"] = function(unit)
+	local cur = UnitHealth(unit)
+	return L["NumUnitFormat"](cur)
+end
+oUF.Tags.Events["hp"] = "UNIT_HEALTH UNIT_MAXHEALTH"
+
 oUF.Tags.Methods["power"] = function(unit)
 	local cur = UnitPower(unit)
 	return L["NumUnitFormat"](cur)
@@ -59,6 +65,16 @@ oUF.Tags.Methods["colorlvl:smart"] = function(unit)
 	if not eq then return format("|cff%02x%02x%02x%s|r", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??") end
 end
 oUF.Tags.Events["colorlvl:smart"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+
+oUF.Tags.Methods["colorlvl:high "] = function(unit)
+	local level = UnitLevel(unit)
+	local diff = level - UnitLevel("player")
+	if diff > 3 then
+		local diffColor = GetCreatureDifficultyColor(level)
+		return format("|cff%02x%02x%02x%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??")
+	end
+end
+oUF.Tags.Events["colorlvl:high "] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
 oUF.Tags.Methods["colorname"] = function(unit)
 	if UnitIsPlayer(unit) then

@@ -1,2 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="TargetIndicators.lua"/>
+	<Script file="DeathTimer.lua"/>
 	<Script file="Nameplates.lua"/></Ui>
