@@ -75,6 +75,7 @@ end
 
 function B:RemoveEventScript(event, func)
 	local t = frame[event]
+	if not t then return end
 	for i, v in ipairs(t) do if v == func then tremove(t,i) end end
 	if not next(frame[event]) then
 		frame[event] = nil

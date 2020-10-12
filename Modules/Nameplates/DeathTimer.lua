@@ -124,8 +124,8 @@ end
 
 local targetTimerHandler = B:AddTimer(0.1, UpdateTargetDeathTimer, false)
 
-function C:SetupTargetDeathTimer()
-	if C.db.nameplates.deathTimer.targetDeathTimer then
+function C:SetupDeathTimer()
+	if C.db.nameplates.enable and C.db.nameplates.deathTimer.target then
 		updateFunc = timeFormatFuncs[C.db.nameplates.deathTimer.timeFormat]
 		timerFrame:Show()
 		B:ToggleTimer(targetTimerHandler, true)
@@ -134,6 +134,23 @@ function C:SetupTargetDeathTimer()
 		timerFrame:Hide()
 		B:ToggleTimer(targetTimerHandler, false)
 		B:RemoveEventScript("PLAYER_TARGET_CHANGED",UpdateTargetDeathTimer)
+	end
+	local enableNPDT = C.db.nameplates.enable and C.db.nameplates.deathTimer.nameplate
+	for _, f in pairs(oUF.objects) do
+		if f.style == "nameplates" then
+			if enableNPDT then
+				f:EnableElement("DeathTimer")
+			else
+				f:DisableElement("DeathTimer")
+			end
+		end
+	end
+	if C.db.nameplates.enable and (C.db.nameplates.deathTimer.target or enableNPDT) then
+		eventFrame:Show()
+		eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	else
+		eventFrame:Hide()
+		eventFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	end
 end
 
@@ -165,10 +182,6 @@ end
 oUF:AddElement("DeathTimer", Update, Enable, Disable)
 
 B:AddInitScript(function()
-	if C.db.nameplates.enable then
-		eventFrame:Show()
-		eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		C:SetupTargetDeathTimer()
-	end
+	C:SetupDeathTimer()
 end)
 

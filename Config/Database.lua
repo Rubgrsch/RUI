@@ -66,8 +66,8 @@ local defaults = {
 	},
 	["nameplates"] = {
 		["deathTimer"] = {
-			["targetDeathTimer"] = true,
-			["nameplateDeathTimer"] = true,
+			["target"] = true,
+			["nameplate"] = true,
 			["timeFormat"] = 1,
 		},
 	},
@@ -182,6 +182,11 @@ local defaultRoleDB = {
 		},
 	},
 	["nameplates"] = {
+		["enable"] = true,
+		["width"] = 100,
+		["height"] = 4,
+		["aurasPerRow"] = 6,
+		["castbarHeight"] = 12,
 	},
 }
 

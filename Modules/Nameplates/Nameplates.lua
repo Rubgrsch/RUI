@@ -14,6 +14,7 @@ local function UpdateColor(element, unit)
 		end
 	else
 		r, g, b = UnitSelectionColor(unit, true)
+		r, g, b = r * 0.8, g * 0.8, b * 0.8
 	end
 
 	if r then
@@ -42,6 +43,55 @@ local function CastColor(self)
 	if self.notInterruptible then self:SetStatusBarColor(0.6,0.3,0.3) else self:SetStatusBarColor(0.3,0.3,0.3) end
 end
 
+local function UpdateNP(self)
+	local db = C.roleDB.nameplates
+	
+	local healthWidth, healthHeight = db.width,db.height
+	local health, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = self.Health, self.HealthPrediction.myBar, self.HealthPrediction.otherBar, self.HealthPrediction.absorbBar, self.HealthPrediction.healAbsorbBar, self.HealthPrediction.overAbsorb
+	self:SetSize(healthWidth, healthHeight)
+	healthPredict:SetSize(healthWidth, healthHeight)
+	otherHealthPredict:SetSize(healthWidth, healthHeight)
+	absorb:SetSize(healthWidth, healthHeight)
+	healAbsorb:SetSize(healthWidth, healthHeight)
+	overAbsorb:SetSize(10,healthHeight)
+
+	local buffs, debuffs, aurasPerRow = self.Buffs, self.Debuffs, db.aurasPerRow
+	buffs.size = floor(healthWidth / aurasPerRow)
+	debuffs.size = floor(healthWidth / aurasPerRow)
+	buffs.num = aurasPerRow
+	buffs:SetSize(buffs.size * aurasPerRow, buffs.size)
+	debuffs.num = aurasPerRow
+	debuffs:SetSize(buffs.size * aurasPerRow, buffs.size)
+	-- HACK: Force reset auras points after db loading/ config change.
+	-- Sometimes widget size is not prepared and setpoint offset is -nan, which makes auras not showing if they exist at reloading but newly get auras are fine.
+	buffs.anchoredIcons = 0
+	debuffs.anchoredIcons = 0
+	-- end of hack
+
+	local castbar = self.Castbar
+	local castbarWidth, castbarHeight = healthWidth, db.castbarHeight
+	local f, spark, time, icon, shieled, text = castbar.f, castbar.Spark, castbar.Time, castbar.Icon, castbar.Shieled, castbar.Text
+	castbar:SetSize(healthWidth-castbarHeight, castbarHeight)
+	castbar:SetPoint("TOPLEFT",f,"TOPLEFT",castbarHeight,0)
+	spark:SetSize(castbarHeight/3,castbarHeight)
+	time:SetPoint("RIGHT", castbar)
+	icon:SetSize(castbarHeight,castbarHeight)
+	icon:SetPoint("TOPLEFT", f, "TOPLEFT")
+	shieled:SetSize(castbarHeight, castbarHeight)
+	shieled:SetPoint("CENTER", icon)
+	text:SetPoint("LEFT", icon,"RIGHT")
+	f:SetSize(healthWidth,castbarHeight)
+	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+end
+
+function C:NPUpdate()
+	for _, f in pairs(oUF.objects) do
+		if f.style == "nameplates" then
+			UpdateNP(f)
+		end
+	end
+end
+
 local function CreatePlates(self)
 	local width, height = 100, 4
 	self:SetSize(width, height)
@@ -60,7 +110,7 @@ local function CreatePlates(self)
 	healthbg:SetVertexColor(0.1,0.1,0.1,0.7)
 
 	local healthText = upperFrame:CreateFontString()
-	healthText:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+	healthText:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
 	--healthText:SetPoint("BOTTOMRIGHT",health,"TOPRIGHT",0,2)
 	healthText:SetPoint("CENTER",health)
 	self:Tag(healthText, "[hp]")
@@ -157,19 +207,6 @@ local function CreatePlates(self)
 		return true
 	end
 
-	local aurasPerRow = 6
-	buffs.size = floor(width / aurasPerRow)
-	debuffs.size = floor(width / aurasPerRow)
-	buffs.num = aurasPerRow
-	buffs:SetSize(buffs.size * aurasPerRow, buffs.size)
-	debuffs.num = aurasPerRow
-	debuffs:SetSize(buffs.size * aurasPerRow, buffs.size)
-	-- HACK: Force reset auras points after db loading/ config change.
-	-- Sometimes widget size is not prepared and setpoint offset is -nan, which makes auras not showing if they exist at reloading but newly get auras are fine.
-	buffs.anchoredIcons = 0
-	debuffs.anchoredIcons = 0
-	-- end of hack
-
 	-- Castbar
 	local f = CreateFrame("Frame")
 	local castbar = CreateFrame("StatusBar", nil, self)
@@ -197,20 +234,8 @@ local function CreatePlates(self)
 	castbar.CustomTimeText = CastTimeText
 	castbar.PostCastStart = CastColor
 	castbar.PostChannelStart = CastColor
+	castbar.f = f
 	self.Castbar = castbar
-
-	local castbarHeight = 8
-	castbar:SetSize(width-castbarHeight, castbarHeight)
-	castbar:SetPoint("TOPLEFT",f,"TOPLEFT",castbarHeight,-2)
-	spark:SetSize(castbarHeight/3,castbarHeight)
-	time:SetPoint("RIGHT", castbar)
-	icon:SetSize(castbarHeight,castbarHeight)
-	icon:SetPoint("TOPLEFT", f, "TOPLEFT",0,-2)
-	shieled:SetSize(castbarHeight, castbarHeight)
-	shieled:SetPoint("CENTER", icon)
-	text:SetPoint("LEFT", icon,"RIGHT")
-	f:SetSize(width,castbarHeight)
-	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
 
 	-- target indicators
 	local targetIndicators = CreateFrame("Frame",nil,self)
@@ -240,23 +265,27 @@ local function CreatePlates(self)
 	self.DeathTimer.text = dtText
 end
 
-function C:ToggleNPDeathTimer(toggle)
-	for _, f in pairs(oUF.objects) do
-		if f.style == "nameplates" then
-			if toggle then
-				f:EnableElement("DeathTimer")
-			else
-				f:DisableElement("DeathTimer")
-			end
+local function Callback(self, event, unit)
+	if event == "NAME_PLATE_UNIT_ADDED" then
+		if UnitIsUnit(unit, "target") then
+			self.TargetIndicator:Show()
+		else
+			self.TargetIndicator:Hide()
 		end
 	end
 end
 
 B:AddInitScript(function()
-	if C.db.nameplates.enable then
+	if C.roleDB.nameplates.enable then
 		oUF:RegisterStyle("nameplates", CreatePlates)
 		oUF:SetActiveStyle("nameplates")
-		oUF:SpawnNamePlates("oUF_NPs")
-		C:ToggleNPDeathTimer(C.db.nameplates.deathTimer.nameplateDeathTimer)
+		oUF:SpawnNamePlates("oUF_NPs", Callback)
+		C:NPUpdate()
+		oUF:RegisterInitCallback(function(self)
+			local style = self.style
+			if style == "nameplates" then
+				C:NPUpdate()
+			end
+		end)
 	end
 end)

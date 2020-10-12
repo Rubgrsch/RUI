@@ -951,8 +951,11 @@ options.args.nameplates = {
 	type = "group",
 	name = L["Nameplates"],
 	order = 13,
-	get = function(info) return C.db.nameplates[info[#info]] end,
-	set = function(info, value) C.db.nameplates[info[#info]] = value end,
+	get = function(info) return C.roleDB.nameplates[info[#info]] end,
+	set = function(info, value)
+		C.roleDB.nameplates[info[#info]] = value
+		C:NPUpdate()
+	end,
 	args = {
 		enable = {
 			type = "toggle",
@@ -960,19 +963,44 @@ options.args.nameplates = {
 			desc = L["RequireReload"],
 			order = 1,
 		},
+		width = {
+			type = "range",
+			name = L["HealthWidth"],
+			order = 2,
+			min = 20, max = 200, step = 5,
+		},
+		height = {
+			type = "range",
+			name = L["HealthHeight"],
+			order = 3,
+			min = 1, max = 100, step = 1,
+		},
+		aurasPerRow = {
+			type = "range",
+			name = L["AurasPerRow"].."*",
+			desc = L["RequireReload"],
+			order = 4,
+			min = 1, max = 12, step = 1,
+		},
+		castbarHeight = {
+			type = "range",
+			name = L["CastbarHeight"],
+			order = 5,
+			min = 1, max = 500, step = 1,
+		},
 		deathTimerHeader = {
 			type = "header",
 			name = L["DeathTimer"],
 			order = 20,
 		},
-		targetDeathTimer = {
+		targetDT = {
 			type = "toggle",
 			name = L["Target"],
 			order = 21,
 			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
 			set = function(info, value)
 				C.db.nameplates.deathTimer[info[#info]] = value
-				C:SetupTargetDeathTimer()
+				C:SetupDeathTimer()
 			end,
 		},
 		timeFormat = {
@@ -987,17 +1015,17 @@ options.args.nameplates = {
 			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
 			set = function(info, value)
 				C.db.nameplates.deathTimer[info[#info]] = value
-				C:SetupTargetDeathTimer()
+				C:SetupDeathTimer()
 			end,
 		},
-		nameplateDeathTimer = {
+		nameplateDT = {
 			type = "toggle",
 			name = L["Nameplate"],
 			order = 23,
 			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
 			set = function(info, value)
 				C.db.nameplates.deathTimer[info[#info]] = value
-				C:ToggleNPDeathTimer(value)
+				C:SetupDeathTimer()
 			end,
 		},
 	},
