@@ -110,7 +110,6 @@ local function CreateAuras(self)
 	buffs["growth-x"] = "RIGHT"
 	buffs["growth-y"] = "UP"
 	buffs.PostCreateIcon = PostCreateIcon
-	buffs.PostUpdate = PostUpdateBuff
 	local debuffs = CreateFrame("Frame", nil, self)
 	debuffs.initialAnchor = "BOTTOMLEFT"
 	debuffs["growth-x"] = "RIGHT"
@@ -184,7 +183,7 @@ local threatBackdrop = {
 }
 
 local function CreateThreat(self)
-	local threat = CreateFrame("Frame", nil, self)
+	local threat = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	threat:SetPoint("TOPLEFT", self, "TOPLEFT", -4, 4)
 	threat:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 4, -4)
 	threat:SetBackdrop(threatBackdrop)
@@ -262,6 +261,7 @@ function C:UFUpdate(unit, frame)
 		buffs.num = aurasPerRow * rows
 		buffs.iconsPerRow = aurasPerRow
 		buffs:SetSize(buffs.size * aurasPerRow, buffs.size * rows)
+		buffs.PostUpdate = PostUpdateBuff
 		debuffs.num = aurasPerRow * rows
 		debuffs.iconsPerRow = aurasPerRow
 		debuffs:SetSize(buffs.size * aurasPerRow, buffs.size * rows)

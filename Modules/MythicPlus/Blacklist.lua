@@ -83,7 +83,7 @@ for i=1, 4 do
 	frame.button = {}
 	frame.selected = false
 	for j=1, 5 do
-		local button = CreateFrame("Button",nil, frame)
+		local button = CreateFrame("Button",nil, frame, "BackdropTemplate")
 		button:SetPoint("TOP",frame,"TOP",0,-50-30*j)
 		button:SetSize(100,30)
 		button:SetBackdrop(buttonBackdrop)
@@ -138,7 +138,7 @@ local function SetAllPartyFrames()
 	end
 end
 
-local confirmButton = CreateFrame("Button",nil, MPBFrame)
+local confirmButton = CreateFrame("Button",nil, MPBFrame,"BackdropTemplate")
 confirmButton:SetSize(300,40)
 confirmButton:SetPoint("BOTTOM", MPBFrame, "BOTTOM", 0, 10)
 confirmButton:SetBackdrop(buttonBackdrop)
@@ -154,7 +154,7 @@ confirmButton:SetScript("OnClick", function()
 	end
 end)
 
-local resetButton = CreateFrame("Button",nil, MPBFrame)
+local resetButton = CreateFrame("Button",nil, MPBFrame,"BackdropTemplate")
 resetButton:SetSize(75,40)
 resetButton:SetPoint("RIGHT", confirmButton, "LEFT")
 resetButton:SetBackdrop(buttonBackdrop)
@@ -165,7 +165,7 @@ resetText:SetPoint("CENTER")
 resetText:SetFont(defaultFont_GameFontNormal, 17)
 resetButton:SetScript("OnClick", ResetPartyFrames)
 
-local closeButton = CreateFrame("Button",nil, MPBFrame)
+local closeButton = CreateFrame("Button",nil, MPBFrame,"BackdropTemplate")
 closeButton:SetSize(75,40)
 closeButton:SetPoint("LEFT", confirmButton, "RIGHT")
 closeButton:SetBackdrop(buttonBackdrop)

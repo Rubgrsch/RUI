@@ -3,7 +3,8 @@ local B, L, C = unpack(rui)
 
 local oUF = rui.oUF
 
-local function UpdateColor(element, unit)
+local function UpdateColor(self, _, unit)
+	local element = self.Health
 	local r, g, b
 	if (not UnitPlayerControlled(unit) and UnitIsTapDenied(unit)) or not UnitIsConnected(unit) then
 		r, g, b = 0.7, 0.7, 0.7

@@ -203,6 +203,9 @@ local function DisableBLZ()
 	MainMenuBar:Hide()
 	MainMenuBar:UnregisterAllEvents()
 	MainMenuBar.Show = MainMenuBar.Hide
+	MainMenuBarVehicleLeaveButton:Hide()
+	MainMenuBarVehicleLeaveButton:UnregisterAllEvents()
+	MainMenuBarVehicleLeaveButton.Show = OverrideActionBar.Hide
 	OverrideActionBar:Hide()
 	OverrideActionBar:UnregisterAllEvents()
 	OverrideActionBar.Show = OverrideActionBar.Hide
@@ -308,8 +311,8 @@ B:AddInitScript(function()
 		if event == "ACTIONBAR_UPDATE_STATE" or ((event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") and arg1 == "player") then
 			local frame = bars[1]
 			for i=1, #frame do
-				ActionButton_UpdateAction(frame[i])
-				ActionButton_Update(frame[i])
+				frame[i]:UpdateAction()
+				frame[i]:Update()
 			end
 		end
 	end
