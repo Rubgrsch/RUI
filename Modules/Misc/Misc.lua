@@ -8,16 +8,6 @@ hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
 	self.editBox:ClearFocus()
 end)
 
--- Fix LFG globalstring error
-if GetLocale() == "zhCN" and strmatch((GetBuildInfo()),"^%d+") ~= "9" then
-	StaticPopupDialogs["LFG_LIST_ENTRY_EXPIRED_TOO_MANY_PLAYERS"] = {
-		text = "针对此项活动，你的队伍人数已满，将被移出列表。",
-		button1 = OKAY,
-		timeout = 0,
-		whileDead = 1,
-	}
-end
-
 -- Auto Achievement Screenshot, stolen from EKCore
 local function AutoScreenshot() if C.db.general.autoScreenshot then C_Timer.After(1,Screenshot) end end
 B:AddEventScript("ACHIEVEMENT_EARNED", AutoScreenshot)
