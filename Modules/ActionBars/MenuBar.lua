@@ -54,7 +54,7 @@ local function CreateMenuBar()
 	-- LFD, PVEFrame_ToggleFrame is available afterwards
 	CreateMenuButton(frame, function() PVEFrame_ToggleFrame() end, "INTERFACE\\ICONS\\LEVELUPICON-LFD")
 	-- Collection
-	CreateMenuButton(frame, CollectionsMicroButton_OnClick, "INTERFACE\\ICONS\\MountJournalPortrait")
+	CreateMenuButton(frame, function() ToggleCollectionsJournal(1) end, "INTERFACE\\ICONS\\MountJournalPortrait")
 	-- Journal
 	CreateMenuButton(frame, function()
 		if not IsAddOnLoaded("Blizzard_EncounterJournal") then

@@ -121,7 +121,7 @@ end
 
 local function SetCurrencyToken(tooltip, index)
 	if tooltip:IsForbidden() then return end
-	local id = GetCurrencyListLink(index):match("currency:(%d+)")
+	local id = C_CurrencyInfo.GetCurrencyListLink(index):match("currency:(%d+)")
 	if id then
 		tooltip:AddDoubleLine(" ",format(L["ID %d"],id))
 		tooltip:Show()
