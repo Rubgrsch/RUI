@@ -82,7 +82,7 @@ local function SetupMinimapDataButton()
 	dataButton:SetNormalTexture(1044996)
 	dataButton:GetNormalTexture():SetAlpha(0.6)
 	dataButton:SetHighlightTexture(1044996)
-	local dataButtonList = CreateFrame("Frame", "TESTTEST", dataButton)
+	local dataButtonList = CreateFrame("Frame", nil, dataButton)
 	dataButtonList:SetPoint("RIGHT", dataButton, "LEFT")
 	dataButtonList:Hide()
 	dataButtonList.offset = 0
@@ -110,7 +110,14 @@ local function SetupMinimapDataButton()
 		local idx = #dataButtonList.list
 		button:ClearAllPoints()
 		button:SetParent(dataButtonList)
-		button:SetPoint("RIGHT",dataButtonList,"RIGHT",-dataButtonList.offset,0)
+		local offset = -dataButtonList.offset
+		button:SetPoint("RIGHT",dataButtonList,"RIGHT",offset,0)
+		hooksecurefunc(button, "SetPoint", function(self, _, parent)
+			if parent ~= dataButtonList then
+				self:ClearAllPoints()
+				self:SetPoint("RIGHT",dataButtonList,"RIGHT",offset,0)
+			end
+		end)
 		dataButtonList.offset = dataButtonList.offset + button:GetSize()
 		dataButtonList.list[idx+1] = button
 		if isLDB then
