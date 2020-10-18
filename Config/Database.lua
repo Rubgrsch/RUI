@@ -95,6 +95,7 @@ local defaultRoleDB = {
 		BossFrame = {"TOPRIGHT","TOPRIGHT",-50,-200},
 		PartyFrame = {"TOPLEFT","TOPLEFT",50,-300},
 		RaidFrame = {"TOPLEFT","TOPLEFT",50,-300},
+		TotemFrame = {"TOPLEFT","TOPLEFT",50,-62},
 	},
 	["actionBars"] = {
 		["enable"] = true,

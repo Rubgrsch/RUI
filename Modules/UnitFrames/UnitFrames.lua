@@ -390,6 +390,33 @@ local function CreatePlayerStyle(self)
 	threatText:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	threatText:SetPoint("TOPRIGHT",self.Health,"TOPRIGHT", 0, 0)
 	self:Tag(threatText, "[threatcolor][threatPerc:Player]")
+
+	-- Totem
+	local totems = CreateFrame("Frame")
+	totems:SetSize(20*MAX_TOTEMS,20)
+	B:SetupMover(totems, "TotemFrame",L["TotemFrame"],true)
+    for i = 1, MAX_TOTEMS do
+        local totem = CreateFrame("Button", nil, totems, "SecureActionButtonTemplate")
+		totem:SetSize(20, 20)
+        totem:SetPoint("TOPLEFT", totems, "TOPLEFT", (i-1) * totem:GetWidth(), 0)
+		totem:RegisterForClicks("RightButtonUp")
+		totem:SetAttribute("*type2", "destroytotem")
+		totem:SetAttribute("totem-slot", i)
+
+        local icon = totem:CreateTexture(nil, "OVERLAY")
+        icon:SetAllPoints()
+
+        local cooldown = CreateFrame("Cooldown", nil, totem, "CooldownFrameTemplate")
+        cooldown:SetAllPoints()
+		B:SetupCooldown(cooldown,11)
+		cooldown:SetReverse(true)
+
+        totem.Icon = icon
+        totem.Cooldown = cooldown
+
+        totems[i] = totem
+    end
+    self.Totems = totems
 end
 
 local function CreateTargetStyle(self)
