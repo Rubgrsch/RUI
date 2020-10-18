@@ -8,4 +8,4 @@
 	<Include file="Nameplates\Nameplates.xml"/>
 	<Include file="UnitFrames\UnitFrames.xml"/>
 	<Include file="Blizzard\Blizzard.xml"/>
-	<Script file="Misc\Misc.lua"/></Ui>
+	<Include file="Misc\Misc.xml"/></Ui>
