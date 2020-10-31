@@ -125,3 +125,10 @@ oUF.Tags.Methods["threatPerc:Player"] = function()
 	end
 end
 oUF.Tags.Events["threatPerc:Player"] = "UNIT_THREAT_SITUATION_UPDATE PLAYER_TARGET_CHANGED"
+
+oUF.Tags.Methods["altpower"] = function(unit)
+	local cur = UnitPower(unit, ALTERNATE_POWER_INDEX)
+	return cur > 0 and cur
+end
+oUF.Tags.Events["altpower"] = "UNIT_POWER_UPDATE UNIT_MAXPOWER"
+

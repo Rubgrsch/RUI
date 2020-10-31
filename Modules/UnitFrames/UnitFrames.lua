@@ -6,6 +6,8 @@ local oUF = rui.oUF
 
 oUF.colors.power.MANA = {0, 0.2, 1}
 
+local altPowerHeight = 5
+
 local function CreateHealth(self, hasText)
 	local upperFrame = self.upperFrame
 	local health = CreateFrame("StatusBar", nil, self)
@@ -69,7 +71,7 @@ local function CreatePower(self, hasText)
 	local powerbg = power:CreateTexture(nil, "BACKGROUND")
 	powerbg:SetAllPoints()
 	powerbg:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-    powerbg.multiplier = 0.2
+	powerbg.multiplier = 0.2
 	power.bg = powerbg
 	self.Power = power
 
@@ -82,6 +84,25 @@ local function CreatePower(self, hasText)
 	end
 
 	return powerText
+end
+
+local function CreateAltPower(self)
+	local upperFrame = self.upperFrame
+	local altPower = CreateFrame("StatusBar", nil, self)
+	altPower:SetPoint("BOTTOMLEFT",self,"TOPLEFT")
+	altPower:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT")
+	altPower:SetHeight(5)
+	altPower:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
+	local powerbg = altPower:CreateTexture(nil, "BACKGROUND")
+	powerbg:SetAllPoints()
+	powerbg:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+	powerbg:SetVertexColor(0.15,0.15,0.15)
+	local text = upperFrame:CreateFontString()
+	text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+	text:SetPoint("CENTER",altPower)
+	self:Tag(text, "[altpower]")
+	self.AlternativePower = altPower
+	self.AlternativePower.colorPower = true
 end
 
 local function PostCreateIcon(_, icon)
@@ -143,7 +164,7 @@ local function CreateCastbar(self)
 	local time = castbar:CreateFontString(nil, "OVERLAY")
 	time:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	local icon = castbar:CreateTexture(nil, "OVERLAY")
-    local shieled = castbar:CreateTexture(nil, "OVERLAY")
+	local shieled = castbar:CreateTexture(nil, "OVERLAY")
 	local text = castbar:CreateFontString(nil, "OVERLAY")
 	text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 
@@ -249,6 +270,11 @@ function C:UFUpdate(unit, frame)
 	local power = self.Power
 	power:SetHeight(db.powerHeight)
 
+	local altPower = self.AlternativePower
+	if altPower then
+		altPower:SetWidth(healthWidth)
+	end
+
 	local buffs, debuffs, aurasPerRow, rows, auraVert = self.Buffs, self.Debuffs, db.aurasPerRow, self.auraRows or 2, self.auraVert
 	if buffs then
 		if self.style == "raid" then
@@ -307,9 +333,9 @@ function C:UFGroupUpdate(unit)
 	local db = C.roleDB.unitFrames[unit]
 	local x, y
 	if unit == "party" then
-		x, y = db.width, (db.castbarHeight + db.height) * 5 + 2
+		x, y = db.width, (db.castbarHeight + db.height + altPowerHeight) * 5 + 2
 	elseif unit == "raid" then
-		x, y = db.width * 8, db.height * 5
+		x, y = db.width * 8, (db.height + altPowerHeight) * 5
 	end
 	B:ResizeMover(C.UF[unit],x,y)
 	if unit == "raid" then
@@ -395,28 +421,28 @@ local function CreatePlayerStyle(self)
 	local totems = CreateFrame("Frame")
 	totems:SetSize(20*MAX_TOTEMS,20)
 	B:SetupMover(totems, "TotemFrame",L["TotemFrame"],true)
-    for i = 1, MAX_TOTEMS do
-        local totem = CreateFrame("Button", nil, totems, "SecureActionButtonTemplate")
+	for i = 1, MAX_TOTEMS do
+		local totem = CreateFrame("Button", nil, totems, "SecureActionButtonTemplate")
 		totem:SetSize(20, 20)
-        totem:SetPoint("TOPLEFT", totems, "TOPLEFT", (i-1) * totem:GetWidth(), 0)
+		totem:SetPoint("TOPLEFT", totems, "TOPLEFT", (i-1) * totem:GetWidth(), 0)
 		totem:RegisterForClicks("RightButtonUp")
 		totem:SetAttribute("*type2", "destroytotem")
 		totem:SetAttribute("totem-slot", i)
 
-        local icon = totem:CreateTexture(nil, "OVERLAY")
-        icon:SetAllPoints()
+		local icon = totem:CreateTexture(nil, "OVERLAY")
+		icon:SetAllPoints()
 
-        local cooldown = CreateFrame("Cooldown", nil, totem, "CooldownFrameTemplate")
-        cooldown:SetAllPoints()
+		local cooldown = CreateFrame("Cooldown", nil, totem, "CooldownFrameTemplate")
+		cooldown:SetAllPoints()
 		B:SetupCooldown(cooldown,11)
 		cooldown:SetReverse(true)
 
-        totem.Icon = icon
-        totem.Cooldown = cooldown
+		totem.Icon = icon
+		totem.Cooldown = cooldown
 
-        totems[i] = totem
-    end
-    self.Totems = totems
+		totems[i] = totem
+	end
+	self.Totems = totems
 end
 
 local function CreateTargetStyle(self)
@@ -702,6 +728,8 @@ local function CreatePartyStyle(self)
 	local powerText = CreatePower(self)
 	powerText:SetPoint("CENTER",self.Health,"CENTER", 0, -10)
 
+	CreateAltPower(self)
+
 	-- name
 	local name = upperFrame:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
@@ -711,15 +739,15 @@ local function CreatePartyStyle(self)
 
 	-- icons
 	local mark = upperFrame:CreateTexture(nil, "OVERLAY")
-	mark:SetPoint("CENTER",self,"TOP")
+	mark:SetPoint("CENTER",self,"TOP",0,5)
 	mark:SetSize(12,12)
 	self.RaidTargetIndicator = mark
 	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
-	leader:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,-3)
+	leader:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,2)
 	leader:SetSize(12, 12)
 	self.LeaderIndicator = leader
 	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
-	assistant:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,-3)
+	assistant:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,2)
 	assistant:SetSize(12, 12)
 	self.AssistantIndicator = assistant
 	local phase = upperFrame:CreateTexture(nil, "OVERLAY")
@@ -740,7 +768,7 @@ local function CreatePartyStyle(self)
 	buffs.PostUpdate = nil
 	self.auraRows = 1
 	self.auraVert = true
-	buffs:SetPoint("TOPLEFT", health, "TOPRIGHT", 0, 0)
+	buffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, 0)
 	debuffs:SetPoint("TOPLEFT", buffs, "BOTTOMLEFT", 0, 0)
 	-- Party Buffs Rules
 	-- 1. block blacklist
@@ -775,8 +803,8 @@ local function CreatePartyStyle(self)
 
 	-- Range alpha
 	self.Range = {
-        insideAlpha = 1,
-        outsideAlpha = 1/2,
+		insideAlpha = 1,
+		outsideAlpha = 1/2,
 	}
 
 	-- Buff indicators
@@ -798,6 +826,8 @@ local function CreateRaidStyle(self)
 	local powerText = CreatePower(self)
 	powerText:SetPoint("CENTER",self.Health,"CENTER", 0, -10)
 
+	altPower = CreateAltPower(self)
+
 	-- name
 	local name = upperFrame:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
@@ -807,7 +837,7 @@ local function CreateRaidStyle(self)
 
 	-- icons
 	local mark = upperFrame:CreateTexture(nil, "OVERLAY")
-	mark:SetPoint("CENTER",self,"TOP")
+	mark:SetPoint("CENTER",self,"TOP",0,5)
 	mark:SetSize(12,12)
 	self.RaidTargetIndicator = mark
 	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
@@ -866,8 +896,8 @@ local function CreateRaidStyle(self)
 
 	-- Range alpha
 	self.Range = {
-        insideAlpha = 1,
-        outsideAlpha = 1/2,
+		insideAlpha = 1,
+		outsideAlpha = 1/2,
 	}
 
 	-- Buff indicators
@@ -1008,7 +1038,7 @@ B:AddInitScript(function()
 		"groupingOrder", "TANK,HEALER,DAMAGER,NONE",
 		"point", "BOTTOM", -- BOTTOM for vert, LEFT for horz
 		"columnAnchorPoint", "LEFT",
-		"yOffset", C.roleDB.unitFrames.party.castbarHeight,
+		"yOffset", C.roleDB.unitFrames.party.castbarHeight + altPowerHeight,
 		"oUF-initialConfigFunction", format([[self:SetWidth(%d); self:SetHeight(%d)]], C.roleDB.unitFrames.party.width, C.roleDB.unitFrames.party.height)
 	)
 	B:SetupMover(partyFrame, "PartyFrame",L["PartyFrame"],true)
@@ -1029,6 +1059,7 @@ B:AddInitScript(function()
 			"groupingOrder", "1,2,3,4,5,6,7,8",
 			"point", "BOTTOM", -- BOTTOM for vert, LEFT for horz
 			"columnAnchorPoint", "LEFT",
+			"yOffset", altPowerHeight,
 			"unitsPerColumn", 5,
 			"oUF-initialConfigFunction", format([[self:SetWidth(%d); self:SetHeight(%d)]], C.roleDB.unitFrames.raid.width, C.roleDB.unitFrames.raid.height)
 		)
