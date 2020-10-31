@@ -46,9 +46,9 @@ end
 
 local function UpdateNP(self)
 	local db = C.roleDB.nameplates
-	
+
 	local healthWidth, healthHeight = db.width,db.height
-	local health, healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = self.Health, self.HealthPrediction.myBar, self.HealthPrediction.otherBar, self.HealthPrediction.absorbBar, self.HealthPrediction.healAbsorbBar, self.HealthPrediction.overAbsorb
+	local healthPredict, otherHealthPredict, absorb, healAbsorb, overAbsorb = self.HealthPrediction.myBar, self.HealthPrediction.otherBar, self.HealthPrediction.absorbBar, self.HealthPrediction.healAbsorbBar, self.HealthPrediction.overAbsorb
 	self:SetSize(healthWidth, healthHeight)
 	healthPredict:SetSize(healthWidth, healthHeight)
 	otherHealthPredict:SetSize(healthWidth, healthHeight)
@@ -70,7 +70,7 @@ local function UpdateNP(self)
 	-- end of hack
 
 	local castbar = self.Castbar
-	local castbarWidth, castbarHeight = healthWidth, db.castbarHeight
+	local castbarHeight = db.castbarHeight
 	local f, spark, time, icon, shieled, text = castbar.f, castbar.Spark, castbar.Time, castbar.Icon, castbar.Shieled, castbar.Text
 	castbar:SetSize(healthWidth-castbarHeight, castbarHeight)
 	castbar:SetPoint("TOPLEFT",f,"TOPLEFT",castbarHeight,0)
@@ -222,7 +222,7 @@ local function CreatePlates(self)
 	local time = castbar:CreateFontString(nil, "OVERLAY")
 	time:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
 	local icon = castbar:CreateTexture(nil, "OVERLAY")
-    local shieled = castbar:CreateTexture(nil, "OVERLAY")
+	local shieled = castbar:CreateTexture(nil, "OVERLAY")
 	local text = castbar:CreateFontString(nil, "OVERLAY")
 	text:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
 

@@ -9,7 +9,7 @@ local function OnEvent(self)
 end
 
 local function OnEnter(tooltip)
-	local exp, maxExp, level = UnitHonor("player"), UnitHonorMax("player"), UnitHonorLevel("player")
+	local exp, maxExp = UnitHonor("player"), UnitHonorMax("player")
 	tooltip:AddDoubleLine(L["CurrentExp:"], format("%s/%s (%.0f%%)",L["NumUnitFormat"](exp),L["NumUnitFormat"](maxExp),exp/maxExp*100))
 end
 
