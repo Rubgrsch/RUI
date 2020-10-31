@@ -71,6 +71,10 @@ local defaults = {
 			["timeFormat"] = 1,
 		},
 	},
+	["chat"] = {
+		["frame1Width"] = 416,
+		["frame1Height"] = 160,
+	},
 }
 
 local defaultRoleDB = {
