@@ -29,6 +29,7 @@ local defaults = {
 		PlayerPowerBarAlt = {"TOP","TOP",0,-100},
 		--BuffFrame = {"TOPRIGHT","TOPRIGHT",-190,-5},
 		TargetDeathTimer = {"TOP","TOP",0,0},
+		RaidTools = {"TOPLEFT","TOPLEFT",0,-100},
 	},
 	["dataPanel"] = {
 		["enableLeft"] = true,
