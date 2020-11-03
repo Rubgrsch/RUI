@@ -587,6 +587,70 @@ local function CreateTargetTargetStyle(self)
 	end
 end
 
+local function CreateFocusStyle(self)
+	self.style = "focus"
+	self:SetSize(C.roleDB.unitFrames.focus.width,C.roleDB.unitFrames.focus.height)
+	local upperFrame = CreateFrame("Frame",nil,self)
+	self.upperFrame = upperFrame
+
+	-- health
+	local health = CreateHealth(self, false)
+
+	CreatePower(self, false)
+
+	-- name
+	local name = upperFrame:CreateFontString()
+	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+	name:SetPoint("CENTER",health)
+	self:Tag(name, "[colorname]")
+	self.nameText = name
+
+	-- icons
+	local mark = upperFrame:CreateTexture(nil, "OVERLAY")
+	mark:SetPoint("CENTER",self,"TOP")
+	mark:SetSize(12,12)
+	self.RaidTargetIndicator = mark
+	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
+	leader:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,-3)
+	leader:SetSize(12, 12)
+	self.LeaderIndicator = leader
+	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
+	assistant:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,-3)
+	assistant:SetSize(12, 12)
+	self.AssistantIndicator = assistant
+
+	-- auras
+	local buffs, debuffs = CreateAuras(self)
+	buffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 0)
+	debuffs:SetPoint("BOTTOMLEFT", buffs, "TOPLEFT", 0, 0)
+	-- Focus Buffs Rules
+	-- 1. block blacklist
+	-- 2. pass whitelist
+	-- 3. block others
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+		if C.auras.blackList[spellId] then return false end
+		if C.auras.whiteList[spellId] then return true end
+		return false
+	end
+	-- Focus Debuffs Rules
+	-- 1. block blacklist
+	-- 2. pass whitelist
+	-- 3. pass yours
+	-- 4. pass raiddebuffs
+	-- 5. pass pvpdebuffs
+	-- 6. block other players ->(3)-> block players
+	-- 7. pass others
+	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
+		if C.auras.blackList[spellId] then return false end
+		if C.auras.whiteList[spellId] then return true end
+		if source and UnitIsUnit(source, "player") then return true end
+		if C.auras.raidDebuffs[spellId] then return true end
+		if C.auras.pvpDebuffs[spellId] then return true end
+		if castByPlayer then return false end
+		return true
+	end
+end
+
 local function CreatePetStyle(self)
 	self.style = "pet"
 	self:SetSize(C.roleDB.unitFrames.pet.width,C.roleDB.unitFrames.pet.height)
@@ -743,11 +807,11 @@ local function CreatePartyStyle(self)
 	mark:SetSize(12,12)
 	self.RaidTargetIndicator = mark
 	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
-	leader:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,2)
+	leader:SetPoint("RIGHT",name,"LEFT")
 	leader:SetSize(12, 12)
 	self.LeaderIndicator = leader
 	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
-	assistant:SetPoint("BOTTOMLEFT",self,"TOPLEFT",0,2)
+	assistant:SetPoint("RIGHT",name,"LEFT")
 	assistant:SetSize(12, 12)
 	self.AssistantIndicator = assistant
 	local phase = upperFrame:CreateTexture(nil, "OVERLAY")
@@ -841,11 +905,11 @@ local function CreateRaidStyle(self)
 	mark:SetSize(12,12)
 	self.RaidTargetIndicator = mark
 	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
-	leader:SetPoint("LEFT",self,"LEFT",12,0)
+	leader:SetPoint("RIGHT",name,"LEFT")
 	leader:SetSize(12, 12)
 	self.LeaderIndicator = leader
 	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
-	assistant:SetPoint("LEFT",self,"LEFT",12,0)
+	assistant:SetPoint("RIGHT",name,"LEFT")
 	assistant:SetSize(12, 12)
 	self.AssistantIndicator = assistant
 	local phase = upperFrame:CreateTexture(nil, "OVERLAY")
@@ -1005,6 +1069,14 @@ B:AddInitScript(function()
 	targettargetFrame:RegisterForClicks("AnyUp")
 	C.UF.targettarget = targettargetFrame
 
+	-- Focus
+	oUF:RegisterStyle("focus", CreateFocusStyle)
+	oUF:SetActiveStyle("focus")
+	local focusFrame = oUF:Spawn("focus")
+	B:SetupMover(focusFrame, "FocusFrame",L["FocusFrame"],true)
+	focusFrame:RegisterForClicks("AnyUp")
+	C.UF.focus = focusFrame
+
 	-- Pet
 	oUF:RegisterStyle("pet", CreatePetStyle)
 	oUF:SetActiveStyle("pet")
@@ -1074,6 +1146,7 @@ B:AddInitScript(function()
 	C:UFUpdate("player")
 	C:UFUpdate("target")
 	C:UFUpdate("targettarget")
+	C:UFUpdate("focus")
 	C:UFUpdate("pet")
 	for i=1, MAX_BOSS_FRAMES do
 		C:UFUpdate("boss"..i)

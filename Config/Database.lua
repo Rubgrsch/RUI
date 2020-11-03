@@ -96,6 +96,7 @@ local defaultRoleDB = {
 		TargetFrame = {"TOPLEFT","TOPLEFT",280,-20},
 		TargetCastBar = {"TOPLEFT","TOPLEFT",280,-50},
 		TargetTargetFrame = {"TOPLEFT","TOPLEFT",500,-20},
+		FocusFrame = {"LEFT","LEFT",500,0},
 		PetFrame = {"TOPLEFT","TOPLEFT",50,-60},
 		BossFrame = {"TOPRIGHT","TOPRIGHT",-50,-200},
 		PartyFrame = {"TOPLEFT","TOPLEFT",50,-300},
@@ -142,6 +143,13 @@ local defaultRoleDB = {
 			["aurasPerRow"] = 8,
 		},
 		["targettarget"] = {
+			["enable"] = true,
+			["width"] = 100,
+			["height"] = 30,
+			["powerHeight"] = 4,
+			["aurasPerRow"] = 6,
+		},
+		["focus"] = {
 			["enable"] = true,
 			["width"] = 100,
 			["height"] = 30,
