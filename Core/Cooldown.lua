@@ -61,7 +61,7 @@ local function SetCooldown(self, start, duration)
 		timer.endTime = start + duration
 		timer.duration = duration
 		local elapsed = timer.endTime - GetTime()
-		timer.rate = elapsed > 10 and 1 or 0.1
+		timer.rate = elapsed > 10 and 0.5 or 0.1
 		timer:Show()
 		OnUpdate(timer,100)
 	else
