@@ -807,11 +807,11 @@ local function CreatePartyStyle(self)
 	mark:SetSize(12,12)
 	self.RaidTargetIndicator = mark
 	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
-	leader:SetPoint("RIGHT",name,"LEFT")
+	leader:SetPoint("BOTTOM",name,"TOP")
 	leader:SetSize(12, 12)
 	self.LeaderIndicator = leader
 	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
-	assistant:SetPoint("RIGHT",name,"LEFT")
+	assistant:SetPoint("BOTTOM",name,"TOP")
 	assistant:SetSize(12, 12)
 	self.AssistantIndicator = assistant
 	local phase = upperFrame:CreateTexture(nil, "OVERLAY")
@@ -905,11 +905,11 @@ local function CreateRaidStyle(self)
 	mark:SetSize(12,12)
 	self.RaidTargetIndicator = mark
 	local leader = upperFrame:CreateTexture(nil, "OVERLAY")
-	leader:SetPoint("RIGHT",name,"LEFT")
+	leader:SetPoint("BOTTOM",name,"TOP")
 	leader:SetSize(12, 12)
 	self.LeaderIndicator = leader
 	local assistant = upperFrame:CreateTexture(nil, "OVERLAY")
-	assistant:SetPoint("RIGHT",name,"LEFT")
+	assistant:SetPoint("BOTTOM",name,"TOP")
 	assistant:SetSize(12, 12)
 	self.AssistantIndicator = assistant
 	local phase = upperFrame:CreateTexture(nil, "OVERLAY")
