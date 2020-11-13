@@ -5,6 +5,7 @@ C.UF = {}
 local oUF = rui.oUF
 
 oUF.colors.power.MANA = {0, 0.2, 1}
+oUF.colors.health = {0.25,0.25,0.25}
 
 local altPowerHeight = 5
 
@@ -15,6 +16,9 @@ local function CreateHealth(self, hasText)
 	health:SetPoint("TOPRIGHT", self)
 	health:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
 	health:SetStatusBarColor(0.25,0.25,0.25)
+	health.colorDisconnected = true
+	health.colorTapping = true
+	health.colorHealth = true
 	self.Health = health
 	local healthbg = health:CreateTexture(nil, "BACKGROUND")
 	healthbg:SetAllPoints()
@@ -46,6 +50,7 @@ local function CreateHealth(self, hasText)
 	local healAbsorb = CreateFrame("StatusBar", nil, health)
 	healAbsorb:SetPoint("TOPRIGHT", healthPredict:GetStatusBarTexture())
 	healAbsorb:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
+	healAbsorb:SetStatusBarColor(0.9, 0.2, 0.2, 0.5)
 	local overAbsorb = health:CreateTexture(nil, "OVERLAY")
 	overAbsorb:SetPoint("TOPLEFT", health, "TOPRIGHT", -4, 0)
 	overAbsorb:SetAlpha(0.8)
