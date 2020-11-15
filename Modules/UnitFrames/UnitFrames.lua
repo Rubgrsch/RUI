@@ -1190,4 +1190,16 @@ B:AddInitScript(function()
 		CompactRaidFrameManager:UnregisterAllEvents()
 		CompactRaidFrameManager:SetParent(B.hider)
 	end
+	B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
+		C:UFUpdate("player")
+		C:UFUpdate("target")
+		C:UFUpdate("targettarget")
+		C:UFUpdate("focus")
+		C:UFUpdate("pet")
+		for i=1, MAX_BOSS_FRAMES do
+			C:UFUpdate("boss"..i)
+		end
+		C:UFGroupUpdate("party")
+		C:UFGroupUpdate("raid")
+	end)
 end)

@@ -332,4 +332,8 @@ B:AddInitScript(function()
 	else
 		ClearOverrideKeybind()
 	end
+	B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
+		for i=1, 5 do C:SetupActionBarButtons(i) end
+		C:SetupOtherActionBarBttons()
+	end)
 end)
