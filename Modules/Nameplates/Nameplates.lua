@@ -158,6 +158,12 @@ local function CreatePlates(self)
 	self:Tag(name, "[colorlvl:high ][name]")
 	self.nameText = name
 
+	-- icon
+	local mark = upperFrame:CreateTexture(nil, "OVERLAY")
+	mark:SetPoint("RIGHT",name,"LEFT")
+	mark:SetSize(12,12)
+	self.RaidTargetIndicator = mark
+
 	-- auras
 	local buffs = CreateFrame("Frame", nil, self)
 	buffs.initialAnchor = "BOTTOMLEFT"
@@ -182,11 +188,13 @@ local function CreatePlates(self)
 	-- 2. pass whiteList
 	-- 3. pass raidBuffs
 	-- 4. pass defenseBuffs
-	-- 5. block others
-	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	-- 5. pass dispelable
+	-- 6. block others
+	buffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, isStealable, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidBuffs[spellId] then return true end
+		if isStealable then return true end
 		if C.auras.defenseBuffs[spellId] then return true end
 		return false
 	end
