@@ -182,6 +182,7 @@ local defaultRoleDB = {
 			["healthText"] = true,
 			["powerText"] = true,
 			["buffIndicatorsSize"] = 10,
+			["horizontal"] = false,
 		},
 		["raid"] = {
 			["enable"] = true,

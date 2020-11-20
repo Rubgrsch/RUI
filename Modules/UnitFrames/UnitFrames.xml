@@ -1,3 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="BuffIndicators.lua"/>
+	<Script file="Totems.lua"/>
 	<Script file="UnitFrames.lua"/></Ui>

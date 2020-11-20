@@ -280,14 +280,22 @@ function C:UFUpdate(unit, frame)
 		altPower:SetWidth(healthWidth)
 	end
 
-	local buffs, debuffs, aurasPerRow, rows, auraVert = self.Buffs, self.Debuffs, db.aurasPerRow, self.auraRows or 2, self.auraVert
+	local buffs, debuffs, aurasPerRow, rows = self.Buffs, self.Debuffs, db.aurasPerRow, self.auraRows or 2
 	if buffs then
 		if self.style == "raid" then
 			buffs.size = db.auraSize
 			debuffs.size = db.auraSize
+		elseif self.style == "party" then
+			if db.horizontal then
+				buffs.size = floor(healthWidth / aurasPerRow)
+				debuffs.size = floor(healthWidth / aurasPerRow)
+			else
+				buffs.size = db.height/2
+				debuffs.size = db.height/2
+			end
 		else
-			buffs.size = auraVert and db.height/2 or floor(healthWidth / aurasPerRow)
-			debuffs.size = auraVert and db.height/2 or floor(healthWidth / aurasPerRow)
+			buffs.size = floor(healthWidth / aurasPerRow)
+			debuffs.size = floor(healthWidth / aurasPerRow)
 		end
 		buffs.num = aurasPerRow * rows
 		buffs.iconsPerRow = aurasPerRow
@@ -338,7 +346,7 @@ function C:UFGroupUpdate(unit)
 	local db = C.roleDB.unitFrames[unit]
 	local x, y
 	if unit == "party" then
-		x, y = db.width, (db.castbarHeight + db.height + altPowerHeight) * 5 + 2
+		x, y = db.width * (db.horizontal and 5 or 1), (db.castbarHeight + db.height + altPowerHeight) * (db.horizontal and 1 or 5) + 2
 	elseif unit == "raid" then
 		x, y = db.width * 8, (db.height + altPowerHeight) * 5
 	end
@@ -421,33 +429,6 @@ local function CreatePlayerStyle(self)
 	threatText:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	threatText:SetPoint("TOPRIGHT",self.Health,"TOPRIGHT", 0, 0)
 	self:Tag(threatText, "[threatcolor][threatPerc:Player]")
-
-	-- Totem
-	local totems = CreateFrame("Frame")
-	totems:SetSize(20*MAX_TOTEMS,20)
-	B:SetupMover(totems, "TotemFrame",L["TotemFrame"],true)
-	for i = 1, MAX_TOTEMS do
-		local totem = CreateFrame("Button", nil, totems, "SecureActionButtonTemplate")
-		totem:SetSize(20, 20)
-		totem:SetPoint("TOPLEFT", totems, "TOPLEFT", (i-1) * totem:GetWidth(), 0)
-		totem:RegisterForClicks("RightButtonUp")
-		totem:SetAttribute("*type2", "destroytotem")
-		totem:SetAttribute("totem-slot", i)
-
-		local icon = totem:CreateTexture(nil, "OVERLAY")
-		icon:SetAllPoints()
-
-		local cooldown = CreateFrame("Cooldown", nil, totem, "CooldownFrameTemplate")
-		cooldown:SetAllPoints()
-		B:SetupCooldown(cooldown,11)
-		cooldown:SetReverse(true)
-
-		totem.Icon = icon
-		totem.Cooldown = cooldown
-
-		totems[i] = totem
-	end
-	self.Totems = totems
 end
 
 local function CreateTargetStyle(self)
@@ -836,9 +817,6 @@ local function CreatePartyStyle(self)
 	local buffs, debuffs = CreateAuras(self)
 	buffs.PostUpdate = nil
 	self.auraRows = 1
-	self.auraVert = true
-	buffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, 0)
-	debuffs:SetPoint("TOPLEFT", buffs, "BOTTOMLEFT", 0, 0)
 	-- Party Buffs Rules
 	-- 1. block blacklist
 	-- 2. pass defensebuffs
@@ -1011,6 +989,15 @@ function C.UF.ResetPoint.party(self)
 	else
 		self.PowerValue:Hide()
 	end
+	self.Buffs:ClearAllPoints()
+	self.Debuffs:ClearAllPoints()
+	if C.roleDB.unitFrames.party.horizontal then
+		self.Buffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 0)
+		self.Debuffs:SetPoint("BOTTOMLEFT", self.Buffs, "TOPLEFT", 0, 0)
+	else
+		self.Buffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, 0)
+		self.Debuffs:SetPoint("TOPLEFT", buffs, "BOTTOMLEFT", 0, 0)
+	end
 end
 
 function C.UF.ResetPoint.raid(self)
@@ -1113,7 +1100,7 @@ B:AddInitScript(function()
 		"showRaid", false,
 		"groupBy", "ASSIGNEDROLE",
 		"groupingOrder", "TANK,HEALER,DAMAGER,NONE",
-		"point", "BOTTOM", -- BOTTOM for vert, LEFT for horz
+		"point", C.roleDB.unitFrames.party.horizontal and "LEFT" or "BOTTOM", -- BOTTOM for vert, LEFT for horz
 		"columnAnchorPoint", "LEFT",
 		"yOffset", C.roleDB.unitFrames.party.castbarHeight + altPowerHeight,
 		"oUF-initialConfigFunction", format([[self:SetWidth(%d); self:SetHeight(%d)]], C.roleDB.unitFrames.party.width, C.roleDB.unitFrames.party.height)
