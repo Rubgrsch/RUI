@@ -8,18 +8,104 @@ local whiteList = {
 }
 
 local raidBuffs = {
+	[1022] = true,
+	[6940] = true,
+	[1044] = true,
+	[77761] = true,
+	[77764] = true,
+	[31821] = true,
+	[97463] = true,
+	[64843] = true,
+	[64901] = true,
+	[81782] = true,
+	[29166] = true,
+	[47788] = true,
+	[33206] = true,
+	[53563] = true,
+	[98007] = true,
+	[223658] = true,
+	[115310] = true,
+	[116849] = true,
+	[204018] = true,
+	[102342] = true,
+	[156910] = true,
+	[192082] = true,
+	[201633] = true,
+	[207498] = true,
+	[238698] = true,
+	[209426] = true,
 }
 
 local raidDebuffs = {
 	-- Shadowlands Dungeon
 	-- Sanguine Depths
+	[326827] = true,
+	[326836] = true,
+	[322554] = true,
+	[321038] = true,
+	[328593] = true,
+	[325254] = true,
 	-- Spires of Ascension
+	[338729] = true,
+	[327481] = true,
+	[322818] = true,
+	[322817] = true,
+	[324154] = true,
+	[335805] = true,
 	-- The Necrotic Wake
+	[321821] = true,
+	[323365] = true,
+	[338353] = true,
+	[333485] = true,
+	[338357] = true,
+	[328181] = true,
+	[320170] = true,
+	[323464] = true,
+	[323198] = true,
+	[327401] = true,
+	[327397] = true,
+	[322681] = true,
 	-- Halls of Atonement
+	[335338] = true,
+	[326891] = true,
+	[329321] = true,
+	[319603] = true,
+	[319611] = true,
+	[325876] = true,
+	[326632] = true,
+	[323650] = true,
+	[326874] = true,
 	-- Plaguefall
+	[336258] = true,
+	[331818] = true,
+	[329110] = true,
+	[325552] = true,
+	[336301] = true,
 	-- Mists of Tirna Scithe
+	[325027] = true,
+	[323043] = true,
+	[322557] = true,
+	[331172] = true,
+	[322563] = true,
+	[341198] = true,
 	-- De Other Side
+	[320786] = true,
+	[334913] = true,
+	[325725] = true,
+	[328987] = true,
+	[334496] = true,
+	[339978] = true,
+	[323692] = true,
+	[333250] = true,
+	[322746] = true,
 	-- Theater of Pain
+	[333299] = true,
+	[319539] = true,
+	[326892] = true,
+	[321768] = true,
+	[323825] = true,
+	[333231] = true,
+	[330532] = true,
 
 	-- Shadowlands Raid
 	-- Castle Nathria
@@ -584,8 +670,12 @@ local pvpDebuffs = {
 
 -- Default buff indicator (corners of party/raid)
 -- [specID] = {[buffids] = CornerID}
+-- specID: /dump GetSpecializationInfo(GetSpecialization())
 local buffIndicators = {
-	--[263] = {[269279] = 1}, -- test: enhancement
+	[264] = {
+		[61295] = 1,
+		[974] = 2,
+	},
 }
 
 -- Default auras data
