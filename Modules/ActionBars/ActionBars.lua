@@ -114,19 +114,17 @@ local function CreateActionBar(idx)
 	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0, 0, 0, 0.5)
 	texture:SetAllPoints(true)
-	frame:SetAttribute("_onstate-page", [[
-		self:SetAttribute("actionpage", newstate)
-	]])
 	for i = 1, NUM_ACTIONBAR_BUTTONS do
 		local name = barsData[idx].name..i
 		local button = _G[name]
 		button:SetParent(frame)
 		HandleActionButton(button)
-		frame:SetAttribute("_onstate-page", [[
-			self:SetAttribute("actionpage", newstate)
-		]])
 		frame[i] = button
+		frame:SetFrameRef(tostring(i), button)
 	end
+	frame:SetAttribute("_onstate-page", ([[
+		for i=1, %d do self:GetFrameRef(tostring(i)):SetAttribute("actionpage", newstate) end
+	]]):format(NUM_ACTIONBAR_BUTTONS))
 	RegisterStateDriver(frame, "page", barsData[idx].page)
 	bars[idx] = frame
 end
