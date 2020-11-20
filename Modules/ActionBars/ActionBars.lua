@@ -303,8 +303,17 @@ B:AddInitScript(function()
 		if event == "ACTIONBAR_UPDATE_STATE" or ((event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") and arg1 == "player") then
 			local frame = bars[1]
 			for i=1, #frame do
-				frame[i]:UpdateAction()
-				frame[i]:Update()
+				local button = frame[i]
+				button:UpdateAction()
+				local icon = button.icon
+				local texture = GetActionTexture(button.action)
+				if texture then
+					icon:SetTexture(texture)
+					icon:Show()
+				else
+					icon:Hide()
+				end
+				button:UpdateUsable()
 			end
 		end
 	end
