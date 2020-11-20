@@ -180,16 +180,10 @@ local function CreateStanceBar()
 		button:SetParent(frame)
 		button:ClearAllPoints()
 		HandleActionButton(button)
-		if i <= num then button:Show() else button:Hide() end
 		frame[i] = button
 	end
 	frame.visibility = "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists][shapeshift] hide; show"
 	RegisterStateDriver(frame, "visibility", num > 0 and frame.visibility or "hide")
-	-- Disable unused stance buttons
-	B:AddEventScript("UPDATE_SHAPESHIFT_COOLDOWN", function()
-		local num = GetNumShapeshiftForms()
-		for i = 1, NUM_STANCE_SLOTS do if i <= num then frame[i]:Show() else frame[i]:Hide() end end
-	end)
 end
 
 local function DisableBLZ()
