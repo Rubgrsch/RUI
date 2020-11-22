@@ -141,8 +141,10 @@ L["ThisSession:"] = "本次登录: "
 L["LeftDataPanel"] = "左侧信息条"
 L["RightDataPanel"] = "右侧信息条"
 L["LVL %d:%f"] = "%d级: %.0f"
-L["CurrentExp:"] = "当前经验值:"
+L["CurrentProgress:"] = "当前进度:"
 L["RestExp:"] = "精力充沛:"
+L["Exp"] = "经验值"
+L["Honor"] = "荣誉"
 
 -- Maps
 L["Mouse"] = "鼠标"

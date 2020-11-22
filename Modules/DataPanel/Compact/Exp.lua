@@ -9,8 +9,9 @@ local function OnEvent(self)
 end
 
 local function OnEnter(tooltip)
+	tooltip:AddLine(L["Exp"])
 	local exp, maxExp, restExp = UnitXP("player"), UnitXPMax("player"), GetXPExhaustion()
-	tooltip:AddDoubleLine(L["CurrentExp:"], format("%s/%s (%.0f%%)",L["NumUnitFormat"](exp),L["NumUnitFormat"](maxExp),exp/maxExp*100))
+	tooltip:AddDoubleLine(L["CurrentProgress:"], format("%s/%s (%.0f%%)",L["NumUnitFormat"](exp),L["NumUnitFormat"](maxExp),exp/maxExp*100))
 	if restExp and restExp > 0 then tooltip:AddDoubleLine(L["RestExp:"],format("%s (%.0f%%)",L["NumUnitFormat"](restExp),restExp/maxExp*100)) end
 end
 
