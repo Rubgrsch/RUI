@@ -524,6 +524,7 @@ local function CreateBankContainer()
 	f:Hide()
 	f:SetID(-4)
 	tinsert(UISpecialFrames, f:GetName())
+	f:SetScript("OnHide", CloseBankFrame)
 	BAG.bankFrame = f
 	local texture = f:CreateTexture(nil, "BACKGROUND")
 	texture:SetColorTexture(0, 0, 0, 0.85)
