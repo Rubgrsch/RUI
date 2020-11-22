@@ -136,14 +136,17 @@ local function UpdateSlotContent(slot, i, j)
 	end
 	-- Cooldown
 	if texture then
-		local start, duration, enable = GetContainerItemCooldown(i, j)
-		CooldownFrame_Set(_G[slot:GetName().."Cooldown"], start, duration, enable)
 		slot.hasItem = 1
 	else
-		_G[slot:GetName().."Cooldown"]:Hide()
 		slot.hasItem = nil
 	end
 	slot.readable = readable
+	local start, duration, enable = GetContainerItemCooldown(i, j)
+	if enable then
+		_G[slot:GetName().."Cooldown"]:SetCooldown(start, duration)
+	else
+		_G[slot:GetName().."Cooldown"]:Hide()
+	end
 	-- Tooltip
 	local tooltip = GameTooltip
 	if slot == tooltip:GetOwner() then
@@ -204,6 +207,8 @@ local function CreateSlot(holder, i,j)
 	local slotSize = holder:GetParent().slotSize
 	slot:SetSize(slotSize, slotSize)
 	slot:SetNormalTexture(nil)
+	local cooldown = _G[slot:GetName().."Cooldown"] or CreateFrame("Cooldown", slot:GetName().."Cooldown", slot, "CooldownFrameTemplate")
+	B:SetupCooldown(cooldown, 14)
 	slot.IconBorder:SetSize(slotSize,slotSize)
 	slot.IconOverlay:SetSize(slotSize,slotSize)
 	if slot.NewItemTexture then slot.NewItemTexture:SetSize(slotSize,slotSize) end
