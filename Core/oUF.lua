@@ -79,9 +79,9 @@ oUF.Tags.Events["colorlvl:high "] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 oUF.Tags.Methods["colorname"] = function(unit)
 	if UnitIsPlayer(unit) then
 		local _, class = UnitClass(unit)
+		local name = UnitName(unit)
 		if not class then return name end
 		local classColor = RAID_CLASS_COLORS[class].colorStr
-		local name = UnitName(unit)
 		return format("|c%s%s",classColor,name)
 	else
 		local reactionColor = FACTION_BAR_COLORS[UnitReaction(unit, "player")]

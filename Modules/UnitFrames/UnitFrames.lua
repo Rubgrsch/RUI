@@ -874,7 +874,7 @@ local function CreateRaidStyle(self)
 	local powerText = CreatePower(self)
 	powerText:SetPoint("CENTER",self.Health,"CENTER", 0, -10)
 
-	altPower = CreateAltPower(self)
+	CreateAltPower(self)
 
 	-- name
 	local name = upperFrame:CreateFontString()
@@ -997,7 +997,7 @@ function C.UF.ResetPoint.party(self)
 		self.Debuffs:SetPoint("BOTTOMLEFT", self.Buffs, "TOPLEFT", 0, 0)
 	else
 		self.Buffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, 0)
-		self.Debuffs:SetPoint("TOPLEFT", buffs, "BOTTOMLEFT", 0, 0)
+		self.Debuffs:SetPoint("TOPLEFT", self.Buffs, "BOTTOMLEFT", 0, 0)
 	end
 end
 
