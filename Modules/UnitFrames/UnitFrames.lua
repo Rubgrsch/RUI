@@ -430,6 +430,9 @@ local function CreatePlayerStyle(self)
 	threatText:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	threatText:SetPoint("TOPRIGHT",self.Health,"TOPRIGHT", 0, 0)
 	self:Tag(threatText, "[threatcolor][threatPerc:Player]")
+
+	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 local function CreateTargetStyle(self)
@@ -508,6 +511,9 @@ local function CreateTargetStyle(self)
 	local f = CreateCastbar(self)
 	f:SetSize(castbarWidth,castbarHeight)
 	B:SetupMover(f, "TargetCastBar",L["TargetCastBar"],true)
+
+	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 local function CreateTargetTargetStyle(self)
@@ -572,6 +578,9 @@ local function CreateTargetTargetStyle(self)
 		if castByPlayer then return false end
 		return true
 	end
+
+	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 local function CreateFocusStyle(self)
@@ -636,6 +645,9 @@ local function CreateFocusStyle(self)
 		if castByPlayer then return false end
 		return true
 	end
+
+	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 local function CreatePetStyle(self)
@@ -699,6 +711,9 @@ local function CreatePetStyle(self)
 	local f = CreateCastbar(self)
 	f:SetSize(healthWidth,castbarHeight)
 	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+
+	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 local function CreateBossStyle(self)
@@ -763,6 +778,9 @@ local function CreateBossStyle(self)
 	local f = CreateCastbar(self)
 	f:SetSize(healthWidth,castbarHeight)
 	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+
+	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 local function CreatePartyStyle(self)
@@ -859,6 +877,7 @@ local function CreatePartyStyle(self)
 	CreateBuffIndicators(self)
 
 	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 local function CreateRaidStyle(self)
@@ -952,6 +971,7 @@ local function CreateRaidStyle(self)
 	CreateBuffIndicators(self)
 
 	self:RegisterForClicks("AnyUp")
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end
 
 -- Config
@@ -1043,7 +1063,6 @@ B:AddInitScript(function()
 	oUF:SetActiveStyle("player")
 	local playerFrame = oUF:Spawn("player")
 	B:SetupMover(playerFrame, "PlayerFrame",L["PlayerFrame"],true)
-	playerFrame:RegisterForClicks("AnyUp")
 	C.UF.player = playerFrame
 
 	-- Target
@@ -1051,7 +1070,6 @@ B:AddInitScript(function()
 	oUF:SetActiveStyle("target")
 	local targetFrame = oUF:Spawn("target")
 	B:SetupMover(targetFrame, "TargetFrame",L["TargetFrame"],true)
-	targetFrame:RegisterForClicks("AnyUp")
 	C.UF.target = targetFrame
 
 	-- TargetTarget
@@ -1059,7 +1077,6 @@ B:AddInitScript(function()
 	oUF:SetActiveStyle("targettarget")
 	local targettargetFrame = oUF:Spawn("targettarget")
 	B:SetupMover(targettargetFrame, "TargetTargetFrame",L["TargetTargetFrame"],true)
-	targettargetFrame:RegisterForClicks("AnyUp")
 	C.UF.targettarget = targettargetFrame
 
 	-- Focus
@@ -1068,6 +1085,7 @@ B:AddInitScript(function()
 	local focusFrame = oUF:Spawn("focus")
 	B:SetupMover(focusFrame, "FocusFrame",L["FocusFrame"],true)
 	focusFrame:RegisterForClicks("AnyUp")
+	focusFrame:SetScript("OnEnter", UnitFrame_OnEnter)
 	C.UF.focus = focusFrame
 
 	-- Pet
@@ -1075,7 +1093,6 @@ B:AddInitScript(function()
 	oUF:SetActiveStyle("pet")
 	local petFrame = oUF:Spawn("pet")
 	B:SetupMover(petFrame, "PetFrame",L["PetFrame"],true)
-	petFrame:RegisterForClicks("AnyUp")
 	C.UF.pet = petFrame
 
 	-- Boss
@@ -1083,7 +1100,6 @@ B:AddInitScript(function()
 	oUF:SetActiveStyle("boss")
 	for i=1, MAX_BOSS_FRAMES do
 		local bossFrame = oUF:Spawn("boss"..i)
-		bossFrame:RegisterForClicks("AnyUp")
 		if i == 1 then
 			B:SetupMover(bossFrame, "BossFrame",L["BossFrame"],true)
 		end
