@@ -45,5 +45,5 @@ local function ToggleRaidTools()
 	if IsInGroup() then rt:Show() else rt:Hide() end
 end
 
-B:AddEventScript("PLAYER_ENTERING_WORLD", ToggleRaidTools)
-B:AddEventScript("GROUP_ROSTER_UPDATE", ToggleRaidTools)
+B:AddEventScript("PLAYER_ENTERING_WORLD", ToggleRaidTools, true)
+B:AddEventScript("GROUP_ROSTER_UPDATE", ToggleRaidTools, true)

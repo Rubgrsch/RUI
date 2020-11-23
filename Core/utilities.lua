@@ -55,46 +55,6 @@ function B:ResizeMover(frame,x,y)
 	C.mover[frame]:SetSize(x or frame:GetWidth(), y or frame:GetHeight())
 end
 
--- Event Script
--- B:AddEventScript(event, func) -- func(self,event,...)
--- B:AddInitScript(func)
-local frame = CreateFrame("Frame")
-frame:SetScript("OnEvent", function(self,event,...)
-	for _,func in ipairs(self[event]) do func(self,event,...) end
-end)
-
-function B:AddEventScript(event, func)
-	if not frame[event] then
-		frame[event] = {}
-		frame:RegisterEvent(event)
-	end
-	local t = frame[event]
-	for _, v in ipairs(t) do if v == func then return end end
-	t[#t+1] = func
-end
-
-function B:RemoveEventScript(event, func)
-	local t = frame[event]
-	if not t then return end
-	for i, v in ipairs(t) do if v == func then tremove(t,i) end end
-	if not next(frame[event]) then
-		frame[event] = nil
-		frame:UnregisterEvent(event)
-	end
-end
-
--- Init
-local init = {}
-function B:AddInitScript(func)
-	init[#init+1] = func
-end
-
-B:AddEventScript("PLAYER_LOGIN", function(self)
-	for _,v in ipairs(init) do v() end
-	self:UnregisterEvent("PLAYER_LOGIN")
-	init = nil
-end)
-
 -- OnUpdate Timer
 -- timerHandler = B:AddTimer(timeInterval, func[, enabled])
 -- B:ToggleTimer(timerHandler, status)
@@ -140,3 +100,80 @@ function B:ToggleTimer(timerIdx, status)
 	timer[4] = 0
 	CheckTimer()
 end
+
+-- Event Script
+-- B:AddEventScript(event, func, isSecure) -- func(self,event,...)
+-- B:AddInitScript(func)
+local frame = CreateFrame("Frame")
+local secureFrame = CreateFrame("Frame")
+local secureFuncs = {}
+frame:SetScript("OnEvent", function(self,event,...)
+	for _,func in ipairs(self[event]) do func(self,event,...) end
+end)
+secureFrame:SetScript("OnEvent", function(self,event,...)
+	local notSecure = InCombatLockdown()
+	for _,func in ipairs(self[event]) do
+		if notSecure then
+			B:AddDelayedCombatFunc(func)
+		else
+			func(self,event,...)
+		end
+	end
+end)
+
+function B:AddEventScript(event, func, secure)
+	local f = secure and secureFrame or frame
+	if not f[event] then
+		f[event] = {}
+		f:RegisterEvent(event)
+	end
+	local t = f[event]
+	for _, v in ipairs(t) do if v == func then return end end
+	t[#t+1] = func
+end
+
+function B:RemoveEventScript(event, func)
+	local t = frame[event]
+	if not t then return end
+	for i, v in ipairs(t) do if v == func then tremove(t,i) end end
+	if not next(frame[event]) then
+		frame[event] = nil
+		frame:UnregisterEvent(event)
+	end
+end
+
+local timer
+local function DelayedFunc()
+	if InCombatLockdown() then
+		B:ToggleTimer(timer, false)
+		return
+	end
+	for _, f in ipairs(secureFuncs) do
+		f()
+		secureFuncs[f] = nil
+		B:ToggleTimer(timer, false)
+	end
+end
+timer = B:AddTimer(0.5, DelayedFunc, false)
+
+-- Delay some func to be execute after leaving combat
+B:AddEventScript("PLAYER_REGEN_ENABLED", function()
+	if #secureFuncs > 0 then B:ToggleTimer(timer, true) end
+end)
+
+function B:AddDelayedCombatFunc(f)
+	secureFuncs[#secureFuncs+1] = f
+end
+
+-- Init
+local init = {}
+function B:AddInitScript(func, secure)
+	if secure and InCombatLockdown() then B:AddEventScript("PLAYER_LOGIN", func, true)
+	else init[#init+1] = func end
+end
+
+B:AddEventScript("PLAYER_LOGIN", function(self)
+	for _,v in ipairs(init) do v() end
+	self:UnregisterEvent("PLAYER_LOGIN")
+	init = nil
+end)

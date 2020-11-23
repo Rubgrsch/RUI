@@ -318,10 +318,10 @@ B:AddInitScript(function()
 		end
 	end
 	-- do we need all these??
-	B:AddEventScript("UPDATE_VEHICLE_ACTIONBAR", UpdateActionButtonAction)
-	B:AddEventScript("UPDATE_OVERRIDE_ACTIONBAR", UpdateActionButtonAction)
+	--B:AddEventScript("UPDATE_VEHICLE_ACTIONBAR", UpdateActionButtonAction)
+	--:AddEventScript("UPDATE_OVERRIDE_ACTIONBAR", UpdateActionButtonAction)
 	B:AddEventScript("ACTIONBAR_UPDATE_STATE", UpdateActionButtonAction)
-	B:AddEventScript("ACTIONBAR_SLOT_CHANGED", UpdateActionButtonAction)
+	--B:AddEventScript("ACTIONBAR_SLOT_CHANGED", UpdateActionButtonAction)
 	B:AddEventScript("UNIT_ENTERED_VEHICLE", UpdateActionButtonAction)
 	B:AddEventScript("UNIT_EXITED_VEHICLE", UpdateActionButtonAction)
 	-- overide keybind
@@ -336,5 +336,5 @@ B:AddInitScript(function()
 	B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
 		for i=1, 5 do C:SetupActionBarButtons(i) end
 		C:SetupOtherActionBarBttons()
-	end)
-end)
+	end, true)
+end, true)
