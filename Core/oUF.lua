@@ -84,7 +84,7 @@ oUF.Tags.Methods["colorname"] = function(unit)
 		local classColor = RAID_CLASS_COLORS[class].colorStr
 		return format("|c%s%s",classColor,name)
 	else
-		local reactionColor = FACTION_BAR_COLORS[UnitReaction(unit, "player")]
+		local reactionColor = FACTION_BAR_COLORS[UnitReaction(unit, "player") or 4]
 		local name = UnitName(unit)
 		return format("|cff%02x%02x%02x%s",reactionColor.r*255,reactionColor.g*255,reactionColor.b*255,name)
 	end

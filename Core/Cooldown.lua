@@ -26,7 +26,7 @@ end
 
 local function OnUpdate(self,elapsed)
 	self.elapsed = (self.elapsed or 0) + elapsed
-	if self.elapsed > self.rate then
+	if self.elapsed > (self.rate or 0.5) then
 		local cur = GetTime()
 		if self.endTime and cur > self.endTime then
 			EndCD(self)
