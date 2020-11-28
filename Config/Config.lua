@@ -1002,9 +1002,9 @@ options.args.nameplates = {
 			type = "toggle",
 			name = L["Target"],
 			order = 21,
-			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
+			get = function(info) return C.db.nameplates.deathTimer.target end,
 			set = function(info, value)
-				C.db.nameplates.deathTimer[info[#info]] = value
+				C.db.nameplates.deathTimer.target = value
 				C:SetupDeathTimer()
 			end,
 		},
@@ -1027,9 +1027,9 @@ options.args.nameplates = {
 			type = "toggle",
 			name = L["Nameplate"],
 			order = 23,
-			get = function(info) return C.db.nameplates.deathTimer[info[#info]] end,
+			get = function(info) return C.db.nameplates.deathTimer.nameplate end,
 			set = function(info, value)
-				C.db.nameplates.deathTimer[info[#info]] = value
+				C.db.nameplates.deathTimer.nameplate = value
 				C:SetupDeathTimer()
 			end,
 		},
