@@ -211,6 +211,7 @@ local function CreateSlot(holder, i,j)
 	B:SetupCooldown(cooldown, 14)
 	slot.IconBorder:SetSize(slotSize,slotSize)
 	slot.IconOverlay:SetSize(slotSize,slotSize)
+	slot.IconOverlay2:SetSize(slotSize,slotSize)
 	if slot.NewItemTexture then slot.NewItemTexture:SetSize(slotSize,slotSize) end
 	local questTexture = _G[slot:GetName().."IconQuestTexture"]
 	if questTexture then questTexture:SetSize(slotSize,slotSize) end
