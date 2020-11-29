@@ -173,12 +173,14 @@ local function CreatePlates(self)
 	buffs["growth-x"] = "RIGHT"
 	buffs["growth-y"] = "UP"
 	buffs.PostCreateIcon = PostCreateIcon
+	buffs.disableMouse = true
 	local debuffs = CreateFrame("Frame", nil, self)
 	debuffs.initialAnchor = "BOTTOMRIGHT"
 	debuffs["growth-x"] = "LEFT"
 	debuffs["growth-y"] = "UP"
 	debuffs.showDebuffType = true
 	debuffs.PostCreateIcon = PostCreateIcon
+	debuffs.disableMouse = true
 
 	self.Buffs = buffs
 	self.Debuffs = debuffs
