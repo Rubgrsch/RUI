@@ -78,7 +78,7 @@ local function UpdateInspectItemLevel(_,_,guid)
 		inspectInit = true
 	end
 	if InspectFrame and InspectFrame.unit and UnitGUID(InspectFrame.unit) == guid then
-		local iLvlSum, iNum, allReady, twohand = 0, 0, true, false
+		local iLvlSum, allReady, twohand = 0, true, false
 		for i=1, #slots do
 			local slot = _G["Inspect"..slots[i].."Slot"]
 			local itemLink = GetInventoryItemLink(InspectFrame.unit, i)

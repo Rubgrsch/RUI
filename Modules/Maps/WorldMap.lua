@@ -33,7 +33,7 @@ local function UpdateMapID()
 	currentMapID = mapID
 	if not mapID then return end
 	local mapRect = mapRects[mapID]
-	if not mapRect then	
+	if not mapRect then
 		local p1 = select(2, C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(0, 0)))
 		local p2 = select(2, C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(1, 1)))
 		if not p1 or not p2 then return end
