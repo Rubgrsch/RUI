@@ -452,7 +452,7 @@ local function CreateTargetStyle(self)
 	local name = upperFrame:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	name:SetPoint("TOP",health,"TOP", 0, 0)
-	self:Tag(name, "[colorlvl] [colorname]")
+	self:Tag(name, "[colorlvl ][colorname]")
 	self.nameText = name
 
 	-- icons
@@ -734,7 +734,7 @@ local function CreateBossStyle(self)
 	local name = upperFrame:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	name:SetPoint("TOP",health,"TOP", 0, 0)
-	self:Tag(name, "[colorlvl] [colorname]")
+	self:Tag(name, "[colorlvl ][colorname]")
 	self.nameText = name
 
 	-- icons
@@ -803,7 +803,7 @@ local function CreatePartyStyle(self)
 	local name = upperFrame:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	name:SetPoint("CENTER",health,"CENTER", 0, 10)
-	self:Tag(name, "[colorlvl:smart] [colorname]")
+	self:Tag(name, "[colorlvl:smart ][colorname]")
 	self.nameText = name
 
 	-- icons
@@ -899,7 +899,7 @@ local function CreateRaidStyle(self)
 	local name = upperFrame:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	name:SetPoint("CENTER",health,"CENTER", 0, 10)
-	self:Tag(name, "[colorlvl:smart] [colorname]")
+	self:Tag(name, "[colorlvl:smart ][colorname]")
 	self.nameText = name
 
 	-- icons

@@ -39,7 +39,7 @@ oUF.Tags.Methods["hpcolor"] = function(unit)
 end
 oUF.Tags.Events["hpcolor"] = "UNIT_HEALTH UNIT_MAXHEALTH"
 
-oUF.Tags.Methods["colorlvl"] = function(unit)
+oUF.Tags.Methods["colorlvl "] = function(unit)
 	local level, diffColor
 	if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
 		level = UnitBattlePetLevel(unit)
@@ -48,11 +48,11 @@ oUF.Tags.Methods["colorlvl"] = function(unit)
 		level = UnitLevel(unit)
 		diffColor = GetCreatureDifficultyColor(level)
 	end
-	return format("|cff%02x%02x%02x%s|r", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??")
+	return format("|cff%02x%02x%02x%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??")
 end
-oUF.Tags.Events["colorlvl"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+oUF.Tags.Events["colorlvl "] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
-oUF.Tags.Methods["colorlvl:smart"] = function(unit)
+oUF.Tags.Methods["colorlvl:smart "] = function(unit)
 	local level, diffColor, eq
 	if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
 		level = UnitBattlePetLevel(unit)
@@ -62,9 +62,9 @@ oUF.Tags.Methods["colorlvl:smart"] = function(unit)
 		diffColor = GetCreatureDifficultyColor(level)
 		eq = level == UnitLevel("player")
 	end
-	if not eq then return format("|cff%02x%02x%02x%s|r", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??") end
+	if not eq then return format("|cff%02x%02x%02x%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??") end
 end
-oUF.Tags.Events["colorlvl:smart"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+oUF.Tags.Events["colorlvl:smart "] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
 oUF.Tags.Methods["colorlvl:high "] = function(unit)
 	local level = UnitLevel(unit)
