@@ -760,6 +760,7 @@ function BAG:ToggleAllBagUpdate(status)
 		B:RemoveEventScript("QUEST_REMOVED", UpdateBankAndBag)
 		B:RemoveEventScript("ITEM_LOCK_CHANGED", UpdateBankAndBag)
 		B:RemoveEventScript("PLAYERBANKSLOTS_CHANGED", UpdateBankAndBag)
+		B:RemoveEventScript("PLAYERREAGENTBANKSLOTS_CHANGED", UpdateBankAndBag)
 	else
 		B:AddEventScript("BAG_UPDATE", UpdateBankAndBag)
 		B:AddEventScript("BAG_UPDATE_COOLDOWN", UpdateBankAndBag)
@@ -767,6 +768,7 @@ function BAG:ToggleAllBagUpdate(status)
 		B:AddEventScript("QUEST_REMOVED", UpdateBankAndBag)
 		B:AddEventScript("ITEM_LOCK_CHANGED", UpdateBankAndBag)
 		B:AddEventScript("PLAYERBANKSLOTS_CHANGED", UpdateBankAndBag)
+		B:AddEventScript("PLAYERREAGENTBANKSLOTS_CHANGED", UpdateBankAndBag)
 		UpdateBankAndBag()
 	end
 end
