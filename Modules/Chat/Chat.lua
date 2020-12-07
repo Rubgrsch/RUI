@@ -1,6 +1,25 @@
 local _, rui = ...
 local B, L, C = unpack(rui)
 
+-- scroll
+
+local function FastScroll(self,direct)
+	if direct > 0 then -- up
+		if IsShiftKeyDown() then
+			self:ScrollToTop()
+		elseif IsControlKeyDown() then
+			self:ScrollByAmount(2)
+		end
+	else
+		if IsShiftKeyDown() then
+			self:ScrollToBottom()
+		elseif IsControlKeyDown() then
+			self:ScrollByAmount(-2)
+		end
+	end
+end
+hooksecurefunc("FloatingChatFrame_OnMouseScroll", FastScroll)
+
 -- chat copy
 local function CopyChat()
 	local frame, t, idx = ChatFrame1, {}, 1
