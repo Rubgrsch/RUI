@@ -229,6 +229,75 @@ local raidDebuffs = {
 
 	-- Shadowlands Raid
 	-- Castle Nathria
+	-- Shriekwing
+	[328897] = true,
+	[330713] = true,
+
+	-- Huntsman Altimor
+	[335304] = true,
+	[334971] = true,
+	[335111] = true,
+	[335112] = true,
+	[335113] = true,
+	[334945] = true,
+
+	-- Sun King's Salvation
+	[333002] = true,
+	[326078] = true,
+	[325251] = true,
+
+	-- Artificer Xy'mox
+	[327902] = true,
+	[326302] = true,
+	[325236] = true,
+	[327414] = true,
+
+	-- Hungering Destroyer
+	[334228] = true,
+	[329298] = true,
+
+	-- Lady Inerva Darkvein
+	[325936] = true,
+	[335396] = true,
+	[324982] = true,
+	[324983] = true,
+	[332664] = true,
+	[325382] = true,
+
+	-- The Council of Blood
+	[327773] = true,
+	[327052] = true,
+	[346651] = true,
+	[328334] = true,
+	[330848] = true,
+	[331706] = true,
+	[331636] = true,
+	[331637] = true,
+
+	-- Sludgefist
+	[335470] = true,
+	[339181] = true,
+	[331209] = true,
+	[335293] = true,
+	[335295] = true,
+
+	-- Stone Legion Generals
+	[334498] = true,
+	[337643] = true,
+	[334765] = true,
+	[333377] = true,
+	[334616] = true,
+	[334541] = true,
+	[339690] = true,
+	[342655] = true,
+	[342698] = true,
+
+	-- Sire Denathrius
+	[326851] = true,
+	[327798] = true,
+	[327992] = true,
+	[328276] = true,
+	[326699] = true,
 }
 
 -- Last update time 20.10.15
