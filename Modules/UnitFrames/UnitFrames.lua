@@ -831,6 +831,10 @@ local function CreatePartyStyle(self)
 	role:SetPoint("LEFT", self, "LEFT", 0, 0)
 	role:SetSize(12, 12)
 	self.GroupRoleIndicator = role
+	local summonIndicator = upperFrame:CreateTexture(nil, 'OVERLAY')
+	summonIndicator:SetSize(22, 22)
+	summonIndicator:SetPoint("BOTTOM", self.Health, "BOTTOM")
+	self.SummonIndicator = summonIndicator
 
 	-- auras
 	local buffs, debuffs = CreateAuras(self)
@@ -927,6 +931,10 @@ local function CreateRaidStyle(self)
 	role:SetPoint("LEFT", self, "LEFT", 0, 0)
 	role:SetSize(12, 12)
 	self.GroupRoleIndicator = role
+	local summonIndicator = upperFrame:CreateTexture(nil, "OVERLAY")
+	summonIndicator:SetSize(22, 22)
+	summonIndicator:SetPoint("BOTTOM", self.Health, "BOTTOM")
+	self.SummonIndicator = summonIndicator
 
 	-- auras
 	local buffs, debuffs = CreateAuras(self)
