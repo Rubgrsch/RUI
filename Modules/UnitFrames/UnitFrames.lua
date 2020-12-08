@@ -234,11 +234,8 @@ local function CreateBuffIndicators(self)
 		local icon = button:CreateTexture(nil, "OVERLAY")
 		icon:SetAllPoints()
 		button.icon = icon
-		local countFrame = CreateFrame("Frame", nil, button)
-		countFrame:SetAllPoints(button)
-		countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
-		local count = countFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-		count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", -1, 0)
+		local count = button:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+		count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 0)
 		button.count = count
 	end
 	buffs[1]:SetPoint("TOPLEFT",self.Health)

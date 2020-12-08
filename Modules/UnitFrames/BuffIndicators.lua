@@ -17,8 +17,7 @@ local function Update(self, _, unit)
 				local button = self.BuffIndicators[p]
 				if duration and duration > 0 then
 					button.cd:SetCooldown(expiration - duration, duration)
-					button.cd:Show()
-					button.icon:Show()
+					button:Show()
 					button.shouldHide = false
 				else
 					button.shouldHide = true
@@ -30,8 +29,7 @@ local function Update(self, _, unit)
 	for i=1, 4 do
 		local button = self.BuffIndicators[i]
 		if button.shouldHide then
-			button.icon:Hide()
-			button.cd:Hide()
+			button:Hide()
 		end
 	end
 end
@@ -44,7 +42,7 @@ local function Enable(self)
 			local button = self.BuffIndicators[v]
 			local _, _, fileID = GetSpellInfo(k)
 			button.icon:SetTexture(fileID)
-			button.icon:Hide()
+			button:Hide()
 			flag = true
 		end
 	end
