@@ -13,6 +13,15 @@ local function AutoScreenshot() if C.db.general.autoScreenshot then C_Timer.Afte
 B:AddEventScript("ACHIEVEMENT_EARNED", AutoScreenshot)
 B:AddEventScript("CHALLENGE_MODE_COMPLETED", AutoScreenshot)
 
+-- Disable buff alpha change
+local function BuffFrame_OnUpdate(self, elapsed)
+	if ( self.BuffFrameUpdateTime > 0 ) then
+		self.BuffFrameUpdateTime = self.BuffFrameUpdateTime - elapsed;
+	else
+		self.BuffFrameUpdateTime = self.BuffFrameUpdateTime + TOOLTIP_UPDATE_TIME;
+	end
+end
+
 -- Original: DressUpVisual()
 local function NewDressUpVisual(...)
 	local frame, raceFilename, classFilename
@@ -42,6 +51,7 @@ local function NewDressUpVisual(...)
 end
 
 B:AddInitScript(function()
+	BuffFrame:SetScript("OnUpdate",BuffFrame_OnUpdate)
 	-- Hide boss loot banner
 	if C.db.general.hideBossBanner then BossBanner:UnregisterEvent("BOSS_KILL") end
 
