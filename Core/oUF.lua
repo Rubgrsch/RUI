@@ -39,7 +39,13 @@ oUF.Tags.Methods["hpcolor"] = function(unit)
 end
 oUF.Tags.Events["hpcolor"] = "UNIT_HEALTH UNIT_MAXHEALTH"
 
-oUF.Tags.Methods["colorlvl "] = function(unit)
+local classifications = {
+	rareelite = "R+",
+	elite = "+",
+	rare = "R",
+}
+
+oUF.Tags.Methods["lvl"] = function(unit)
 	local level, diffColor
 	if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
 		level = UnitBattlePetLevel(unit)
@@ -48,11 +54,13 @@ oUF.Tags.Methods["colorlvl "] = function(unit)
 		level = UnitLevel(unit)
 		diffColor = GetCreatureDifficultyColor(level)
 	end
-	return format("|cff%02x%02x%02x%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??")
+	local classification = classifications[UnitClassification(unit)]
+	return format("|cff%02x%02x%02x%s%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??", classification or "")
 end
-oUF.Tags.Events["colorlvl "] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+oUF.Tags.Events["lvl"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
-oUF.Tags.Methods["colorlvl:smart "] = function(unit)
+-- Only show different
+oUF.Tags.Methods["lvl:group"] = function(unit)
 	local level, diffColor, eq
 	if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
 		level = UnitBattlePetLevel(unit)
@@ -64,17 +72,20 @@ oUF.Tags.Methods["colorlvl:smart "] = function(unit)
 	end
 	if not eq then return format("|cff%02x%02x%02x%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??") end
 end
-oUF.Tags.Events["colorlvl:smart "] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+oUF.Tags.Events["lvl:group"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
-oUF.Tags.Methods["colorlvl:high "] = function(unit)
+oUF.Tags.Methods["lvl:np"] = function(unit)
 	local level = UnitLevel(unit)
 	local diff = level - UnitLevel("player")
+	local classification = classifications[UnitClassification(unit)]
 	if diff > 3 then
 		local diffColor = GetCreatureDifficultyColor(level)
-		return format("|cff%02x%02x%02x%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??")
+		return format("|cff%02x%02x%02x%s%s|r ", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??", classification or "")
+	elseif classification then
+		return classification
 	end
 end
-oUF.Tags.Events["colorlvl:high "] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+oUF.Tags.Events["lvl:np"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
 oUF.Tags.Methods["colorname"] = function(unit)
 	if UnitIsPlayer(unit) then

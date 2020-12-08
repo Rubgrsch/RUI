@@ -157,7 +157,7 @@ local function CreatePlates(self)
 	local name = self:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
 	name:SetPoint("BOTTOMLEFT",health,"TOPLEFT", 0, 2)
-	self:Tag(name, "[colorlvl:high ][name]")
+	self:Tag(name, "[lvl:np][name]")
 	self.nameText = name
 
 	-- icon
