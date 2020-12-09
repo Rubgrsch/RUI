@@ -883,3 +883,8 @@ B:AddInitScript(function()
 		C.auras[k] = v
 	end
 end)
+
+B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
+	local specID = GetSpecializationInfo(GetSpecialization())
+	C.buffIndicators = buffIndicators[specID] or {}
+end)

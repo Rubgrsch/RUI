@@ -46,11 +46,23 @@ local function Enable(self)
 			flag = true
 		end
 	end
-	if flag then self:RegisterEvent("UNIT_AURA", Update) end
+	if flag then
+		self:RegisterEvent("UNIT_AURA", Update)
+	else
+		self:UnregisterEvent("UNIT_AURA")
+	end
 end
 
 local function Disable(self)
 	self:UnregisterEvent("UNIT_AURA")
 end
+
+local function OnPlayerSpecChanged()
+	for _, f in pairs(oUF.objects) do
+		Enable(f)
+	end
+end
+
+B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", OnPlayerSpecChanged)
 
 oUF:AddElement("BuffIndicator", Update, Enable, Disable)
