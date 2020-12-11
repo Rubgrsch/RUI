@@ -4,18 +4,6 @@ local B, L, C = unpack(rui)
 -- https://wow.gamepedia.com/InstanceMapID
 -- Use "/dump select(8, GetInstanceInfo())" to get new instance id
 local partyMapIDs = {
-	-- BfA
-	[1594] = true,
-	[1754] = true,
-	[1762] = true,
-	[1763] = true,
-	[1771] = true,
-	[1822] = true,
-	[1841] = true,
-	[1862] = true,
-	[1864] = true,
-	[1877] = true,
-	[2097] = true,
 	-- SL
 	[2284] = true,
 	[2285] = true,
@@ -28,12 +16,6 @@ local partyMapIDs = {
 }
 
 local raidMapIDs = {
-	-- BfA
-	[1861] = true,
-	[2070] = true,
-	[2096] = true,
-	[2164] = true,
-	[2217] = true,
 	-- SL
 	[2296] = true,
 }
