@@ -10,8 +10,8 @@ local function Update(self, _, unit)
 		button.shouldHide = true
 	end
 	for i=1, 40 do
-		local name, _, count, _, duration, expiration, _, _, _, spellId = UnitBuff(unit, i)
-		if name then
+		local name, _, count, _, duration, expiration, source, _, _, spellId = UnitBuff(unit, i)
+		if name and source == "player" then
 			local p = C.buffIndicators[spellId]
 			if p then
 				local button = self.BuffIndicators[p]
