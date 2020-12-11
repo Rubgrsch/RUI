@@ -21,14 +21,12 @@ local raidBuffs = {
 	[29166] = true,
 	[47788] = true,
 	[33206] = true,
-	[53563] = true,
 	[98007] = true,
 	[223658] = true,
 	[115310] = true,
 	[116849] = true,
 	[204018] = true,
 	[102342] = true,
-	[156910] = true,
 	[192082] = true,
 	[201633] = true,
 	[207498] = true,
@@ -251,6 +249,7 @@ local raidDebuffs = {
 	[326302] = true,
 	[325236] = true,
 	[327414] = true,
+	[340860] = true,
 
 	-- Hungering Destroyer
 	[334228] = true,
@@ -263,6 +262,7 @@ local raidDebuffs = {
 	[324983] = true,
 	[332664] = true,
 	[325382] = true,
+	[326538] = true,
 
 	-- The Council of Blood
 	[327773] = true,
