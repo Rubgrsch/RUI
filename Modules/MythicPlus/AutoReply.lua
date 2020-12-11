@@ -54,6 +54,7 @@ local function OnChatMsgBNWhisper(_, _, _, _, _, _, _, _, _, _, _, _, _, _, bnSe
 		BNSendWhisper(bnSenderID, ReplyString())
 	end
 end
-
-B:AddEventScript("CHAT_MSG_WHISPER", OnChatMsgWhisper)
-B:AddEventScript("CHAT_MSG_BN_WHISPER", OnChatMsgBNWhisper)
+B:AddInitScript(function()
+	B:AddEventScript("CHAT_MSG_WHISPER", OnChatMsgWhisper)
+	B:AddEventScript("CHAT_MSG_BN_WHISPER", OnChatMsgBNWhisper)
+end)
