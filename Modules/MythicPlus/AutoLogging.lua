@@ -37,7 +37,7 @@ local function ZoneNewFunction()
 	if zoneForLogging and not LoggingCombat() then
 		LoggingCombat(true)
 		print(L["StartLogging"])
-	elseif prevZone and LoggingCombat() then
+	elseif not zoneForLogging and prevZone and LoggingCombat() then
 		LoggingCombat(false)
 		print(L["StopLogging"])
 	end
