@@ -81,10 +81,6 @@ end
 local restoreObjectiveTracker = nil
 
 local function HideTrackerFrame()
-	-- Undo damage by ElvUI (This frame makes the Objective Tracker protected)
-	if type(ObjectiveTrackerFrame.AutoHider) == "table" and ObjectiveTrackerFrame.AutoHider:GetParent() == ObjectiveTrackerFrame then
-		ObjectiveTrackerFrame.AutoHider:SetParent((CreateFrame("Frame")))
-	end
 	if not ObjectiveTrackerFrame:IsProtected() then
 		restoreObjectiveTracker = ObjectiveTrackerFrame:GetParent()
 		if restoreObjectiveTracker then
