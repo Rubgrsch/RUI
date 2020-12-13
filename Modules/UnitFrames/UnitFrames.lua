@@ -357,7 +357,6 @@ end
 -- Create Style
 local function CreatePlayerStyle(self)
 	self.style = "player"
-	self:SetSize(C.roleDB.unitFrames.player.width,C.roleDB.unitFrames.player.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -434,7 +433,6 @@ end
 
 local function CreateTargetStyle(self)
 	self.style = "target"
-	self:SetSize(C.roleDB.unitFrames.target.width,C.roleDB.unitFrames.target.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -515,7 +513,6 @@ end
 
 local function CreateTargetTargetStyle(self)
 	self.style = "targettarget"
-	self:SetSize(C.roleDB.unitFrames.targettarget.width,C.roleDB.unitFrames.targettarget.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -582,7 +579,6 @@ end
 
 local function CreateFocusStyle(self)
 	self.style = "focus"
-	self:SetSize(C.roleDB.unitFrames.focus.width,C.roleDB.unitFrames.focus.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -649,7 +645,6 @@ end
 
 local function CreatePetStyle(self)
 	self.style = "pet"
-	self:SetSize(C.roleDB.unitFrames.pet.width,C.roleDB.unitFrames.pet.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -715,7 +710,6 @@ end
 
 local function CreateBossStyle(self)
 	self.style = "boss"
-	self:SetSize(C.roleDB.unitFrames.boss.width,C.roleDB.unitFrames.boss.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -782,7 +776,6 @@ end
 
 local function CreatePartyStyle(self)
 	self.style = "party"
-	self:SetSize(C.roleDB.unitFrames.party.width,C.roleDB.unitFrames.party.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -828,10 +821,14 @@ local function CreatePartyStyle(self)
 	role:SetPoint("LEFT", self, "LEFT", 0, 0)
 	role:SetSize(12, 12)
 	self.GroupRoleIndicator = role
-	local summonIndicator = upperFrame:CreateTexture(nil, 'OVERLAY')
+	local summonIndicator = upperFrame:CreateTexture(nil, "OVERLAY")
 	summonIndicator:SetSize(22, 22)
 	summonIndicator:SetPoint("BOTTOM", self.Health, "BOTTOM")
 	self.SummonIndicator = summonIndicator
+	local readyCheckIndicator = upperFrame:CreateTexture(nil, "OVERLAY")
+	readyCheckIndicator:SetSize(18, 18)
+	readyCheckIndicator:SetPoint("TOP", self.Health, "TOP")
+	self.ReadyCheckIndicator = readyCheckIndicator
 
 	-- auras
 	local buffs, debuffs = CreateAuras(self)
@@ -883,7 +880,6 @@ end
 
 local function CreateRaidStyle(self)
 	self.style = "raid"
-	self:SetSize(C.roleDB.unitFrames.raid.width,C.roleDB.unitFrames.raid.height)
 	local upperFrame = CreateFrame("Frame",nil,self)
 	self.upperFrame = upperFrame
 
@@ -932,6 +928,10 @@ local function CreateRaidStyle(self)
 	summonIndicator:SetSize(22, 22)
 	summonIndicator:SetPoint("BOTTOM", self.Health, "BOTTOM")
 	self.SummonIndicator = summonIndicator
+	local readyCheckIndicator = upperFrame:CreateTexture(nil, "OVERLAY")
+	readyCheckIndicator:SetSize(18, 18)
+	readyCheckIndicator:SetPoint("TOP", self.Health, "TOP")
+	self.ReadyCheckIndicator = readyCheckIndicator
 
 	-- auras
 	local buffs, debuffs = CreateAuras(self)
