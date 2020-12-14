@@ -1,4 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="Compact.lua"/>
 	<Script file="Exp.lua"/>
-	<Script file="Honor.lua"/></Ui>
+	<Script file="Shadowlands.lua"/></Ui>

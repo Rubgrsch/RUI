@@ -12,6 +12,7 @@ L["Loot: %d"] = L["Loot: %d"]:gsub("%%d", "|T%%d:0|t")
 L["[DND]"] = "[|cffff0000"..L["DND"].."|r]"
 L["[AFK]"] = "[|cffff0000"..L["AFK"].."|r]"
 L["LVL %d:%f"] = L["LVL %d:%f"]:gsub("%%d","|cffffff22%%d|r"):gsub("%%.0f","|cff22ff22%%.0f%%%%|r")
+L["Completed:"] = "|cff00ff00"..L["Completed:"].."|r"
 
 -- ActionBar
 for i=1, 5 do L["ActionBar"..i] = format(L["ActionBar%d"],i) end

@@ -145,6 +145,9 @@ L["CurrentProgress:"] = "当前进度:"
 L["RestExp:"] = "精力充沛:"
 L["Exp"] = "经验值"
 L["Honor"] = "荣誉"
+L["Completed:"] = "已完成:"
+L["iLvl %d"] = "装等 %d"
+L["Next Reward:"] = "下一奖励:"
 
 -- Maps
 L["Mouse"] = "鼠标"
