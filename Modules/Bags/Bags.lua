@@ -687,9 +687,15 @@ local function CreateBankContainer()
 	depositReagentButton:SetPoint("LEFT",reagentButton,"RIGHT", 2, 0)
 	depositReagentButton:SetScript("OnEnter", OnEnter)
 	depositReagentButton:SetScript("OnLeave", OnLeave)
+	local function postUpdate()
+		depositReagentButton:Enable()
+		BAG:ToggleAllBagUpdate() -- Delay to skip events spam
+	end
 	depositReagentButton:SetScript("OnClick", function()
 		PlaySound(852)
+		BAG:ToggleAllBagUpdate(false)
 		DepositReagentBank()
+		C_Timer.After(0.5, postUpdate)
 	end)
 	depositReagentButton:Hide()
 	-- Search
