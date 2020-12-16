@@ -114,7 +114,7 @@ secureFrame:SetScript("OnEvent", function(self,event,...)
 	local notSecure = InCombatLockdown()
 	for _,func in ipairs(self[event]) do
 		if notSecure then
-			B:AddDelayedCombatFunc(func)
+			B:AddDelayedCombatFunc(func,self,event,...)
 		else
 			func(self,event,...)
 		end
@@ -148,11 +148,11 @@ local function DelayedFunc()
 		B:ToggleTimer(timer, false)
 		return
 	end
-	for _, f in ipairs(secureFuncs) do
-		f()
-		secureFuncs[f] = nil
-		B:ToggleTimer(timer, false)
+	for i, v in ipairs(secureFuncs) do
+		v[1](select(2,unpack(v)))
+		secureFuncs[i] = nil
 	end
+	B:ToggleTimer(timer, false)
 end
 timer = B:AddTimer(0.5, DelayedFunc, false)
 
@@ -161,8 +161,8 @@ B:AddEventScript("PLAYER_REGEN_ENABLED", function()
 	if #secureFuncs > 0 then B:ToggleTimer(timer, true) end
 end)
 
-function B:AddDelayedCombatFunc(f)
-	secureFuncs[#secureFuncs+1] = f
+function B:AddDelayedCombatFunc(f,...)
+	secureFuncs[#secureFuncs+1] = {f,...}
 end
 
 -- Init

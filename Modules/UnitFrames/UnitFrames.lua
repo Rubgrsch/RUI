@@ -1167,11 +1167,18 @@ B:AddInitScript(function()
 	end
 	C:UFGroupUpdate("party")
 	C:UFGroupUpdate("raid")
-	oUF:RegisterInitCallback(function(self)
+	local function callback(self)
 		local style = self.style
 		if style == "raid" or style == "party" then
 			C:UFUpdate(style, self)
 			C.UF.ResetPoint[style](self, self.unit)
+		end
+	end
+	oUF:RegisterInitCallback(function(self)
+		if InCombatLockdown() then
+			B:AddDelayedCombatFunc(callback,self)
+		else
+			callback(self)
 		end
 	end)
 
@@ -1210,5 +1217,5 @@ B:AddInitScript(function()
 		end
 		C:UFGroupUpdate("party")
 		C:UFGroupUpdate("raid")
-	end)
-end)
+	end, true)
+end, true)
