@@ -28,6 +28,8 @@ local compactData = {
 	},
 	OnEnter = OnEnter,
 	Validate = Check,
-	validateEvents = {"PLAYER_LEVEL_UP"},
+	validateEvents = {
+		PLAYER_LEVEL_UP = true,
+	},
 }
 DP:RegisterState("exp", compactData)

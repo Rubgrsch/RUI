@@ -6,30 +6,47 @@ local DP = B.DP
 local data = DP:CreateData("Compact")
 
 local curState = nil
-local statesData, revStates, stateOrder = {}, {}, {}
+local statesData, stateNum = {}, 0
 
-local function Validate(_, event)
-	local state = revStates[event]
-	if statesData[state].Validate() then
-		if curState == nil or stateOrder[state] < stateOrder[curState] then
-			DP:ApplyState(state)
+local validateFrame = CreateFrame("Frame")
+validateFrame:SetScript("OnEvent", function(self,event)
+	for state, tbl in pairs(statesData) do
+		if tbl.validateEvents and tbl.validateEvents[event] then
+			if tbl.Validate() then DP:FindState(state) end
 		end
 	end
-end
-
-function DP:AddState(state, tbl)
-	if tbl.Validate and not tbl.Validate() then return end
-	if tbl.Validate and tbl.validateEvents then
-		for _, v in ipairs(tbl.validateEvents) do
-			B:AddEventScript(v, Validate)
-			revStates[v] = state
-		end
-	end
-	stateOrder[state] = #stateOrder + 1
-end
+end)
 
 function DP:RegisterState(state, tbl)
+	stateNum = stateNum+1
+	tbl.idx = stateNum
 	statesData[state] = tbl
+	if tbl.validateEvents then
+		for event in pairs(tbl.validateEvents) do
+			if not validateFrame:IsEventRegistered(event) then
+				validateFrame:RegisterEvent(event)
+			end
+		end
+	end
+end
+
+-- call without para: find a state to display
+-- call with a newState: newState updated and should check newState and curState
+function DP:FindState(newState)
+	if not newState then
+		local nextState, nextIdx
+		for state,tbl in pairs(statesData) do
+			if (not nextIdx or nextIdx > tbl.idx) and (not tbl.Validate or tbl.Validate()) then
+				nextIdx = tbl.idx
+				nextState = state
+			end
+		end
+		return nextState
+	else
+		if statesData[newState].idx < statesData[curState].idx then
+			return statesData[newState].idx < statesData[curState].idx and newState or curState
+		end
+	end
 end
 
 function DP:ApplyState(state)
@@ -59,28 +76,20 @@ data.OnEnter = function(self)
 	end
 end
 data.OnMouseUp = function(self,btn)
-	if not InCombatLockdown() then
-		if btn == "RightButton" then
-		elseif btn == "MiddleButton" then
-			if not IsAddOnLoaded("Blizzard_EncounterJournal") then
-				EncounterJournal_LoadUI()
-			end
-			ToggleEncounterJournal()
-		else
-			if curState ~= nil and statesData[curState].OnClick then
-				statesData[curState].OnClick()
-			end
+	if InCombatLockdown() then return end
+	if btn == "LeftButton" then
+		if curState ~= nil and statesData[curState].OnClick then
+			statesData[curState].OnClick()
 		end
+	else
+		if not IsAddOnLoaded("Blizzard_EncounterJournal") then
+			EncounterJournal_LoadUI()
+		end
+		ToggleEncounterJournal()
 	end
 end
 
 B:AddInitScript(function()
-	for state, tbl in pairs(statesData) do DP:AddState(state, tbl) end
-	for state in pairs(stateOrder) do
-		if not statesData[state].Validate or statesData[state].Validate() then
-			if curState == nil or stateOrder[state] < stateOrder[curState] then
-				DP:ApplyState(state)
-			end
-		end
-	end
+	local state = DP:FindState()
+	DP:ApplyState(state)
 end)

@@ -19,7 +19,7 @@ local rewards = {
 }
 
 local function WipeRewards()
-	for idx, reward in ipairs(rewards) do
+	for _, reward in ipairs(rewards) do
 		for k in ipairs(reward.completed) do reward.completed[k] = nil end
 		reward.threshold = nil
 		reward.progress = nil
@@ -60,7 +60,7 @@ end
 local function OnEnter(tooltip)
 	tooltip:AddLine(L["Weekly Chest"])
 	tooltip:AddLine(" ")
-	for idx, reward in ipairs(rewards) do
+	for _, reward in ipairs(rewards) do
 		tooltip:AddLine(reward.name)
 		for _, iLvl in ipairs(reward.completed) do
 			tooltip:AddDoubleLine(L["Completed:"],format(L["iLvl %d"],iLvl))
