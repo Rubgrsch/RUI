@@ -639,6 +639,12 @@ local function CreateFocusStyle(self)
 		return true
 	end
 
+	-- Castbar
+	local healthWidth, castbarHeight = C.roleDB.unitFrames.focus.width, C.roleDB.unitFrames.focus.castbarHeight
+	local f = CreateCastbar(self)
+	f:SetSize(healthWidth,castbarHeight)
+	f:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+
 	self:RegisterForClicks("AnyUp")
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 end

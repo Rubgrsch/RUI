@@ -714,10 +714,59 @@ options.args.unitFrames = {
 			},
 			disabled = UFDisabled,
 		},
+		foucs = {
+			type = "group",
+			name = L["Focus"],
+			order = 14,
+			get = function(info) return C.roleDB.unitFrames.focus[info[#info]] end,
+			set = function(info, value)
+				C.roleDB.unitFrames.focus[info[#info]] = value
+				C:UFUpdate("focus")
+			end,
+			args = {--[[
+				enable = {
+					type = "toggle",
+					name = L["Enable"],
+					order = 1,
+				},]]
+				width = {
+					type = "range",
+					name = L["HealthWidth"],
+					order = 2,
+					min = 20, max = 1000, step = 5,
+				},
+				height = {
+					type = "range",
+					name = L["HealthHeight"],
+					order = 3,
+					min = 5, max = 500, step = 1,
+				},
+				powerHeight = {
+					type = "range",
+					name = L["PowerHeight"],
+					order = 4,
+					min = 1, max = 500, step = 1,
+				},
+				castbarHeight = {
+					type = "range",
+					name = L["CastbarHeight"],
+					order = 6,
+					min = 1, max = 500, step = 1,
+				},
+				aurasPerRow = {
+					type = "range",
+					name = L["AurasPerRow"].."*",
+					desc = L["RequireReload"],
+					order = 7,
+					min = 1, max = 12, step = 1,
+				},
+			},
+			disabled = UFDisabled,
+		},
 		pet = {
 			type = "group",
 			name = L["Pet"],
-			order = 14,
+			order = 15,
 			get = function(info) return C.roleDB.unitFrames.pet[info[#info]] end,
 			set = function(info, value)
 				C.roleDB.unitFrames.pet[info[#info]] = value
@@ -766,7 +815,7 @@ options.args.unitFrames = {
 		boss = {
 			type = "group",
 			name = L["Boss"],
-			order = 15,
+			order = 16,
 			get = function(info) return C.roleDB.unitFrames.boss[info[#info]] end,
 			set = function(info, value)
 				C.roleDB.unitFrames.boss[info[#info]] = value
@@ -817,7 +866,7 @@ options.args.unitFrames = {
 		party = {
 			type = "group",
 			name = L["Party"],
-			order = 16,
+			order = 17,
 			get = function(info) return C.roleDB.unitFrames.party[info[#info]] end,
 			set = function(info, value)
 				C.roleDB.unitFrames.party[info[#info]] = value
@@ -887,7 +936,7 @@ options.args.unitFrames = {
 		raid = {
 			type = "group",
 			name = L["Raid"],
-			order = 17,
+			order = 18,
 			get = function(info) return C.roleDB.unitFrames.raid[info[#info]] end,
 			set = function(info, value)
 				C.roleDB.unitFrames.raid[info[#info]] = value

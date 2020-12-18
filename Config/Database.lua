@@ -154,6 +154,7 @@ local defaultRoleDB = {
 			["width"] = 100,
 			["height"] = 30,
 			["powerHeight"] = 4,
+			["castbarHeight"] = 12,
 			["aurasPerRow"] = 6,
 		},
 		["pet"] = {
@@ -199,7 +200,7 @@ local defaultRoleDB = {
 	["nameplates"] = {
 		["enable"] = true,
 		["width"] = 100,
-		["height"] = 4,
+		["height"] = 10,
 		["aurasPerRow"] = 6,
 		["castbarHeight"] = 12,
 	},
