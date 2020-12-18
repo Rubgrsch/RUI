@@ -35,6 +35,7 @@ local raidBuffs = {
 }
 
 local raidDebuffs = {
+	[240443] = true,
 	-- Shadowlands Dungeon
 	-- Sanguine Depths
 	[326827] = true,
@@ -198,6 +199,7 @@ local raidDebuffs = {
 	[324010] = true,
 	[331847] = true,
 	[331381] = true,
+	[228626] = true,
 	-- Theater of Pain
 	[333299] = true,
 	[319539] = true,
@@ -643,6 +645,11 @@ local playerBuffs = {
 	[290793] = true,
 	[196440] = true,
 	[247776] = true,
+	[132403] = true,
+	[31850] = true,
+	[86659] = true,
+	[31884] = true,
+	[204018] = true,
 }
 
 -- Last update time 20.10.15
@@ -744,6 +751,10 @@ local defenseBuffs = {
 	[213610] = true,
 	[213602] = true,
 	[197548] = true,
+	[132403] = true,
+	[31850] = true,
+	[86659] = true,
+	[204018] = true,
 }
 
 -- Last update time 20.10.15
