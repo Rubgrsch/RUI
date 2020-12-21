@@ -21,6 +21,11 @@ local function StartMythicPlus()
 	cr.timeLimit = timeLimit
 	cr.timeLimit2 = timeLimit*0.8
 	cr.timeLimit3 = timeLimit*0.6
+	-- 9.0 S1: pride
+	cr.pride = false
+	for _, affix in ipairs(affixes) do
+		if affix == 121 then cr.pride = true end
+	end
 end
 B:AddEventScript("CHALLENGE_MODE_START", StartMythicPlus)
 B:AddEventScript("PLAYER_ENTERING_WORLD", StartMythicPlus)

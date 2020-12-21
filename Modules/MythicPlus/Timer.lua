@@ -31,6 +31,8 @@ timeLimitText:SetFont(defaultFont,18)
 local criteriasList = {}
 local deathCounter = MPTimerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 deathCounter:SetFont(defaultFont,13)
+local prideText = MPTimerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+prideText:SetFont(defaultFont,14)
 
 local lastSteps = 0
 local function SetCriteriasPoints()
@@ -53,6 +55,10 @@ local function SetCriteriasPoints()
 	for i=steps+1, #criteriasList do criteriasList[i]:Hide() end
 	deathCounter:ClearAllPoints()
 	deathCounter:SetPoint("TOPLEFT",criteriasList[steps],"BOTTOMLEFT",0,-15)
+	-- pride
+	prideText:ClearAllPoints()
+	prideText:SetPoint("TOPLEFT",deathCounter,"BOTTOMLEFT",0,-5)
+	-- end pride
 	lastSteps = steps
 end
 
@@ -117,12 +123,16 @@ local function OnScenarioCriteriaUpdate()
 			criteriasList[steps]:SetText("100% "..name)
 			criteriasList[steps]:SetTextColor(0.8,0.8,0.8)
 			criteriasList[steps].isGrey = true
+			prideText:SetText("")
 		elseif quantityString and quantityString ~= "" then
 			local quantity = tonumber(quantityString:sub(1, -2))
 			if quantity then
 				local remains = totalQuantity - quantity
 				local progress = quantity / totalQuantity * 100
 				criteriasList[steps]:SetFormattedText("%.2f%% %d/%d - %d %s",progress,quantity,totalQuantity,remains,name)
+				local prideTick = totalQuantity / 5
+				local nextPride = prideTick - quantity % prideTick
+				prideText:SetFormattedText("%s: %.2f%% %d", L["Pride"], nextPride / totalQuantity * 100, nextPride)
 			end
 		end
 	end
@@ -153,6 +163,11 @@ local function OnChallengeModeStart()
 	mainTimeText:SetTextColor(0,1,0)
 	plusTwoText:SetTextColor(0,1,0)
 	plusThreeText:SetTextColor(0,1,0)
+	if cr.pride then
+		prideText:Show()
+	else
+		prideText:Hide()
+	end
 	mainTimeText.isGreen = true
 	plusTwoText.isGreen = true
 	plusThreeText.isGreen = true

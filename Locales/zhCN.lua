@@ -162,6 +162,7 @@ L["MPAutoreply"] = "正在进行史诗钥石 +%d %s | 首领%d/%d | 进度%.0f%%
 -- Timer
 L["Death"] = "死亡"
 L["MythicPlusTimer"] = "史诗钥石计时器"
+L["Pride"] = "傲慢"
 -- MPB
 L["MPB:LV1"] = "优秀"
 L["MPB:LV2"] = "一般"
