@@ -22,7 +22,7 @@ hooksecurefunc("FloatingChatFrame_OnMouseScroll", FastScroll)
 
 -- chat copy
 local function CopyChat()
-	local frame, t, idx = ChatFrame1, {}, 1
+	local frame, t, idx = _G.SELECTED_DOCK_FRAME, {}, 1
 	for i = 1, frame:GetNumMessages() do
 		local msg, r, g, b = frame:GetMessageInfo(i)
 		if not msg:find("|K") then -- not need to copy protected string
