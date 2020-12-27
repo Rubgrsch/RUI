@@ -131,7 +131,7 @@ local function OnScenarioCriteriaUpdate()
 				local progress = quantity / totalQuantity * 100
 				criteriasList[steps]:SetFormattedText("%.2f%% %d/%d - %d %s",progress,quantity,totalQuantity,remains,name)
 				local prideTick = totalQuantity / 5
-				local nextPride = prideTick - quantity % prideTick
+				local nextPride = math.ceil(prideTick - quantity % prideTick)
 				prideText:SetFormattedText("%s: %.2f%% %d", L["Pride"], nextPride / totalQuantity * 100, nextPride)
 			end
 		end
