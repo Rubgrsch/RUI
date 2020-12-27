@@ -35,8 +35,9 @@ local raidBuffs = {
 }
 
 local raidDebuffs = {
-	[240443] = true,
 	-- Shadowlands Dungeon
+	[240443] = true,
+	[240559] = true,
 	-- Sanguine Depths
 	[326827] = true,
 	[326836] = true,
@@ -200,6 +201,7 @@ local raidDebuffs = {
 	[331847] = true,
 	[331381] = true,
 	[228626] = true,
+	[332605] = true,
 	-- Theater of Pain
 	[333299] = true,
 	[319539] = true,
@@ -688,7 +690,6 @@ local defenseBuffs = {
 	[335198] = true,
 	[184364] = true,
 	[202225] = true,
-	[184362] = true,
 	[213858] = true,
 	[29838] = true,
 	[197690] = true,
@@ -860,6 +861,7 @@ local pvpDebuffs = {
 	[337956] = true,
 	[322442] = true,
 	[199845] = true,
+	[453] = true,
 }
 
 -- Default buff indicator (corners of party/raid)
