@@ -874,6 +874,90 @@ local buffIndicators = {
 	},
 }
 
+-- Dispellable debuff type
+-- [specID] = {[Dispellable type string] = true}
+local dispelDebuffTypes = {
+	-- Druid
+	[102] = {
+		["Curse"] = true,
+		["Poison"] = true,
+	},
+	[103] = {
+		["Curse"] = true,
+		["Poison"] = true,
+	},
+	[104] = {
+		["Curse"] = true,
+		["Poison"] = true,
+	},
+	[105] = {
+		["Curse"] = true,
+		["Poison"] = true,
+		["Magic"] = true,
+	},
+	-- Mage
+	[62] = {
+		["Curse"] = true,
+	},
+	[63] = {
+		["Curse"] = true,
+	},
+	[64] = {
+		["Curse"] = true,
+	},
+	-- Monk
+	[268] = {
+		["Disease"] = true,
+		["Poison"] = true,
+	},
+	[269] = {
+		["Disease"] = true,
+		["Poison"] = true,
+	},
+	[270] = {
+		["Disease"] = true,
+		["Poison"] = true,
+		["Magic"] = true,
+	},
+	-- Paladin
+	[268] = {
+		["Disease"] = true,
+		["Poison"] = true,
+	},
+	[269] = {
+		["Disease"] = true,
+		["Poison"] = true,
+	},
+	[270] = {
+		["Disease"] = true,
+		["Poison"] = true,
+		["Magic"] = true,
+	},
+	-- Priest
+	[256] = {
+		["Magic"] = true,
+		["Disease"] = true,
+	},
+	[257] = {
+		["Magic"] = true,
+		["Disease"] = true,
+	},
+	[258] = {
+		["Disease"] = true,
+	},
+	-- Shaman
+	[262] = {
+		["Curse"] = true,
+	},
+	[263] = {
+		["Curse"] = true,
+	},
+	[264] = {
+		["Curse"] = true,
+		["Magic"] = true,
+	},
+}
+
 -- Default auras data
 local auras = {
 	["blackList"] = blackList,
@@ -889,6 +973,7 @@ B:AddInitScript(function()
 	local specID = GetSpecializationInfo(GetSpecialization())
 	-- Buff indicators
 	C.buffIndicators = buffIndicators[specID] or {}
+	C.dispelDebuffTypes = dispelDebuffTypes[specID] or {}
 	-- copy auras to config
 	C.auras = {}
 	for k,v in pairs(auras) do
@@ -900,4 +985,5 @@ end)
 B:AddEventScript("PLAYER_SPECIALIZATION_CHANGED", function()
 	local specID = GetSpecializationInfo(GetSpecialization())
 	C.buffIndicators = buffIndicators[specID] or {}
+	C.dispelDebuffTypes = dispelDebuffTypes[specID] or {}
 end)

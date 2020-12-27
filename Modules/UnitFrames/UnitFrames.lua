@@ -854,12 +854,14 @@ local function CreatePartyStyle(self)
 	-- 2. pass whitelist
 	-- 3. pass raiddebuffs
 	-- 4. pass pvpdebuffs
-	-- 5. block others
-	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	-- 5. pass dispellable
+	-- 6. block others
+	debuffs.CustomFilter = function(_, _, _, _, _, _, debuffType, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
 		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.dispelDebuffTypes[debuffType] then return true end
 		return false
 	end
 	--buffs.disableMouse = true
@@ -961,12 +963,14 @@ local function CreateRaidStyle(self)
 	-- 2. pass whitelist
 	-- 3. pass raiddebuffs
 	-- 4. pass pvpdebuffs
-	-- 5. block others
-	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
+	-- 5. pass dispellable
+	-- 6. block others
+	debuffs.CustomFilter = function(_, _, _, _, _, _, debuffType, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
 		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.dispelDebuffTypes[debuffType] then return true end
 		return false
 	end
 	buffs.disableMouse = true
