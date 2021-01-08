@@ -233,6 +233,7 @@ local function GetNPCID(guid)
 end
 
 local function OnTooltipSetUnit(tooltip)
+	if not MP.currentRun.MPing then return end
 	local _, unit = tooltip:GetUnit()
 	if not unit then return end
 	if not UnitCanAttack("player", unit) or UnitIsDead(unit) then return end
