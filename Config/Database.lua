@@ -61,7 +61,7 @@ local defaults = {
 		["raidDebuffs"] = {},
 		["playerBuffs"] = {},
 		["defenseBuffs"] = {},
-		["pvpDebuffs"] = {},
+		["ccDebuffs"] = {},
 	},
 	["nameplates"] = {
 		["deathTimer"] = {

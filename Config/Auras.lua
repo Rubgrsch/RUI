@@ -8,6 +8,14 @@ local whiteList = {
 }
 
 local raidBuffs = {
+	-- Mythic+
+	[343502] = true,
+	[226510] = true,
+	-- Shadowlands dungeon
+	[333737] = true,
+	-- Shadowlands others
+	[299150] = true, -- tower
+	-- Class
 	[1022] = true,
 	[6940] = true,
 	[1044] = true,
@@ -38,6 +46,7 @@ local raidDebuffs = {
 	-- Shadowlands Dungeon
 	[240443] = true,
 	[240559] = true,
+	[209858] = true,
 	-- Sanguine Depths
 	[326827] = true,
 	[326836] = true,
@@ -228,6 +237,7 @@ local raidDebuffs = {
 	[323750] = true,
 	[320180] = true,
 	[333301] = true,
+	[323406] = true,
 
 	-- Shadowlands Raid
 	-- Castle Nathria
@@ -756,10 +766,12 @@ local defenseBuffs = {
 	[31850] = true,
 	[86659] = true,
 	[204018] = true,
+	[122470] = true,
+	[48707] = true,
 }
 
 -- Last update time 20.10.15
-local pvpDebuffs = {
+local ccDebuffs = {
 	[1513] = true,
 	[3355] = true,
 	[5116] = true,
@@ -862,6 +874,10 @@ local pvpDebuffs = {
 	[322442] = true,
 	[199845] = true,
 	[453] = true,
+	[9484] = true,
+	[115078] = true,
+	[20549] = true,
+	[119381] = true,
 }
 
 -- Default buff indicator (corners of party/raid)
@@ -966,7 +982,7 @@ local auras = {
 	["raidDebuffs"] = raidDebuffs,
 	["playerBuffs"] = playerBuffs,
 	["defenseBuffs"] = defenseBuffs,
-	["pvpDebuffs"] = pvpDebuffs,
+	["ccDebuffs"] = ccDebuffs,
 }
 
 B:AddInitScript(function()

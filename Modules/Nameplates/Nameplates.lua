@@ -207,7 +207,7 @@ local function CreatePlates(self)
 	-- 2. pass whitelist
 	-- 3. pass yours
 	-- 4. pass raiddebuffs
-	-- 5. pass pvpdebuffs
+	-- 5. pass cc debuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
@@ -215,7 +215,7 @@ local function CreatePlates(self)
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if castByPlayer then return false end
 		return true
 	end

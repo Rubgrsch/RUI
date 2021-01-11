@@ -488,7 +488,7 @@ local function CreateTargetStyle(self)
 	-- 2. pass whitelist
 	-- 3. pass yours
 	-- 4. pass raiddebuffs
-	-- 5. pass pvpdebuffs
+	-- 5. pass cc debuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
@@ -496,7 +496,7 @@ local function CreateTargetStyle(self)
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if castByPlayer then return false end
 		return true
 	end
@@ -560,7 +560,7 @@ local function CreateTargetTargetStyle(self)
 	-- 2. pass whitelist
 	-- 3. pass yours
 	-- 4. pass raiddebuffs
-	-- 5. pass pvpdebuffs
+	-- 5. pass cc debuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
@@ -568,7 +568,7 @@ local function CreateTargetTargetStyle(self)
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if castByPlayer then return false end
 		return true
 	end
@@ -626,7 +626,7 @@ local function CreateFocusStyle(self)
 	-- 2. pass whitelist
 	-- 3. pass yours
 	-- 4. pass raiddebuffs
-	-- 5. pass pvpdebuffs
+	-- 5. pass cc debuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
@@ -634,7 +634,7 @@ local function CreateFocusStyle(self)
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if castByPlayer then return false end
 		return true
 	end
@@ -691,7 +691,7 @@ local function CreatePetStyle(self)
 	-- 2. pass whitelist
 	-- 3. pass yours
 	-- 4. pass raiddebuffs
-	-- 5. pass pvpdebuffs
+	-- 5. pass cc debuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
@@ -699,7 +699,7 @@ local function CreatePetStyle(self)
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if castByPlayer then return false end
 		return true
 	end
@@ -757,7 +757,7 @@ local function CreateBossStyle(self)
 	-- 2. pass whitelist
 	-- 3. pass yours
 	-- 4. pass raiddebuffs
-	-- 5. pass pvpdebuffs
+	-- 5. pass cc debuffs
 	-- 6. block other players ->(3)-> block players
 	-- 7. pass others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, _, _, _, source, _, _, spellId, _, _, castByPlayer) -- self, unit, button, UnitAura()
@@ -765,7 +765,7 @@ local function CreateBossStyle(self)
 		if C.auras.whiteList[spellId] then return true end
 		if source and UnitIsUnit(source, "player") then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if castByPlayer then return false end
 		return true
 	end
@@ -853,14 +853,14 @@ local function CreatePartyStyle(self)
 	-- 1. block blacklist
 	-- 2. pass whitelist
 	-- 3. pass raiddebuffs
-	-- 4. pass pvpdebuffs
+	-- 4. pass cc debuffs
 	-- 5. pass dispellable
 	-- 6. block others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, debuffType, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if C.dispelDebuffTypes[debuffType] then return true end
 		return false
 	end
@@ -962,14 +962,14 @@ local function CreateRaidStyle(self)
 	-- 1. block blacklist
 	-- 2. pass whitelist
 	-- 3. pass raiddebuffs
-	-- 4. pass pvpdebuffs
+	-- 4. pass cc debuffs
 	-- 5. pass dispellable
 	-- 6. block others
 	debuffs.CustomFilter = function(_, _, _, _, _, _, debuffType, _, _, _, _, _, spellId) -- self, unit, button, UnitAura()
 		if C.auras.blackList[spellId] then return false end
 		if C.auras.whiteList[spellId] then return true end
 		if C.auras.raidDebuffs[spellId] then return true end
-		if C.auras.pvpDebuffs[spellId] then return true end
+		if C.auras.ccDebuffs[spellId] then return true end
 		if C.dispelDebuffTypes[debuffType] then return true end
 		return false
 	end
