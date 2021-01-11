@@ -68,13 +68,13 @@ local function OnTooltipSetUnit(tooltip)
 		end
 	else
 		-- NPC
-		local guid = UnitGUID(unit)
-		local unitType, _, _, _, _, id = strsplit("-", guid)
 		-- Color name
-		local reactionColor = FACTION_BAR_COLORS[UnitReaction(unit, "player")]
 		local name = UnitName(unit)
-		GameTooltipTextLeft1:SetFormattedText("|cff%02x%02x%02x%s|r",reactionColor.r*255,reactionColor.g*255,reactionColor.b*255,name)
-		-- Color Lvl line and add faction icon
+		if name then
+			local reactionColor = FACTION_BAR_COLORS[UnitReaction(unit, "player") or 4]
+			GameTooltipTextLeft1:SetFormattedText("|cff%02x%02x%02x%s|r",reactionColor.r*255,reactionColor.g*255,reactionColor.b*255,name)
+		end
+		-- Color Lvl line
 		for i=2, tooltip:NumLines() do
 			local line = _G["GameTooltipTextLeft"..i]
 			local text = line:GetText()
@@ -94,8 +94,11 @@ local function OnTooltipSetUnit(tooltip)
 				line:SetFormattedText("|cff%02x%02x%02x%s|r %s%s", diffColor.r*255,diffColor.g*255,diffColor.b*255, level > 0 and level or "??", classification or "", creatureType)
 			end
 		end
+		-- NPC ID
+		local guid = UnitGUID(unit)
+		if not guid then return end -- rare nil error
+		local unitType, _, _, _, _, id = strsplit("-", guid)
 		if unitType == "Creature" and id then
-			-- Add NPC ID
 			tooltip:AddLine(format(L["ID %d"],id))
 		end
 	end
