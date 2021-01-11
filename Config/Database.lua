@@ -9,8 +9,6 @@ local defaults = {
 			["hideTracker"] = true,
 			["progress"] = true,
 			["autoReply"] = true,
-			["scores"] = false,
-			["scoreData"] = {},
 		},
 	},
 	["general"] = {

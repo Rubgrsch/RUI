@@ -2,8 +2,14 @@ local _, rui = ...
 local B, L, C = unpack(rui)
 
 local MP = B.MP
-local FormatTime = MP.FormatTime
 local defaultFont = STANDARD_TEXT_FONT
+
+local function FormatTime(seconds)
+	if seconds < 0 then seconds = -seconds end
+	local s = seconds % 60
+	local m = (seconds - s) / 60
+	return format("%02d:%02d", m, s)
+end
 
 local MPTimerFrame = CreateFrame("Frame", "MythicPlusTimerFrame", UIParent)
 MPTimerFrame:SetSize(300,300)
@@ -190,3 +196,8 @@ local function OnZoneChangedNewArea()
 	end
 end
 B:AddEventScript("ZONE_CHANGED_NEW_AREA", OnZoneChangedNewArea)
+
+SlashCmdList["MPTIMER"] = function()
+	if MPTimerFrame:IsShown() then MPTimerFrame:Hide() else MPTimerFrame:Show() end
+end
+SLASH_MPTIMER1 = "/mpt"

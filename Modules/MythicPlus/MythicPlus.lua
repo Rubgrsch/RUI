@@ -51,13 +51,6 @@ hooksecurefunc("Scenario_ChallengeMode_UpdateTime", function(_, elapsed)
 	end
 end)
 
-function MP.FormatTime(seconds)
-	if seconds < 0 then seconds = 0 end
-	local s = seconds % 60
-	local m = (seconds - s) / 60
-	return format("%02d:%02d", m, s)
-end
-
 -- Auto insert keystone
 local function InsertKeystone()
 	for bag = 0, NUM_BAG_SLOTS do

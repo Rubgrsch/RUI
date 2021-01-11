@@ -152,12 +152,6 @@ options.args.instance = {
 			desc = L["MPAutoReplyTooltips"],
 			order = 14,
 		},
-		scores = {
-			type = "toggle",
-			name = L["ShowMPScores"].."*",
-			desc = L["ShowMPScoresTooltips"].."|n"..L["RequireReload"],
-			order = 15,
-		},
 	},
 }
 options.args.dataPanel = {

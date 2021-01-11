@@ -163,17 +163,6 @@ L["MPAutoreply"] = "正在进行史诗钥石 +%d %s | 首领%d/%d | 进度%.0f%%
 L["Death"] = "死亡"
 L["MythicPlusTimer"] = "史诗钥石计时器"
 L["Pride"] = "傲慢"
--- MPB
-L["MPB:LV1"] = "优秀"
-L["MPB:LV2"] = "一般"
-L["MPB:LV3"] = "差劲"
-L["MPB:LV4"] = "坑"
-L["MPB:LV5"] = "好友"
-L["MPB:Anounce_Chat"] = "MPB: %s曾经被评价为 %s."
-L["MPB:Anounce_Tooltips"] = " MPB评价为 %s|r"
-L["Reset"] = "重置"
-L["Confirm"] = "确认"
-L["Close"] = "关闭"
 
 -- UF
 L["PlayerCastbar"] = "玩家施法条"
