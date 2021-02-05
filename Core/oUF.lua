@@ -113,6 +113,14 @@ oUF.Tags.Methods["status"] = function(unit)
 end
 oUF.Tags.Events["status"] = "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED"
 
+oUF.Tags.Methods["mpprogress"] = function(unit)
+	local p = B.MP:GetNPCProgress(B.MP:GetNPCID(UnitGUID(unit)))
+	if p and p > 0 then
+		return format("(+%d)",p)
+	end
+end
+oUF.Tags.Events["mpprogress"] = ""
+
 -- Show current player threat status. Not for given unit.
 oUF.Tags.Methods["threatPerc:Player"] = function()
 	local output

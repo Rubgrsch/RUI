@@ -5,8 +5,11 @@ local oUF = rui.oUF
 
 local function UpdateColor(self, _, unit)
 	local element = self.Health
+
 	local r, g, b
-	if (not UnitPlayerControlled(unit) and UnitIsTapDenied(unit)) or not UnitIsConnected(unit) then
+	if self.npcID and self.npcID == 120651 then
+		r, g, b = 1, 0.8, 0
+	elseif (not UnitPlayerControlled(unit) and UnitIsTapDenied(unit)) or not UnitIsConnected(unit) then
 		r, g, b = 0.7, 0.7, 0.7
 	elseif UnitIsPlayer(unit) then
 		local class = select(2, UnitClass(unit))
@@ -157,7 +160,7 @@ local function CreatePlates(self)
 	local name = self:CreateFontString()
 	name:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
 	name:SetPoint("BOTTOMLEFT",health,"TOPLEFT", 0, 2)
-	self:Tag(name, "[lvl:np][name]")
+	self:Tag(name, "[mpprogress][lvl:np][name]")
 	self.nameText = name
 
 	-- icon
@@ -285,6 +288,9 @@ local function Callback(self, event, unit)
 		else
 			self.TargetIndicator:Hide()
 		end
+		self.npcID = B.MP:GetNPCID(UnitGUID(unit))
+	elseif event == "NAME_PLATE_UNIT_REMOVED" then
+		self.npcID = nil
 	end
 end
 

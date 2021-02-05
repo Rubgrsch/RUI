@@ -225,10 +225,17 @@ local progressList = {
 	[173016] = 4,
 }
 
-local function GetNPCID(guid)
+function MP:GetNPCID(guid)
 	local unitType, _, _, _, _, id = strsplit("-", guid)
 	if unitType == "Creature" and id then
 		return tonumber(id)
+	end
+end
+
+function MP:GetNPCProgress(npcid)
+	if MP.currentRun.MPing then
+		local v = progressList[npcid]
+		if v then return v end
 	end
 end
 
@@ -238,7 +245,7 @@ local function OnTooltipSetUnit(tooltip)
 	if not unit then return end
 	if not UnitCanAttack("player", unit) or UnitIsDead(unit) then return end
 
-	local id = GetNPCID(UnitGUID(unit))
+	local id = MP:GetNPCID(UnitGUID(unit))
 	if not id then return end
 	local value = progressList[id]
 	if not value then return end
