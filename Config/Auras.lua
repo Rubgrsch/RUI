@@ -11,6 +11,7 @@ local raidBuffs = {
 	-- Mythic+
 	[343502] = true,
 	[226510] = true,
+	[228318] = true,
 	-- Shadowlands dungeon
 	[333737] = true,
 	-- Shadowlands others
@@ -115,6 +116,7 @@ local raidDebuffs = {
 	[320366] = true,
 	[343504] = true,
 	[320646] = true,
+	[333477] = true,
 	-- Halls of Atonement
 	[335338] = true,
 	[326891] = true,
@@ -768,6 +770,8 @@ local defenseBuffs = {
 	[204018] = true,
 	[122470] = true,
 	[48707] = true,
+	[102558] = true,
+	[118038] = true,
 }
 
 -- Last update time 20.10.15
@@ -801,7 +805,6 @@ local ccDebuffs = {
 	[205021] = true,
 	[228600] = true,
 	[198121] = true,
-	[2120] = true,
 	[31661] = true,
 	[157981] = true,
 	[31589] = true,
@@ -878,6 +881,9 @@ local ccDebuffs = {
 	[115078] = true,
 	[20549] = true,
 	[119381] = true,
+	[2094] = true,
+	[6770] = true,
+	[117405] = true,
 }
 
 -- Default buff indicator (corners of party/raid)
