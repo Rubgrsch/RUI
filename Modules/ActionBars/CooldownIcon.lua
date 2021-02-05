@@ -11,10 +11,10 @@ B:SetupCooldown(cooldown)
 cooldown:SetScript("OnUpdate",function(self,elapsed)
 	self.time = self.time + elapsed
 	if self.time > 1 then
-		cooldown:Hide()
+		self:Hide()
 		self.time = 0
 	else
-		cooldown:SetAlpha(0.8*(1-self.time))
+		self:SetAlpha(0.8*(1-self.time))
 	end
 end)
 
@@ -22,12 +22,12 @@ cooldown:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
 cooldown:SetScript("OnEvent", function(self,_,_,_,spellID)
 	local start, duration, enabled, modRate = GetSpellCooldown(spellID)
 	if duration < 2 then return end
-	cooldown:SetCooldown(start, duration, enabled, modRate)
+	self:SetCooldown(start, duration, enabled, modRate)
 	local _,_, iconID = GetSpellInfo(spellID)
 	icon:SetTexture(iconID)
 	local x,y = GetCursorPosition()
 	local scale = self:GetEffectiveScale()
-	cooldown:SetPoint("TOPRIGHT", _G.UIParent, "BOTTOMLEFT",x/scale,y/scale)
-	cooldown.time = 0
-	cooldown:Show()
+	self:SetPoint("TOPRIGHT", _G.UIParent, "BOTTOMLEFT",x/scale,y/scale)
+	self.time = 0
+	self:Show()
 end)
