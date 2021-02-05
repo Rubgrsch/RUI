@@ -81,6 +81,9 @@ function MP:UpdateTimerTime()
 	if mainTimeText.isGreen and cr.timeLimit < cr.time then
 		mainTimeText:SetTextColor(1,0,0)
 		mainTimeText.isGreen = false
+		plusTwoText:Hide()
+		plusThreeText:Hide()
+		timeLimitText:SetPoint("TOPLEFT",affixesText,"BOTTOMLEFT",55,-17)
 	end
 	plusTwoText:SetText(FormatTime(cr.timeLimit2 - cr.time))
 	plusThreeText:SetText(FormatTime(cr.timeLimit3 - cr.time))
@@ -136,8 +139,9 @@ local function OnScenarioCriteriaUpdate()
 				local remains = totalQuantity - quantity
 				local progress = quantity / totalQuantity * 100
 				criteriasList[steps]:SetFormattedText("%.2f%% %d/%d - %d %s",progress,quantity,totalQuantity,remains,name)
+				-- 9.0 Pride
 				local prideTick = totalQuantity / 5
-				local nextPride = math.ceil(prideTick - quantity % prideTick)
+				local nextPride = math.ceil(math.ceil(quantity/prideTick) * prideTick - quantity)
 				prideText:SetFormattedText("%s: %.2f%% %d", L["Pride"], nextPride / totalQuantity * 100, nextPride)
 			end
 		end
@@ -159,10 +163,9 @@ B:AddEventScript("CHALLENGE_MODE_DEATH_COUNT_UPDATED", OnChallengeModeDeathCount
 local function OnChallengeModeStart()
 	local cr = MP.currentRun
 	if not cr.MPing or not C.db.instance.mythicPlus.timer then return end
-	local level, name, affixes = cr.level, cr.name, cr.affixes
-	levelText:SetFormattedText("+%d %s", level, name)
+	levelText:SetFormattedText("+%d %s", cr.level, cr.name)
 	local affixesString = ""
-	for _, affix in ipairs(affixes) do
+	for _, affix in ipairs(cr.affixes) do
 		affixesString = affixesString .. " " .. (C_ChallengeMode.GetAffixInfo(affix))
 	end
 	affixesText:SetText(affixesString)
@@ -177,6 +180,9 @@ local function OnChallengeModeStart()
 	mainTimeText.isGreen = true
 	plusTwoText.isGreen = true
 	plusThreeText.isGreen = true
+	plusTwoText:Show()
+	plusThreeText:Show()
+	timeLimitText:SetPoint("TOPLEFT",affixesText,"BOTTOMLEFT",100,-17)
 	lastSteps = 0
 	SetCriteriasPoints()
 	OnScenarioCriteriaUpdate()
