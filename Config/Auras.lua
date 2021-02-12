@@ -12,8 +12,10 @@ local raidBuffs = {
 	[343502] = true,
 	[226510] = true,
 	[228318] = true,
+	[340873] = true,
 	-- Shadowlands dungeon
 	[333737] = true,
+	[343470] = true,
 	-- Shadowlands others
 	[299150] = true, -- tower
 	-- Class
@@ -184,6 +186,7 @@ local raidDebuffs = {
 	[322939] = true,
 	[321828] = true,
 	[322487] = true,
+	[321893] = true,
 	-- De Other Side
 	[320786] = true,
 	[334913] = true,
@@ -772,6 +775,16 @@ local defenseBuffs = {
 	[48707] = true,
 	[102558] = true,
 	[118038] = true,
+	[110909] = true,
+	[184662] = true,
+	[642] = true,
+	[1022] = true,
+	[6940] = true,
+	[186265] = true,
+	[45182] = true,
+	[5277] = true,
+	[1966] = true,
+	[31224] = true,
 }
 
 -- Last update time 20.10.15
@@ -871,7 +884,6 @@ local ccDebuffs = {
 	[204263] = true,
 	[205364] = true,
 	[64044] = true,
-	[333526] = true,
 	[320267] = true,
 	[337956] = true,
 	[322442] = true,
