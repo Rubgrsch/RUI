@@ -158,7 +158,7 @@ L["StartLogging"] = "开始战斗记录"
 L["StopLogging"] = "停止战斗记录"
 -- MP
 --autoreply
-L["MPAutoreply"] = "正在进行史诗钥石 +%d %s | 首领%d/%d | 进度%.0f%%"
+L["MPAutoreply"] = "正在进行+%d %s | 首领%d/%d | 进度%.0f%%"
 -- Timer
 L["Death"] = "死亡"
 L["MythicPlusTimer"] = "史诗钥石计时器"
