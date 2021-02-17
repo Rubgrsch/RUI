@@ -2,7 +2,7 @@ local _, rui = ...
 local B, L, C = unpack(rui)
 
 -- ouf totem do not support right click to cancel, so here using additional code
-local totems = CreateFrame("Frame")
+local totems = CreateFrame("Frame",nil,UIParent)
 totems:SetSize(20*MAX_TOTEMS,20)
 B:SetupMover(totems, "TotemFrame",L["TotemFrame"],true)
 for i = 1, MAX_TOTEMS do
