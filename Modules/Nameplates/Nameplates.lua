@@ -17,6 +17,7 @@ local function UpdateColor(self, _, unit)
 			r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
 		end
 	else
+		--if B.role = "TANK" and 
 		r, g, b = UnitSelectionColor(unit, true)
 		r, g, b = r * 0.8, g * 0.8, b * 0.8
 	end

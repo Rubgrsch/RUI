@@ -50,6 +50,7 @@ local raidDebuffs = {
 	[240443] = true,
 	[240559] = true,
 	[209858] = true,
+	[226512] = true,
 	-- Sanguine Depths
 	[326827] = true,
 	[326836] = true,

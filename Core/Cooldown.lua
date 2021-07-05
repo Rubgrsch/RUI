@@ -38,7 +38,7 @@ local function OnUpdate(self,elapsed)
 			end
 		end
 		self.elapsed = 0
-		if self.rate > 0.1 and self.endTime - cur < 6 then self.rate = 0.1 end
+		if self.rate > 0.1 and self.endTime and self.endTime - cur < 6 then self.rate = 0.1 end
 	end
 end
 

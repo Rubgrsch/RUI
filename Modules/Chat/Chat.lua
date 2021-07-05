@@ -1,8 +1,14 @@
 local _, rui = ...
 local B, L, C = unpack(rui)
 
--- scroll
+-- Chat msg sound
+local function ChatSound()
+	PlaySound(SOUNDKIT.TELL_MESSAGE)
+end
 
+B:AddEventScript("CHAT_MSG_BN_WHISPER", ChatSound)
+
+-- scroll
 local function FastScroll(self,direct)
 	if direct > 0 then -- up
 		if IsShiftKeyDown() then
